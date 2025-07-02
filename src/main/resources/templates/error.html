@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Not Found</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div>
+        <h3>
+            <p style="color: black; display: inline;" th:text="Status " ></p>
+            <p style="color: black; display: inline;" th:text="${status}"></p> 
+        </h3>
+        <h3>
+            <p style="color: black; display: inline;" th:text="Message "></p>
+            <p style="color: black; display: inline;" th:text="${message}"></p>
+        </h3>
+    </div>
+    <div>
+
+    </div>
+
+    <h1></h1>
+    <a href="/login">Вернуться на главную</a>
+</body>
+</html>

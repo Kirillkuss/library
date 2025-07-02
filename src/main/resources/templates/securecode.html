@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ввод кода</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <h1>Введите код</h1>
+    <div th:if="${session.error}">
+        <p style="color: red;" th:text="${session.error}"></p>
+        <script>
+              window.onload = function() {
+                    fetch("/clear-error-message", { method: "POST" });
+                };
+        </script>
+    </div>
+    <form action="/securecode" method="post">
+        <label for="code">Код:</label>
+        <input type="text" id="password" name="password" required><br><br>
+        <button type="submit">Подтвердить</button>
+    </form>
+</body>
+</html>

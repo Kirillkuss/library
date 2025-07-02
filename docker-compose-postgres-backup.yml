@@ -1,0 +1,19 @@
+version: '3.8'
+
+volumes:
+  pg_project:
+
+services:
+  pg_db:
+    image: postgres
+    container_name: library_db
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=lib
+    volumes:
+      # init db and fuctions
+      - ./src/main/resources/db/backup/library.backup:/library.backup
+      - ./src/main/resources/db/backup/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    ports:
+      - ${POSTGRES_PORT:-5436}:5432
