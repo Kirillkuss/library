@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.itrail.library.aspect.logger.ExecuteMethodLog;
 import com.itrail.library.domain.Book;
@@ -35,6 +36,7 @@ public class CardRecordService {
      * @param idCard - Ид карты
      * @return CardRecord
      */
+    @Transactional
     public CardRecord saveRecord( Long bookNumber, Long idCard ){
         Optional<Book> book = bookRepository.findBookByNumber( bookNumber );
         if( book.isEmpty() ) throw new IllegalArgumentException("Такой книги не существует!");
@@ -52,6 +54,7 @@ public class CardRecordService {
      * @param createCardRecordRequest - входной запрос
      * @return RecordReponse
      */
+    @Transactional
     public RecordReponse createCardRecord( CreateCardRecordRequest createCardRecordRequest ){
         CardRecord cardRecord = saveRecord( createCardRecordRequest.bookNumber(), createCardRecordRequest.idCard() );
         User user = cardRepository.findById( cardRecord.getCardId() ).orElseThrow().getUser();

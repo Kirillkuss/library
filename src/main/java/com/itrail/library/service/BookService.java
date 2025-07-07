@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.itrail.library.aspect.logger.ExecuteMethodLog;
 import com.itrail.library.domain.Author;
@@ -71,6 +72,7 @@ public class BookService {
      * @param idAuthor - Ид автора
      * @return Book
      */
+    @Transactional
     public Book saveBook( Book book, Long idAuthor ){ 
         if ( authorRepository.findById( idAuthor ).isEmpty())                     throw new IllegalArgumentException("Нет такого автора!");
         if ( bookRepository.findBookByNumber( book.getBookNumber() ).isPresent()) throw new IllegalArgumentException("Номер книги не уникальный!");

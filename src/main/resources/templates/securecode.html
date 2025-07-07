@@ -1,26 +1,168 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
-    <title>Ввод кода</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Двухфакторная аутентификация</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="icon" href="icon/padlock.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon/padlock.png" type="image/x-icon"> 
+	<link rel="icon" href="data:;base64,=">
 </head>
 <body>
-    <h1>Введите код</h1>
-    <div th:if="${session.error}">
-        <p style="color: red;" th:text="${session.error}"></p>
-        <script>
-              window.onload = function() {
-                    fetch("/clear-error-message", { method: "POST" });
-                };
-        </script>
+    <div class="auth-container animate__animated animate__fadeIn">
+        <div class="auth-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h2 class="mb-3">Двухфакторная аутентификация</h2>
+        <p class="text-muted mb-4">Введите 6-значный код из приложения аутентификатора</p>
+        
+        <div th:if="${session.error}" class="alert alert-danger alert-dismissible fade show animate__animated animate__headShake" role="alert">
+            <span th:text="${session.error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <form id="codeForm" action="/securecode" method="post">
+            <div class="code-inputs">
+                <input type="text" class="code-input" name="digit1" maxlength="1" pattern="[0-9]" required autofocus>
+                <input type="text" class="code-input" name="digit2" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" name="digit3" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" name="digit4" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" name="digit5" maxlength="1" pattern="[0-9]" required>
+                <input type="text" class="code-input" name="digit6" maxlength="1" pattern="[0-9]" required>
+            </div>
+            
+            <input type="hidden" id="password" name="password">
+            
+            <button type="submit" class="btn btn-primary btn-verify w-100 mb-3">
+                <i class="fas fa-check-circle me-2"></i> Подтвердить
+            </button>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="/login" class="text-decoration-none">
+                    <i class="fas fa-arrow-left me-1"></i> Назад к входу
+                </a>
+            </div>
+        </form>
     </div>
-    <form action="/securecode" method="post">
-        <label for="code">Код:</label>
-        <input type="text" id="password" name="password" required><br><br>
-        <button type="submit">Подтвердить</button>
-    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            if ($('.alert-danger').length) {
+                setTimeout(function() {
+                    $('.alert-danger').alert('close');
+                    fetch("/clear-error-message", { method: "POST" });
+                }, 5000);
+            }
+            
+            $('.code-input').keyup(function() {
+                if (this.value.length === this.maxLength) {
+                    $(this).next('.code-input').focus();
+                }
+            });
+            
+            $('#codeForm').submit(function(e) {
+                let password = '';
+                $('.code-input').each(function() {
+                    password += $(this).val();
+                });
+                $('#password').val(password);
+            });
+            
+        });
+    </script>
 </body>
+    <style>
+        body {
+            background-color: #f5f7fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+        
+        .auth-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .auth-icon {
+            font-size: 3.5rem;
+            color: #4e73df;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        .code-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+        }
+        
+        .code-input {
+            width: 45px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .code-input:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .btn-verify {
+            background-color: #4e73df;
+            border: none;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-verify:hover {
+            background-color: #3a5bd9;
+            transform: translateY(-2px);
+        }
+        
+        .resend-link {
+            color: #6c757d;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .resend-link:hover {
+            color: #4e73df;
+            text-decoration: none;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+    </style>
 </html>

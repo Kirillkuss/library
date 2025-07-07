@@ -8,6 +8,8 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.itrail.library.domain.Book;
 import com.itrail.library.domain.Card;
 import com.itrail.library.repository.BookRepository;
@@ -37,6 +39,7 @@ public class СardService {
      * @param idUser - Ид пользователя
      * @return Card
      */
+    @Transactional
     public Card saveCard( Long idUser){
         if( userRepository.findById( idUser ).isEmpty() ) throw new IllegalArgumentException("Нет такого пользователя!");
         if( cardRepository.findByUser( idUser ).isPresent() ) throw  new IllegalArgumentException("У пользователя есть уже карта!");

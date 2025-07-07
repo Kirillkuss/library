@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
                    .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login", "/logout", "/error", "/register", "/image-access-qr", "/clear-error-message").permitAll()
+                        .requestMatchers("/login", "/logout", "/error", "/register", "/image-access-qr", "/clear-error-message", "/icon/**").permitAll()
                         .requestMatchers("/swagger-ui/index.html", "/**", "/").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .formLogin(login -> login
