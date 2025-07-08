@@ -96,7 +96,8 @@ public class SecurityConfiguration {
         return new String[]{
             "/swagger-ui/index.html", 
             "/**",
-            "/"
+            "/",
+            "/index"
         };
     }
     

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Администрирование</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/menu/index.css">
+    <link rel="icon" href="icon/online-library.png" type="image/x-icon">
+    <link rel="shortcut icon" href="icon/online-library.png" type="image/x-icon"> 
+	<link rel="icon" href="data:;base64,=">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h5 class="mb-0"><i class="fas fa-book-open me-2"></i> Библиотека</h5>
+        </div>
+        
+        <div class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#users" data-bs-toggle="tab">
+                        <i class="fas fa-users"></i> Пользователи
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#authors" data-bs-toggle="tab">
+                        <i class="fas fa-user-edit"></i> Авторы
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#books" data-bs-toggle="tab">
+                        <i class="fas fa-book"></i> Книги
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#loans" data-bs-toggle="tab">
+                        <i class="fas fa-exchange-alt"></i> Выдача книг
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#cards" data-bs-toggle="tab">
+                        <i class="fas fa-address-card"></i> Карты пользователей
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-cog"></i> Настройки
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-sign-out-alt"></i> Выход
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Основное содержимое -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="page-header">
+                <h2><i class="fas fa-users me-2"></i> Управление пользователями</h2>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i> Добавить нового
+                </button>
+            </div>
+            
+            <!-- Контент вкладок -->
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="users">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Список пользователей</h5>
+                            <p>Здесь будет таблица с пользователями системы</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="authors">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Авторы</h5>
+                            <p>Управление авторами книг</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="books">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Книги</h5>
+                            <p>Каталог книг библиотеки</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="loans">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Выдача книг</h5>
+                            <p>Учет выданных книг</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="cards">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Карты пользователей</h5>
+                            <p>Управление читательскими билетами</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Активация вкладок при нажатии на пункты меню
+        $(document).ready(function(){
+            $('.nav-link').click(function(){
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+                
+                // Обновляем заголовок страницы
+                const tabTitle = $(this).text().trim();
+                $('.page-header h2').html('<i class="fas ' + $(this).find('i').attr('class').split(' ')[1] + ' me-2"></i> ' + tabTitle);
+            });
+            
+            // Для мобильной версии можно добавить кнопку меню
+            $('#sidebarToggle').click(function(){
+                $('.sidebar').toggleClass('active');
+            });
+        });
+    </script>
+</body>
+</html>

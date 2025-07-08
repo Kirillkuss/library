@@ -3,9 +3,6 @@ package com.itrail.library.sequrity.handler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import com.itrail.library.config.redis.domain.Session;
-import com.itrail.library.config.redis.repository.SessionRepository;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -29,7 +26,7 @@ public class LibAuthenticationSuccessHandler implements AuthenticationSuccessHan
             libAuthenticationFailureHandler.convertToAuthenticated( session.getId(), (String) httpServletRequest.getSession().getAttribute("AUTH_USERNAME") );
             session.removeAttribute("error");
         }
-        
-        httpServletResponse.sendRedirect("/swagger-ui/index.html");
+        httpServletResponse.sendRedirect("/library/index.html");
+       // httpServletResponse.sendRedirect("/swagger-ui/index.html");
     }
 }
