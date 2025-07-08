@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="/css/auth/securecode.css">
     <link rel="icon" href="icon/padlock.png" type="image/x-icon">
     <link rel="shortcut icon" href="icon/padlock.png" type="image/x-icon"> 
 	<link rel="icon" href="data:;base64,=">
@@ -76,93 +77,4 @@
         });
     </script>
 </body>
-    <style>
-        body {
-            background-color: #f5f7fa;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-        }
-        
-        .auth-container {
-            max-width: 400px;
-            width: 100%;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            text-align: center;
-        }
-        
-        .auth-icon {
-            font-size: 3.5rem;
-            color: #4e73df;
-            margin-bottom: 1.5rem;
-            animation: pulse 2s infinite;
-        }
-        
-        .code-inputs {
-            display: flex;
-            justify-content: space-between;
-            margin: 2rem 0;
-        }
-        
-        .code-input {
-            width: 45px;
-            height: 60px;
-            text-align: center;
-            font-size: 1.5rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        
-        .code-input:focus {
-            border-color: #4e73df;
-            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
-            transform: translateY(-2px);
-        }
-        
-        .btn-verify {
-            background-color: #4e73df;
-            border: none;
-            padding: 0.75rem;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-        }
-        
-        .btn-verify:hover {
-            background-color: #3a5bd9;
-            transform: translateY(-2px);
-        }
-        
-        .resend-link {
-            color: #6c757d;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .resend-link:hover {
-            color: #4e73df;
-            text-decoration: none;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        .shake {
-            animation: shake 0.5s;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
-        }
-    </style>
 </html>

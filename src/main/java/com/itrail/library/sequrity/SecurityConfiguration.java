@@ -30,31 +30,31 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
-                   .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login", "/logout", "/error", "/register", "/image-access-qr", "/clear-error-message", "/icon/**").permitAll()
-                        .requestMatchers("/swagger-ui/index.html", "/**", "/").hasAnyRole("ADMIN", "USER")
-                        .anyRequest().authenticated())
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .loginProcessingUrl("/securecode") 
-                        .defaultSuccessUrl("/securecode", true) 
-                        .failureHandler(libAuthenticationFailureHandler)
-                        .successHandler(libAuthenticationSuccessHandler) 
-                        .permitAll())
-                /**.sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))*/
-                        .sessionManagement(session -> session
-                .sessionFixation().changeSessionId()
-                .maximumSessions(1))
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"))
-                .csrf(csrf -> csrf.disable())
-                .build();
+         return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
+                    .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
+                    .authorizeHttpRequests(requests -> requests
+                            .requestMatchers( publicEndpoints()).permitAll()
+                            .requestMatchers( privateEndpoint()).hasAnyRole("ADMIN", "USER")
+                            .anyRequest().authenticated())
+                    .formLogin(login -> login
+                            .loginPage("/login")
+                            .loginProcessingUrl("/securecode") 
+                            .defaultSuccessUrl("/securecode", true) 
+                            .failureHandler(libAuthenticationFailureHandler)
+                            .successHandler(libAuthenticationSuccessHandler) 
+                            .permitAll())
+                    /**.sessionManagement(session -> session
+                            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))*/
+                            .sessionManagement(session -> session
+                    .sessionFixation().changeSessionId()
+                    .maximumSessions(1))
+                    .logout(logout -> logout
+                            .logoutUrl("/logout")
+                            .logoutSuccessUrl("/login?logout=true")
+                            .invalidateHttpSession(true)
+                            .deleteCookies("JSESSIONID"))
+                    .csrf(csrf -> csrf.disable())
+                    .build();
     }
 
     @Bean
@@ -65,10 +65,10 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-                          configuration.setAllowedOrigins(List.of("*")); // Разрешить все домены
+                          configuration.setAllowedOrigins(List.of("*"));
                           configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
-                          configuration.setAllowedHeaders(List.of("*")); // Разрешить все заголовки
-                          configuration.setAllowCredentials(false); // Отключаем передачу кук 
+                          configuration.setAllowedHeaders(List.of("*")); 
+                          configuration.setAllowCredentials(false);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                                         source.registerCorsConfiguration("/**", configuration); 
         return source;
@@ -77,6 +77,27 @@ public class SecurityConfiguration {
     @Bean
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
+    }
+
+    private String[] publicEndpoints() {
+        return new String[]{
+            "/login",
+            "/logout",
+            "/change-password",
+            "/error",
+            "/register",
+            "/clear-error-message",
+            "/icon/**",
+            "/css/**"
+        };
+    }
+
+    private String[] privateEndpoint(){
+        return new String[]{
+            "/swagger-ui/index.html", 
+            "/**",
+            "/"
+        };
     }
     
 }

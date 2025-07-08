@@ -39,6 +39,14 @@ public class AuthService {
         if( !userService.checkUserPassword( password, user.get().getPassword() ))                     throw new BadCredentialsException( "Неверный логин или пароль!");
         return user.orElseThrow().getLogin();
     }
+
+    public Boolean authUserTwo( String login, String password ){
+        Optional<User> user = userRepository.findByLogin( login );
+        if( sessionRepository.findByUsernameAndType( login, Session.SessionType.BLOCK ).isPresent() ) throw new BadCredentialsException( "Превышен лимит попыток!");
+        if( user.isEmpty() )                                                                          throw new BadCredentialsException( "Неверный логин или пароль!");
+        if( !userService.checkUserPassword( password, user.get().getPassword() ))                     throw new BadCredentialsException( "Неверный логин или пароль!");
+        return true;
+    }
     /**
      * двухфакторная аутентификация по коду  - 2 часть
      * @param username - логин
@@ -59,7 +67,6 @@ public class AuthService {
         User user = userRepository.findByLogin( username ).orElseThrow();
         return googleAuthenticationService.generateQRImage(user.getSecret(), username );
     }
-
     /**
      * Выход из системы для устаревшей сессии 
      * 

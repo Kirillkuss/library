@@ -19,12 +19,11 @@ import com.itrail.library.repository.RoleRepository;
 import com.itrail.library.repository.UserRepository;
 import com.itrail.library.request.CreateUserRequest;
 import com.itrail.library.response.UserResponse;
+import com.itrail.library.sequrity.generate.PasswordGenerator;
 import com.itrail.library.service.auth.GoogleAuthenticationService;
-
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +40,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordGenerator passwordGenerator;
     private final GoogleAuthenticationService googleAuthenticationService;
 
     @PostConstruct
@@ -114,6 +114,22 @@ public class UserService {
         return password.matches("^(?=.*[A-ZА-Я])(?=.*[a-zа-яё])(?=.*\\d)(?=.*[@#$^&+=!№:?:%*(;_)}{])[A-Za-zА-Яа-яёЁ0-9@#$^&+=!№:?:%*(;_)}{]{8,}$");
     }
 
+
+    @Transactional
+    public String generateNewPasswordForUser( User user ){
+        String password = passwordGenerator.generateRandomPassword();
+        validatePassword( password );
+        user.setPassword( passwordEncoder.encode( password ));
+        userRepository.save( user );
+        return password;
+    }
+
+    private void validatePassword(String password) {
+        if (!isValidPassword(password)) {
+            throw new IllegalArgumentException("Неверный формат пароля! Пароль должен сожедржать не менее 12 символов, 1 букву верхнего и нижнего реестра, 1 цифру и 1 спец. символ ( *[@#$^&+=!№:?:%*(;_)}{]" );
+        }
+    }
+
     /**
      * Добавление пользователя
      * @param createUserRequest
@@ -167,9 +183,14 @@ public class UserService {
     public boolean checkUserPassword( String rawPassword, String encodedPassword) {
         return passwordEncoder.matches( rawPassword, encodedPassword );
     }
-
+    /**
+     * Добавление пользователя при регистрации
+     * @param createUser - входной запрос при регистрации 
+     * @return UserResponse
+     */
     @Transactional
-    public UserResponse createUserTwo( CreateUserRequest createUserRequest ){
+    public UserResponse createUserRegister( CreateUserRequest createUser ){
+        CreateUserRequest createUserRequest = getUserAuthRequest( createUser );
         checkCreateUser( createUserRequest );
         User user = userRepository.save( User.builder()
                                  .luDate( LocalDateTime.now() )
@@ -184,16 +205,27 @@ public class UserService {
                                  .secret( googleAuthenticationService.generateKey() )
                                  .roles( checkRoles( createUserRequest.roles() ))
                                  .build() );
-        return new UserResponse(user.getLogin(), 
-                                                user.getFirstName() + " " + user.getSecondName()+ " " + user.getMiddleName(), 
-                                                user.getEmail(), 
-                                                user.getPhone(), 
-                                                user.getIsOpen(), 
-                                                user.getRoles()
-                                                    .stream()
-                                                    .map( roles ->{
-                                                        return roles.getName();
-                                                    }).collect( Collectors.toSet() ), null);
+        return new UserResponse( user.getLogin(), 
+                                 user.getFirstName() + " " + user.getSecondName()+ " " + user.getMiddleName(), 
+                                 user.getEmail(), 
+                                 user.getPhone(), 
+                                 user.getIsOpen(), 
+                                 user.getRoles()
+                                     .stream()
+                                     .map( roles ->{return roles.getName();})
+                                     .collect( Collectors.toSet() ),
+                                 null );
+    }
+
+    private CreateUserRequest getUserAuthRequest( CreateUserRequest createUserRequest){
+        return new CreateUserRequest( createUserRequest.login(),
+                                      createUserRequest.password(),
+                                      createUserRequest.firstName(),
+                                      createUserRequest.secondName(),
+                                      createUserRequest.middleName(),
+                                      createUserRequest.email(),
+                                      createUserRequest.phone(),
+                                      Set.of("ADMIN") );
     }
 
 }
