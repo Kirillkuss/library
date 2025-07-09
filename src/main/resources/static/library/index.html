@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="/css/menu/index.css">
     <link rel="icon" href="icon/online-library.png" type="image/x-icon">
     <link rel="shortcut icon" href="icon/online-library.png" type="image/x-icon"> 
-	<link rel="icon" href="data:;base64,=">
+    <link rel="icon" href="data:;base64,=">
+    <script type = "text/javascript" src="/js/users.js"></script>
 </head>
 <body>
     <div class="sidebar">
@@ -58,86 +59,85 @@
             </ul>
         </div>
     </div>
-
-    <!-- Основное содержимое -->
+    
     <div class="main-content">
         <div class="container-fluid">
             <div class="page-header">
                 <h2><i class="fas fa-users me-2"></i> Управление пользователями</h2>
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" id="addUserBtn">
                     <i class="fas fa-plus me-2"></i> Добавить нового
                 </button>
+                <div id="modalsContainer"></div>
             </div>
             
-            <!-- Контент вкладок -->
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="users">
                     <div class="card shadow">
-                        <div class="card-body">
+                        <div class="card-body" style="width: 1521px; height: 800px; overflow: auto;">
                             <h5 class="card-title">Список пользователей</h5>
-                            <p>Здесь будет таблица с пользователями системы</p>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <input type="text" id="searchInput" class="form-control" placeholder="Поиск пользователей...">
+                                </div>
+                                <div class="col-md-2">
+                                    <button id="searchBtn" class="btn btn-primary">Поиск</button>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>№</th>
+                                            <th>Логин</th>
+                                            <th>ФИО</th>
+                                            <th>Почта</th>
+                                            <th>Телефон</th>
+                                            <th>Статус</th>
+                                            <th>Роль</th>
+                                            <th>Действия</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <nav aria-label="Page navigation" style="position: absolute; bottom: 20px; left: 0; right: 0;">
+                                <ul class="pagination justify-content-center" id="pagination">
+                                </ul>
+                            </nav>
+                            
+                            <div id="loadingIndicator" class="text-center my-3" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Загрузка...</span>
+                                </div>
+                                <p>Загрузка данных...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="tab-pane fade" id="authors">
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Авторы</h5>
-                            <p>Управление авторами книг</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-pane fade" id="books">
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Книги</h5>
-                            <p>Каталог книг библиотеки</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-pane fade" id="loans">
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Выдача книг</h5>
-                            <p>Учет выданных книг</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-pane fade" id="cards">
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <h5 class="card-title">Карты пользователей</h5>
-                            <p>Управление читательскими билетами</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-
-    <!-- Скрипты -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Активация вкладок при нажатии на пункты меню
-        $(document).ready(function(){
-            $('.nav-link').click(function(){
-                $('.nav-link').removeClass('active');
-                $(this).addClass('active');
-                
-                // Обновляем заголовок страницы
-                const tabTitle = $(this).text().trim();
-                $('.page-header h2').html('<i class="fas ' + $(this).find('i').attr('class').split(' ')[1] + ' me-2"></i> ' + tabTitle);
+        users();
+        $(document).ready(function() {
+            $('#addUserBtn').click(function() {
+                loadAddUserModal();
             });
-            
-            // Для мобильной версии можно добавить кнопку меню
-            $('#sidebarToggle').click(function(){
-                $('.sidebar').toggleClass('active');
-            });
+            function loadAddUserModal() {
+                $('#modalsContainer').load('/library/user/create-user-modal.html', function() {
+                    $('#addUserModal').modal('show');
+                    initAddUserModal();
+                });
+            }
+            window.refreshUsersTable = function() {
+                loadUsers(currentPage, pageSize);
+            };
         });
     </script>
 </body>
