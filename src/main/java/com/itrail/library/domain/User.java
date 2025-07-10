@@ -37,8 +37,8 @@ public class User implements Serializable{
     @Column ( name = "lu_date" )                         private LocalDateTime luDate;
     @Column ( name = "login" )                           private String login;
     @Column ( name = "password" )                        private String password;
-    @Column ( name = "first_name" )                      private String firstName;
-    @Column ( name = "second_name" )                     private String secondName;
+    @Column ( name = "first_name" )                      private String lastName;
+    @Column ( name = "second_name" )                     private String firstName;
     @Column ( name = "middle_name" )                     private String middleName;
     @Column ( name = "email" )                           private String email;
     @Column ( name = "is_open" )                         private Boolean isOpen;

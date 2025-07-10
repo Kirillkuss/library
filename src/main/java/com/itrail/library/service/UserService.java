@@ -139,8 +139,8 @@ public class UserService {
         checkCreateUser( createUserRequest );
         userRepository.save( User.builder()
                                  .luDate( LocalDateTime.now() )
-                                 .firstName( createUserRequest.firstName() ) 
-                                 .secondName( createUserRequest.secondName() )
+                                 .lastName( createUserRequest.lastName() ) 
+                                 .firstName( createUserRequest.firstName() )
                                  .middleName( createUserRequest.middleName() )
                                  .login( createUserRequest.login() )
                                  .password( passwordEncoder.encode( createUserRequest.password() ))
@@ -166,7 +166,7 @@ public class UserService {
                       .stream()
                       .map( user -> {
                         return new UserResponse(user.getLogin(), 
-                                                user.getFirstName() + " " + user.getSecondName()+ " " + user.getMiddleName(), 
+                                                user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName(), 
                                                 user.getEmail(), 
                                                 user.getPhone(), 
                                                 user.getIsOpen(), 
@@ -194,8 +194,8 @@ public class UserService {
         checkCreateUser( createUserRequest );
         User user = userRepository.save( User.builder()
                                  .luDate( LocalDateTime.now() )
-                                 .firstName( createUserRequest.firstName() ) 
-                                 .secondName( createUserRequest.secondName() )
+                                 .lastName( createUserRequest.lastName() ) 
+                                 .firstName( createUserRequest.firstName() )
                                  .middleName( createUserRequest.middleName() )
                                  .login( createUserRequest.login() )
                                  .password( passwordEncoder.encode( createUserRequest.password() ))
@@ -206,7 +206,7 @@ public class UserService {
                                  .roles( checkRoles( createUserRequest.roles() ))
                                  .build() );
         return new UserResponse( user.getLogin(), 
-                                 user.getFirstName() + " " + user.getSecondName()+ " " + user.getMiddleName(), 
+                                 user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName(), 
                                  user.getEmail(), 
                                  user.getPhone(), 
                                  user.getIsOpen(), 
@@ -220,8 +220,8 @@ public class UserService {
     private CreateUserRequest getUserAuthRequest( CreateUserRequest createUserRequest){
         return new CreateUserRequest( createUserRequest.login(),
                                       createUserRequest.password(),
+                                      createUserRequest.lastName(),
                                       createUserRequest.firstName(),
-                                      createUserRequest.secondName(),
                                       createUserRequest.middleName(),
                                       createUserRequest.email(),
                                       createUserRequest.phone(),

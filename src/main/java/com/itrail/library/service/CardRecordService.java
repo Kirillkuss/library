@@ -59,7 +59,7 @@ public class CardRecordService {
         CardRecord cardRecord = saveRecord( createCardRecordRequest.bookNumber(), createCardRecordRequest.idCard() );
         User user = cardRepository.findById( cardRecord.getCardId() ).orElseThrow().getUser();
         Book book = bookRepository.findById( cardRecord.getBookId() ).orElseThrow();
-        return new RecordReponse( user.getFirstName() + ' ' + user.getSecondName() + ' ' + user.getMiddleName() ,
+        return new RecordReponse(  user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName() ,
                                   cardRecord.getCreateDate(),
                                   cardRecord.getFinishDate(),
                                   new BookResponse( null, 
@@ -86,7 +86,7 @@ public class CardRecordService {
                                                             .stream()
                                                             .map( recordCard -> {
                                                                     User user = cardRepository.findById(recordCard.getCardId()).orElseThrow().getUser();
-                                                                    return new RecordReponse( user.getFirstName() + ' ' + user.getSecondName() + ' ' + user.getMiddleName(),
+                                                                    return new RecordReponse(  user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName(),
                                                                                               recordCard.getCreateDate(),
                                                                                               recordCard.getFinishDate(),
                                                                                               bookRepository.findById( recordCard.getBookId() )

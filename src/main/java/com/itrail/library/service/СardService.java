@@ -61,9 +61,9 @@ public class СardService {
         if( card.isEmpty() ) throw new NoSuchElementException( "По даному запросу ничего не найдено!");
         return new CardInfoResponse( card.stream()
                                          .map( cardUser -> {
-                                            //инф. о пользователе
+                                            //инф. о пользователе 
                                             return new UserResponse( cardUser.getUser().getLogin(),
-                                                                     cardUser.getUser().getFirstName() + " " + cardUser.getUser().getSecondName() + " " + cardUser.getUser().getMiddleName(),
+                                                                     cardUser.getUser().getLastName() + " " + cardUser.getUser().getFirstName() + " " + cardUser.getUser().getMiddleName(),
                                                                      cardUser.getUser().getEmail(),
                                                                      cardUser.getUser().getPhone(), 
                                                                      null, 
