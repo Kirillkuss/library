@@ -1,4 +1,4 @@
-package com.itrail.library.request;
+package com.itrail.library.request.book;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

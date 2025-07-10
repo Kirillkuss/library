@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.itrail.library.request.BookFilterRequest;
+
+import com.itrail.library.request.book.BookFilterRequest;
+import com.itrail.library.request.card.CardFilterRequest;
 import com.itrail.library.response.BaseError;
 import com.itrail.library.response.CardInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +29,6 @@ public interface ICardController {
 
     @PostMapping("/card")
     @Operation( description = "Получение информации по карте пользователя", summary = "Получение информации по карте пользователя")
-    public ResponseEntity<CardInfoResponse> getFullInfoCardAndRecord( @RequestBody BookFilterRequest filterRequest );
+    public ResponseEntity<CardInfoResponse> getFullInfoCardAndRecord( @RequestBody CardFilterRequest cardFilterRequest );
     
 }

@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.itrail.library.aspect.logger.ExecuteMethodLog;
 import com.itrail.library.domain.Book;
 import com.itrail.library.domain.CardRecord;
@@ -13,8 +12,8 @@ import com.itrail.library.domain.User;
 import com.itrail.library.repository.BookRepository;
 import com.itrail.library.repository.CardRecordRepository;
 import com.itrail.library.repository.CardRepository;
-import com.itrail.library.request.CardRecordRequest;
-import com.itrail.library.request.CreateCardRecordRequest;
+import com.itrail.library.request.record.CardRecordRequest;
+import com.itrail.library.request.record.CreateCardRecordRequest;
 import com.itrail.library.response.BookResponse;
 import com.itrail.library.response.CardRecordResponse;
 import com.itrail.library.response.RecordReponse;

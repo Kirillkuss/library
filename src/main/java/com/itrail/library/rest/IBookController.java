@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
 import com.itrail.library.domain.Book;
-import com.itrail.library.request.BookFilterRequest;
-import com.itrail.library.request.FreeBooksRequest;
+import com.itrail.library.request.book.BookFilterRequest;
+import com.itrail.library.request.book.FreeBooksRequest;
 import com.itrail.library.response.BaseError;
 import com.itrail.library.response.BookFilterResponse;
 import com.itrail.library.response.BookResponse;

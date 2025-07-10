@@ -1,4 +1,4 @@
-package com.itrail.library.request;
+package com.itrail.library.request.record;
 
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
