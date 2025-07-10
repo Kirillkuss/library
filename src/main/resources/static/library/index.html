@@ -13,6 +13,7 @@
     <link rel="icon" href="data:;base64,=">
     <script type = "text/javascript" src="/js/users.js"></script>
     <script type = "text/javascript" src="/js/create-user-modal.js"></script>
+    <script type = "text/javascript" src="/js/exit.js"></script>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
@@ -42,7 +43,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#cards" data-bs-toggle="tab">
+                    <a class="nav-link" href="#cards" data-bs-toggle="tab"> 
                         <i class="fas fa-address-card"></i> Карты пользователей
                     </a>
                 </li>
@@ -52,7 +53,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="#" onclick="removeSessionAndExit()">
                         <i class="fas fa-sign-out-alt"></i> Выход
                     </a>
                 </li>

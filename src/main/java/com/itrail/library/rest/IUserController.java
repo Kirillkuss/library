@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RequestMapping( value = "users")
 @Tag(name = "1. Пользователи", description = "Пользователи")
@@ -41,5 +43,8 @@ public interface IUserController {
     @GetMapping(value = "/sessions")
     @Operation( description = "Сессии", summary = "Сессии")
     public ResponseEntity<Iterator<Session>> getSessions() ;
-    
+
+    @DeleteMapping(value = "/sessions/remove")
+    @Operation( description = "Удалить текущую сессию из Redis", summary = "Удалить текущую сессию из Redis")
+    public ResponseEntity<BaseResponse> deleteUserSession( HttpServletRequest httpServletRequest) throws IllegalAccessException;    
 }
