@@ -2,7 +2,6 @@ package com.itrail.library.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
+import com.itrail.library.domain.Author;
 import com.itrail.library.domain.Book;
 import com.itrail.library.request.book.BookFilterRequest;
 import com.itrail.library.request.book.FreeBooksRequest;
@@ -39,5 +40,9 @@ public interface IBookController {
     @GetMapping(value = "/free/{freeBooksRequest}")
     @Operation( description = "Получение свободных книг", summary = "Получение свободных книг")
     public ResponseEntity<List<BookResponse>> getFreeBooks( FreeBooksRequest freeBooksRequest ) ;
+
+    @GetMapping(value = "/lazy/{page}/{size}")
+    @Operation( description = "Получение списка книг", summary = "Получение списка книг")
+    public ResponseEntity<List<BookResponse>> getLazyAuthors( int page, int size ) ;
 
 }

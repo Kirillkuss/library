@@ -3,9 +3,8 @@ var hostname = window.location.hostname;
 var port = window.location.port;
 
 
-function users(){
+function records(){
    
-
     $(document).ready(function(){
                 $('.nav-link').click(function(){
                     $('.nav-link').removeClass('active');
@@ -21,13 +20,14 @@ function users(){
                 let currentPage = 1;
                 const pageSize = 10;
                 let totalElements = 0;
-                loadUsers(currentPage, pageSize);
-                function loadUsers(page, size) {
+                loadRecords(currentPage, pageSize);
+
+                function loadRecords(page, size) {
                     $('#loadingIndicator').show();
-                    $('#usersTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
+                    $('#recordsTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
                     
                     $.ajax({
-                        url: protocol + "//"+ hostname + ':' + port + '/users/lazy/${page}/${size}',
+                        url: protocol + "//"+ hostname + ':' + port + '/records/lazy/${page}/${size}',
                         type: 'GET',
                         data: {
                             page: page,
@@ -35,26 +35,26 @@ function users(){
                         },
                         success: function(response) {
                             $('#loadingIndicator').hide();
-                            let users = [];
+                            let records = [];
                             if (response && Array.isArray(response)) {
-                                users = response;
+                                records = response;
                                 totalPages = response.totalPages;
                                 totalElements = response.totalElements;
                             } else if (Array.isArray(response)) {
-                                users = response;
-                                totalPages = Math.ceil(users.length / size);
+                                records = response;
+                                totalPages = Math.ceil(records.length / size);
                                 totalElements = users.length;
                             }
-                            if (users.length > 0) {
-                                renderUsers(users, page, size);
+                            if (records.length > 0) {
+                                renderRecords(records, page, size);
                                 renderPagination( page+1, page );
                             } else {
-                                $('#usersTableBody').html('<tr><td colspan="8" class="text-center">Пользователи не найдены</td></tr>');
+                                $('#recordsTableBody').html('<tr><td colspan="8" class="text-center">Выдачи не найдены</td></tr>');
                             }
                         },
                         error: function(xhr, status, error) {
                             $('#loadingIndicator').hide();
-                            $('#usersTableBody').html('<tr><td colspan="8" class="text-center text-danger">Ошибка загрузки данных: ' + error + '</td></tr>');
+                            $('#recordsTableBody').html('<tr><td colspan="8" class="text-center text-danger">Ошибка загрузки данных: ' + error + '</td></tr>');
                             console.error('Ошибка AJAX:', error);
                         }
                     });
@@ -115,46 +115,31 @@ function users(){
                     e.preventDefault();
                     const page = $(this).data('page');
                     currentPage = parseInt(page);
-                    loadUsers(currentPage, pageSize);
+                    loadRecords(currentPage, pageSize);
                 });
             }
     });
 
     /**
      * Преобразовение 
-     * @param {*} users 
+     * @param {*} records 
      * @param {*} page 
      * @param {*} size 
      */
-    function renderUsers(users, page, size) {
-        const tableBody = $('#usersTableBody');
+    function renderRecords(records, page, size) {
+        const tableBody = $('#recordsTableBody');
         tableBody.empty();
                     
-        users.forEach((user, index) => {
-            const isBlocked = String(user.status).toLowerCase() === 'true' || user.status === true || user.status === 1;
-            const statusIcon = isBlocked 
-                ? '<i class="fas fa-lock text-danger" title="Заблокирован"></i>'
-                : '<i class="fas fa-lock-open text-success" title="Активен"></i>';
+        records.forEach((record, index) => {
             const rowNumber = (page - 1) * size + index + 1;
-            const statusText = user.status === "true" ? "Заблок." : "Разблок.";
-            const rolesText = user.roles ? user.roles.join(', ') : 'Нет ролей';
             const row = `
                             <tr>
                                 <td>${rowNumber}</td>
-                                <td>${statusIcon}</td>
-                                <td>${user.login || 'Не указано'}</td>
-                                <td>${user.fio || 'Не указано'}</td>
-                                <td>${user.email || 'Не указано'}</td>
-                                <td>${user.phone || 'Не указано'}</td>
-                                <td>${rolesText}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary edit-user" data-id="${user.id}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger delete-user" data-id="${user.id}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
+                                <td>${record.user || 'Не указано'}</td>
+                                <td>${record.createDate || 'Не указано'}</td>
+                                <td>${record.finishDate || 'Не указано'}</td>
+                                <td>${record.book.nameBook || 'Не указано'}</td>
+                                <td>${record.book.bookNumber || 'Не указано'}</td>
                             </tr>
                         `;
                 tableBody.append(row);

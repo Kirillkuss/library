@@ -3,7 +3,7 @@ var hostname = window.location.hostname;
 var port = window.location.port;
 
 
-function users(){
+function books(){
    
 
     $(document).ready(function(){
@@ -21,13 +21,14 @@ function users(){
                 let currentPage = 1;
                 const pageSize = 10;
                 let totalElements = 0;
-                loadUsers(currentPage, pageSize);
-                function loadUsers(page, size) {
+                loadBooks(currentPage, pageSize);
+
+                function loadBooks(page, size) {
                     $('#loadingIndicator').show();
-                    $('#usersTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
+                    $('#booksTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
                     
                     $.ajax({
-                        url: protocol + "//"+ hostname + ':' + port + '/users/lazy/${page}/${size}',
+                        url: protocol + "//"+ hostname + ':' + port + '/books/lazy/${page}/${size}',
                         type: 'GET',
                         data: {
                             page: page,
@@ -46,15 +47,15 @@ function users(){
                                 totalElements = users.length;
                             }
                             if (users.length > 0) {
-                                renderUsers(users, page, size);
+                                renderBooks(users, page, size);
                                 renderPagination( page+1, page );
                             } else {
-                                $('#usersTableBody').html('<tr><td colspan="8" class="text-center">Пользователи не найдены</td></tr>');
+                                $('#booksTableBody').html('<tr><td colspan="8" class="text-center">Книги не найдены</td></tr>');
                             }
                         },
                         error: function(xhr, status, error) {
                             $('#loadingIndicator').hide();
-                            $('#usersTableBody').html('<tr><td colspan="8" class="text-center text-danger">Ошибка загрузки данных: ' + error + '</td></tr>');
+                            $('#booksTableBody').html('<tr><td colspan="8" class="text-center text-danger">Ошибка загрузки данных: ' + error + '</td></tr>');
                             console.error('Ошибка AJAX:', error);
                         }
                     });
@@ -115,43 +116,36 @@ function users(){
                     e.preventDefault();
                     const page = $(this).data('page');
                     currentPage = parseInt(page);
-                    loadUsers(currentPage, pageSize);
+                    loadBooks(currentPage, pageSize);
                 });
             }
     });
 
     /**
      * Преобразовение 
-     * @param {*} users 
+     * @param {*} books 
      * @param {*} page 
      * @param {*} size 
      */
-    function renderUsers(users, page, size) {
-        const tableBody = $('#usersTableBody');
+    function renderBooks(books, page, size) {
+        const tableBody = $('#booksTableBody');
         tableBody.empty();
                     
-        users.forEach((user, index) => {
-            const isBlocked = String(user.status).toLowerCase() === 'true' || user.status === true || user.status === 1;
-            const statusIcon = isBlocked 
-                ? '<i class="fas fa-lock text-danger" title="Заблокирован"></i>'
-                : '<i class="fas fa-lock-open text-success" title="Активен"></i>';
+        books.forEach((book, index) => {
             const rowNumber = (page - 1) * size + index + 1;
-            const statusText = user.status === "true" ? "Заблок." : "Разблок.";
-            const rolesText = user.roles ? user.roles.join(', ') : 'Нет ролей';
             const row = `
                             <tr>
                                 <td>${rowNumber}</td>
-                                <td>${statusIcon}</td>
-                                <td>${user.login || 'Не указано'}</td>
-                                <td>${user.fio || 'Не указано'}</td>
-                                <td>${user.email || 'Не указано'}</td>
-                                <td>${user.phone || 'Не указано'}</td>
-                                <td>${rolesText}</td>
+                                <td>${book.luDate || 'Не указано'}</td>
+                                <td>${book.nameBook || 'Не указано'}</td>
+                                <td>${book.descriptionBook || 'Не указано'}</td>
+                                <td>${book.bookNumber || 'Не указано'}</td>
+                                <td>${book.pages || 'Не указано'}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary edit-user" data-id="${user.id}">
+                                    <button class="btn btn-sm btn-primary edit-book" data-id="${book.id}">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger delete-user" data-id="${user.id}">
+                                    <button class="btn btn-sm btn-danger delete-book" data-id="${book.id}">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>

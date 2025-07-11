@@ -6,12 +6,10 @@ async function removeSessionAndExit() {
             method: 'DELETE',
             credentials: 'include'
         });
-        
         if (!removeResponse.ok) {
             throw new Error('Ошибка при удалении сессии');
         }
         await exit();
-        
     } catch (error) {
         console.error('Ошибка:', error);
         await exit();

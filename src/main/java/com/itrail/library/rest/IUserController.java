@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping( value = "users")
 @Tag(name = "1. Пользователи", description = "Пользователи")
     @ApiResponses(value = {
-        @ApiResponse( responseCode = "200", description = "Успешно",        content = { @Content( mediaType = MediaType.APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = CreateUserRequest.class ))) }),
+        @ApiResponse( responseCode = "200", description = "Успешно",        content = { @Content( mediaType = MediaType.APPLICATION_JSON, array = @ArraySchema(schema = @Schema( implementation = UserResponse.class ))) }),
         @ApiResponse( responseCode = "400", description = "Плохой запрос ", content = { @Content( mediaType = MediaType.APPLICATION_JSON, array = @ArraySchema(schema = @Schema( implementation = BaseError.class ))) }),
         @ApiResponse( responseCode = "500", description = "Ошибка сервера", content = { @Content( mediaType = MediaType.APPLICATION_JSON, array = @ArraySchema(schema = @Schema( implementation = BaseError.class ))) })
     })
@@ -46,5 +46,5 @@ public interface IUserController {
 
     @DeleteMapping(value = "/sessions/remove")
     @Operation( description = "Удалить текущую сессию из Redis", summary = "Удалить текущую сессию из Redis")
-    public ResponseEntity<BaseResponse> deleteUserSession( HttpServletRequest httpServletRequest) throws IllegalAccessException;    
+    public ResponseEntity<BaseResponse> deleteUserSession( HttpServletRequest httpServletRequest ) throws IllegalAccessException;    
 }

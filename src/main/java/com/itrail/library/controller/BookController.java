@@ -1,7 +1,6 @@
 package com.itrail.library.controller;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +28,11 @@ public class BookController implements IBookController {
     @Override
     public ResponseEntity<List<BookResponse>> getFreeBooks(FreeBooksRequest freeBooksRequest) {
         return new ResponseEntity<> ( bookService.getFreeBooks( freeBooksRequest ), HttpStatus.OK );
+    }
+
+    @Override
+    public ResponseEntity<List<BookResponse>> getLazyAuthors(int page, int size) {
+        return new ResponseEntity<> ( bookService.getAllBooks( page, size ), HttpStatus.OK );
     }
     
 }

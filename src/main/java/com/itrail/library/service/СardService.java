@@ -1,15 +1,14 @@
 package com.itrail.library.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.itrail.library.domain.Book;
 import com.itrail.library.domain.Card;
 import com.itrail.library.repository.BookRepository;
@@ -19,6 +18,7 @@ import com.itrail.library.repository.UserRepository;
 import com.itrail.library.response.BookResponse;
 import com.itrail.library.response.CardInfoResponse;
 import com.itrail.library.response.CardResponse;
+import com.itrail.library.response.CardResponseLazy;
 import com.itrail.library.response.RecordReponse;
 import com.itrail.library.response.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +57,8 @@ public class СardService {
      */
     @CachePut
     public CardInfoResponse getFullInfoCardAndRecord( String user, int page, int size ){
+        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
+        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         Optional<Card> card = cardRepository.findCardByUser( user );
         if( card.isEmpty() ) throw new NoSuchElementException( "По даному запросу ничего не найдено!");
         return new CardInfoResponse( card.stream()
@@ -93,5 +95,20 @@ public class СardService {
 
     }
 
+    public List<CardResponseLazy> getLazyCard( int page, int size ){
+        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
+        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
+        return cardRepository.findAll( PageRequest.of( page - 1, size ))
+                             .stream().map( card -> {
+                                return new CardResponseLazy( card.getId(),
+                                                             card.getCreateDate(),
+                                                             card.getFinishDate(),
+                                                             card.getIsopen(),
+                                                             card.getUser().getLastName() + " " + card.getUser().getFirstName() + " " + card.getUser().getMiddleName(),
+                                                             card.getUser().getLogin(), 
+                                                             card.getUser().getPhone(),
+                                                             card.getUser().getEmail() );
+                             }).toList();
+    }
 
 }

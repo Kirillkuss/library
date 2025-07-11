@@ -43,16 +43,15 @@ public class SecurityConfiguration {
                             .failureHandler(libAuthenticationFailureHandler)
                             .successHandler(libAuthenticationSuccessHandler) 
                             .permitAll())
-                    /**.sessionManagement(session -> session
-                            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))*/
-                            .sessionManagement(session -> session
-                    .sessionFixation().changeSessionId()
-                    .maximumSessions(1))
+                            .sessionManagement( session -> session
+                                .sessionFixation()
+                                .changeSessionId()
+                                .maximumSessions(1))
                     .logout(logout -> logout
-                            .logoutUrl("/logout")
-                            .logoutSuccessUrl("/login?logout=true")
-                            .invalidateHttpSession(true)
-                            .deleteCookies("JSESSIONID"))
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"))
                     .csrf(csrf -> csrf.disable())
                     .build();
     }

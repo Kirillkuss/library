@@ -27,6 +27,6 @@ public class LibAuthenticationSuccessHandler implements AuthenticationSuccessHan
             session.removeAttribute("error");
         }
         httpServletResponse.sendRedirect("/library/index.html");
-       // httpServletResponse.sendRedirect("/swagger-ui/index.html");
+        //httpServletResponse.sendRedirect("/swagger-ui/index.html");
     }
 }

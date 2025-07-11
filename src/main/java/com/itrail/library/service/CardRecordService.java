@@ -1,6 +1,7 @@
 package com.itrail.library.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,25 @@ public class CardRecordService {
     private final CardRecordRepository cardRecordRepository;
     private final BookRepository       bookRepository;
     private final CardRepository       cardRepository;
+
+    public List<RecordReponse> getAllRecord( int page, int size ){
+        return cardRecordRepository.findAll( PageRequest.of( page - 1, size ))
+                              .stream()
+                              .map( recordCard -> {
+                                    User user = cardRepository.findById(recordCard.getCardId()).orElseThrow().getUser();
+                                    return new RecordReponse(  user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName(),
+                                                               recordCard.getCreateDate(),
+                                                               recordCard.getFinishDate(),
+                                                               bookRepository.findById( recordCard.getBookId() )
+                                                                             .map(  book ->{
+                                                                                    return new BookResponse(null,
+                                                                                                                book.getNameBook(),
+                                                                                                                null,
+                                                                                                                book.getBookNumber(),
+                                                                                                                null );
+                                                                                                            }).orElseThrow());
+                                                            }).toList();
+    }
 
     /**
      * Добавление записи 

@@ -21,5 +21,10 @@ public class AuthorController implements IAuthorController{
     public ResponseEntity<List<Author>> getAuthors( String fio ) {
         return new ResponseEntity<> ( authorService.getAuthors(fio ), HttpStatus.OK );
     }
+
+    @Override
+    public ResponseEntity<List<Author>> getLazyAuthors(int page, int size) {
+        return new ResponseEntity<> ( authorService.getAllAuthors( page, size ), HttpStatus.OK );
+    }
     
 }

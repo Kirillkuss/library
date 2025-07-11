@@ -129,4 +129,14 @@ public class BookService {
     }
 
 
+    public List<BookResponse> getAllBooks( int page, int size ){
+        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
+        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
+        return bookRepository.findAll(PageRequest.of( page - 1, size ))
+                             .stream()
+                             .map( book -> { return getBookResponse( book );})
+                             .toList();
+    }
+
+
 }

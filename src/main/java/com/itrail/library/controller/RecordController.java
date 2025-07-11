@@ -1,5 +1,6 @@
 package com.itrail.library.controller;
 
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,11 @@ public class RecordController implements IRecordController {
     @Override
     public ResponseEntity<RecordReponse> createRecord(CreateCardRecordRequest createCardRecordRequest) {
         return new ResponseEntity<>( cardRecordService.createCardRecord( createCardRecordRequest ), HttpStatus.CREATED ); 
+    }
+
+    @Override
+    public ResponseEntity<List<RecordReponse>> getLazyRecord(int page, int size) {
+        return new ResponseEntity<>( cardRecordService.getAllRecord( page, size ), HttpStatus.CREATED ); 
     }
     
 }
