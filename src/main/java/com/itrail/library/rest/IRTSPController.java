@@ -5,7 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.itrail.library.request.rtsp.RtspRequest;
 import com.itrail.library.response.BaseResponse;
 import javax.ws.rs.core.MediaType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +37,6 @@ public interface IRTSPController {
         @ApiResponse( responseCode = "400", description = "Плохой запрос ", content = { @Content( mediaType = MediaType.APPLICATION_JSON) }),
         @ApiResponse( responseCode = "500", description = "Ошибка сервера", content = { @Content( mediaType = MediaType.APPLICATION_JSON) })
     })
-    public ResponseEntity<BaseResponse> recordVideo( String path ) throws Exception;
+    public ResponseEntity<BaseResponse> recordVideo( @RequestBody RtspRequest rtspRequest ) throws Exception;
     
 }

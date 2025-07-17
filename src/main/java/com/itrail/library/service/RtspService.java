@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+
+import com.itrail.library.request.rtsp.RtspRequest;
 import com.itrail.library.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,13 +33,13 @@ public class RtspService {
      * @return BaseResponse
      * @throws Exception
      */
-    public BaseResponse makeRecord( String path ) throws Exception{
-        if ( isH264( path )){
+    public BaseResponse makeRecord( RtspRequest rtspRequest ) throws Exception{
+        if ( isH264( rtspRequest.path() )){
             TimeUnit.SECONDS.sleep(10 );
-            executeRecordForH264( path );
+            executeRecordForH264( rtspRequest );
         }else{
-            if(isHEVC( path )){
-                executePowerShellScriptForHEVC( path, 20 );
+            if(isHEVC( rtspRequest.path() )){
+                executePowerShellScriptForHEVC( rtspRequest.path(), rtspRequest.duration() );
             }
         }
         return new BaseResponse( 200, "success");
@@ -47,7 +49,7 @@ public class RtspService {
      * @param path - RTSP
      * @throws Exception
      */
-    private void executeRecordForH264( String path ) throws Exception{
+    private void executeRecordForH264( RtspRequest rtspRequest  ) throws Exception{
         try {
             File dir = new File(saveDirectory  );
             if (!dir.exists()) {
@@ -58,13 +60,17 @@ public class RtspService {
             if (!dir.canWrite()) {
                 throw new Exception( "No write permissions for directory " + saveDirectory);
             }
-            if (path == null || path.trim().isEmpty()) {
+            if (rtspRequest.path() == null || rtspRequest.path().trim().isEmpty()) {
                 throw new Exception( "RTSP path is empty");
             }
-            if (!path.startsWith("rtsp://")) {
+            if (!rtspRequest.path().startsWith("rtsp://")) {
                 throw new Exception( "Invalid RTSP URL format");
             }
-            String outputFilePath = saveDirectory +"/" + path.substring(path.lastIndexOf('/') + 1) + ".mp4";
+            if(  rtspRequest.duration() <= 5 ){
+                throw new Exception( "Invalid duration!");
+            }
+
+            String outputFilePath = saveDirectory +"/" + rtspRequest.path().substring(rtspRequest.path().lastIndexOf('/') + 1) + ".mp4";
 		    /**String[] ffmpegCommand = {
                 "ffmpeg",
                 "-y",
@@ -89,7 +95,7 @@ public class RtspService {
                 "-fflags", "+genpts+igndts",
                 "-analyzeduration", "10M",
                 "-probesize", "10M",
-                "-i", path,
+                "-i", rtspRequest.path(),
                 
                 // Видео
                 "-c:v", "libx264",
@@ -105,7 +111,7 @@ public class RtspService {
                 "-strict", "experimental",     
                 
                 // Общие параметры
-                "-t", "20",
+                "-t", String.valueOf(rtspRequest.duration()),
                 "-f", "mp4",
                 "-max_muxing_queue_size", "1024",
                 "-movflags", "+faststart",    
