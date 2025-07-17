@@ -16,7 +16,6 @@ import com.itrail.library.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -48,5 +47,4 @@ public class UserController implements IUserController{
         sessionService.deleteCurrentSession( httpServletRequest );
         return new ResponseEntity<>( new BaseResponse( 200, "success"), HttpStatus.OK );
     }
-
 }
