@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -13,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-
 import com.itrail.library.request.rtsp.RtspRequest;
 import com.itrail.library.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -49,98 +49,99 @@ public class RtspService {
      * @param path - RTSP
      * @throws Exception
      */
-    private void executeRecordForH264( RtspRequest rtspRequest  ) throws Exception{
+    private void executeRecordForH264(RtspRequest rtspRequest) throws Exception {
         try {
-            File dir = new File(saveDirectory  );
+            File dir = new File(saveDirectory);
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
                     throw new Exception("Failed to create directory " + saveDirectory);
                 }
             }
             if (!dir.canWrite()) {
-                throw new Exception( "No write permissions for directory " + saveDirectory);
+                throw new Exception("No write permissions for directory " + saveDirectory);
             }
             if (rtspRequest.path() == null || rtspRequest.path().trim().isEmpty()) {
-                throw new Exception( "RTSP path is empty");
+                throw new Exception("RTSP path is empty");
             }
             if (!rtspRequest.path().startsWith("rtsp://")) {
-                throw new Exception( "Invalid RTSP URL format");
+                throw new Exception("Invalid RTSP URL format");
             }
-            if(  rtspRequest.duration() <= 5 ){
-                throw new Exception( "Invalid duration!");
+            if (rtspRequest.duration() <= 5) {
+                throw new Exception("Invalid duration!");
             }
 
-            String outputFilePath = saveDirectory +"/" + rtspRequest.path().substring(rtspRequest.path().lastIndexOf('/') + 1) + ".mp4";
-		    /**String[] ffmpegCommand = {
+            String outputFilePath = saveDirectory + "/" + rtspRequest.path().substring(rtspRequest.path().lastIndexOf('/') + 1) + ".mp4";
+            /**String[] ffmpegCommand = {
                 "ffmpeg",
-                "-y",
-                "-rtsp_transport", "tcp",
-                "-fflags", "+genpts+igndts",  
-                "-analyzeduration", "10M",
-                "-i", path,
-                "-c:v", "libx264",
-                "-preset", "veryfast",
-                "-crf", "23",
+                "-i", rtspRequest.path(),
+                "-c:v", "copy",
                 "-c:a", "aac",
                 "-b:a", "128k",
-                "-t", "20",
-                "-f", "mp4",
-                "-max_muxing_queue_size", "1024", 
+                "-t",  String.valueOf(rtspRequest.duration()),
                 outputFilePath
             };*/
             String[] ffmpegCommand = {
                 "ffmpeg",
                 "-y",
                 "-rtsp_transport", "tcp",
-                "-fflags", "+genpts+igndts",
+                "-fflags", "+genpts+igndts",  
                 "-analyzeduration", "10M",
-                "-probesize", "10M",
                 "-i", rtspRequest.path(),
-                
-                // Видео
                 "-c:v", "libx264",
                 "-preset", "veryfast",
                 "-crf", "23",
-                "-pix_fmt", "yuv420p",
-                
-                // Аудио (важные исправления)
-                "-ac", "2",                    
-                "-ar", "44100",               
                 "-c:a", "aac",
                 "-b:a", "128k",
-                "-strict", "experimental",     
-                
-                // Общие параметры
                 "-t", String.valueOf(rtspRequest.duration()),
                 "-f", "mp4",
-                "-max_muxing_queue_size", "1024",
-                "-movflags", "+faststart",    
+                "-max_muxing_queue_size", "1024", 
                 outputFilePath
-            }; 
+            };
 
-                ProcessBuilder processBuilder = new ProcessBuilder(ffmpegCommand);
-                            processBuilder.redirectErrorStream(true);
-                Process process = processBuilder.start();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println("FFmpeg: " + line);
+            ProcessBuilder processBuilder = new ProcessBuilder(ffmpegCommand);
+                           processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+            Thread outputReader = new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println("FFmpeg: " + line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                boolean finished = process.waitFor(30, TimeUnit.SECONDS); 
-                if (!finished) {
+            });
+            outputReader.start();
+
+            try {
+                if (rtspRequest.duration() > 0) {
+                    boolean finished = process.waitFor(rtspRequest.duration(), TimeUnit.SECONDS);
+                    if (!finished) {
+                        try (OutputStream stdin = process.getOutputStream()) {
+                            stdin.write('q');
+                            stdin.flush();
+                        }
+                        process.waitFor(5, TimeUnit.SECONDS);
+                    }
+                } else {
+                    process.waitFor();
+                }
+            } finally {
+                if (process.isAlive()) {
                     process.destroy();
-                    throw new Exception("Recording stopped. File may be at: " + outputFilePath);
                 }
-                File outputFile = new File( outputFilePath );
-                if (!outputFile.exists() || outputFile.length() == 0) {
-                    throw new Exception( "Output file was not created or is empty");
-                }
-                log.info( "Finish record!");
-                log.info( "Video recorded successfully! Saved to: " + outputFilePath );
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-                throw new Exception( e.getMessage());
             }
+
+            File outputFile = new File(outputFilePath);
+            if (!outputFile.exists() || outputFile.length() == 0) {
+                throw new Exception("Output file was not created or is empty");
+            }
+            log.info("Finish record!");
+            log.info("Video recorded successfully! Saved to: " + outputFilePath);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new Exception(e.getMessage());
+        }
     }
 
     /**

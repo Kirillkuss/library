@@ -111,7 +111,7 @@ public class UserService {
      * @return boolean
      */
     private boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[A-ZА-Я])(?=.*[a-zа-яё])(?=.*\\d)(?=.*[@#$^&+=!№:?:%*(;_)}{])[A-Za-zА-Яа-яёЁ0-9@#$^&+=!№:?:%*(;_)}{]{8,}$");
+        return password.matches("^(?=.*[0-9])(?=.*[a-zа-яё])(?=.*[A-ZА-ЯЁ])(?=.*[@#$%^&+=])(?=\\S+$).{12,20}$");
     }
 
 
