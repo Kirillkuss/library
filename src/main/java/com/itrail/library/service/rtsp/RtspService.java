@@ -1,4 +1,4 @@
-package com.itrail.library.service;
+package com.itrail.library.service.rtsp;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,10 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,8 @@ public class RtspService {
             executeRecordForH264( rtspRequest );
         }else{
             if(isHEVC( rtspRequest.path() )){
-                executePowerShellScriptForHEVC( rtspRequest.path(), rtspRequest.duration() );
+                //executePowerShellScriptForHEVC( rtspRequest.path(), rtspRequest.duration() );
+                recordRtspStreamForHevc(  rtspRequest.path(), rtspRequest.duration(), saveDirectory );
             }
         }
         return new BaseResponse( 200, "success");
@@ -69,17 +72,8 @@ public class RtspService {
             if (rtspRequest.duration() <= 5) {
                 throw new Exception("Invalid duration!");
             }
-
+            
             String outputFilePath = saveDirectory + "/" + rtspRequest.path().substring(rtspRequest.path().lastIndexOf('/') + 1) + ".mp4";
-            /**String[] ffmpegCommand = {
-                "ffmpeg",
-                "-i", rtspRequest.path(),
-                "-c:v", "copy",
-                "-c:a", "aac",
-                "-b:a", "128k",
-                "-t",  String.valueOf(rtspRequest.duration()),
-                outputFilePath
-            };*/
             String[] ffmpegCommand = {
                 "ffmpeg",
                 "-y",
@@ -101,17 +95,8 @@ public class RtspService {
             ProcessBuilder processBuilder = new ProcessBuilder(ffmpegCommand);
                            processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
-            Thread outputReader = new Thread(() -> {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        System.out.println("FFmpeg: " + line);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            outputReader.start();
+            StreamRtsp outputGobbler = new StreamRtsp( process.getInputStream() );
+                      outputGobbler.start();
 
             try {
                 if (rtspRequest.duration() > 0) {
@@ -136,7 +121,6 @@ public class RtspService {
             if (!outputFile.exists() || outputFile.length() == 0) {
                 throw new Exception("Output file was not created or is empty");
             }
-            log.info("Finish record!");
             log.info("Video recorded successfully! Saved to: " + outputFilePath);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -149,13 +133,13 @@ public class RtspService {
      * @param rtspUrl - RTSP
      * @param duration - время записи в секундах
      */
-    private void executePowerShellScriptForHEVC(String rtspUrl, int duration) {
+    private void executePowerShellScriptForHEVC( String rtspUrl, int duration ) {
         try {
             Path tempScript = Files.createTempFile("script-", ".ps1");
             Files.copy(scriptResource.getInputStream(), tempScript, StandardCopyOption.REPLACE_EXISTING);
             executeScript(tempScript.toAbsolutePath().toString(), rtspUrl, duration, saveDirectory );
             Files.deleteIfExists( tempScript) ;
-            log.info( "Video recorded successfully! Saved to: " + rtspUrl  );
+            log.info( "Video recorded successfully! Saved to: " + saveDirectory  );
         } catch (Exception e) {
             throw new RuntimeException("Failed to execute script", e);
         }
@@ -245,4 +229,95 @@ public class RtspService {
         return "hevc".equalsIgnoreCase(streamInfo.get("codec"));
     }
 
+    /**
+     * Запись видео 
+     * @param rtspUrl  - RTSP поток
+     * @param duration - время записи в сек
+     * @param outputDir - путь, куда сохранять
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws TimeoutException
+     */
+    public void recordRtspStreamForHevc( String rtspUrl, int duration, String outputDir ) throws IOException, InterruptedException, TimeoutException {
+        String[] parts = rtspUrl.split("/");
+        String endpointName = parts[parts.length - 1];
+        Path tempFile = Paths.get( outputDir, "temp_" + endpointName + ".hevc" );
+        Path mkvFile = Paths.get( outputDir, endpointName + ".mkv" );
+        Path mp4File = Paths.get( outputDir, endpointName + ".mp4" );
+            
+        Files.createDirectories(Paths.get( outputDir ));
+        deleteIfExists(tempFile);
+        deleteIfExists(mkvFile);
+        deleteIfExists(mp4File);
+            
+            executeFfmpegProcess( duration + 10,
+                       "ffmpeg", "-y", "-loglevel", "warning",
+                                  "-fflags", "+genpts+igndts",
+                                  "-use_wallclock_as_timestamps", "1",
+                                  "-i", rtspUrl,
+                                  "-t", String.valueOf( duration ),
+                                  "-c:v", "copy", "-an", "-f", "hevc",
+                                  tempFile.toString());
+            
+            if (!Files.exists(tempFile)) {
+                throw new IOException("Не удалось создать временный HEVC файл");
+            }
+            
+            executeFfmpegProcess(60, 
+                                "ffmpeg", "-y", "-loglevel", "warning",
+                                "-i", tempFile.toString(),
+                                "-c", "copy", "-f", "matroska",
+                                mkvFile.toString());
+            
+            if (Files.exists(mkvFile)) {
+                executeFfmpegProcess( 120, 
+                                    "ffmpeg", "-y",
+                                        "-i", mkvFile.toString(),
+                                        "-vf", "scale=1920:1080",
+                                        "-c:v", "libx264", "-preset", "fast", "-crf", "23",
+                                        "-c:a", "aac", "-b:a", "128k",
+                                        "-f", "mp4",
+                                        mp4File.toString());
+                deleteIfExists(tempFile);
+                deleteIfExists(mkvFile);
+            }
+            log.info( "Video recorded successfully! Saved to: " + saveDirectory + "/" + endpointName + ".mp4" );
+        }
+    /**
+     * Метод для выполнения записи 
+     * @param timeoutSeconds - время 
+     * @param command - список команд
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws TimeoutException
+     */    
+    private void executeFfmpegProcess( int timeoutSeconds, String... command ) throws IOException, InterruptedException, TimeoutException {
+        ProcessBuilder pb = new ProcessBuilder( command );
+                       pb.redirectErrorStream(true);
+        Process process = pb.start();
+        StreamRtsp outputGobbler = new StreamRtsp( process.getInputStream() );
+                   outputGobbler.start();
+        if (!process.waitFor(timeoutSeconds, TimeUnit.SECONDS)) {
+             process.destroyForcibly();
+             outputGobbler.interrupt();
+             throw new TimeoutException("Таймаут выполнения команды: " + String.join(" ", command ));
+        }
+        int exitCode = process.exitValue();
+        if (exitCode != 0) {
+            throw new IOException("FFmpeg завершился с кодом ошибки: " + exitCode);
+        }
+    }
+    /**
+     * Учдаление файла
+     * @param path - путь к файлу
+     * @throws IOException
+     */        
+    private void deleteIfExists( Path path ) throws IOException {
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            log.error("Ошибка при удалении файла " + path + ": " + e.getMessage());
+        }
+    }
+        
 }

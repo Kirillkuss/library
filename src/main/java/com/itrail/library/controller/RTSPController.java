@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import com.itrail.library.request.rtsp.RtspRequest;
 import com.itrail.library.response.BaseResponse;
 import com.itrail.library.rest.IRTSPController;
+import com.itrail.library.service.rtsp.RtspService;
 import lombok.RequiredArgsConstructor;
-import com.itrail.library.service.RtspService;
 
 @Controller
 @RequiredArgsConstructor
