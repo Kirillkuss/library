@@ -165,19 +165,37 @@ public class UserService {
                       .getContent()
                       .stream()
                       .map( user -> {
-                        return new UserResponse(user.getLogin(), 
-                                                user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName(), 
-                                                user.getEmail(), 
-                                                user.getPhone(), 
-                                                user.getIsOpen(), 
-                                                user.getRoles()
-                                                    .stream()
-                                                    .map( roles ->{
+                        return new UserResponse( user.getLogin(), 
+                                                 user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName(), 
+                                                 user.getEmail(), 
+                                                 user.getPhone(), 
+                                                 user.getIsOpen(), 
+                                                 user.getRoles()
+                                                     .stream()
+                                                     .map( roles ->{
                                                         return roles.getName();
-                                                    }).collect( Collectors.toSet() ), null);
+                                                     }).collect( Collectors.toSet() ), null);
                       }).toList();
-                      if( users.isEmpty() ) throw new NoSuchElementException("По данному запросу ничего не найдено!");
+                      //if( users.isEmpty() ) throw new NoSuchElementException("По данному запросу ничего не найдено!");
                       return users;
+    }
+
+    public List<UserResponse> findUsersForUI( String param ){
+        return  userRepository.findUsersForUI( param )
+                                .stream()
+                                .map( user -> {
+                                    return new UserResponse(user.getLogin(), 
+                                                            user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName(), 
+                                                            user.getEmail(), 
+                                                            user.getPhone(), 
+                                                            user.getIsOpen(), 
+                                                            user.getRoles()
+                                                                .stream()
+                                                                .map( roles ->{
+                                                                    return roles.getName();
+                                                                }).collect( Collectors.toSet() ), null);
+                                }).toList();
+
     }
 
     public boolean checkUserPassword( String rawPassword, String encodedPassword) {

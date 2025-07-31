@@ -15,7 +15,7 @@ public interface CardRecordRepository extends JpaRepository<CardRecord, Long> {
     String requestCard = """
                         SELECT cr FROM CardRecord cr
                         LEFT JOIN Card c on c.id = cr.cardId
-                        WHERE LOWER(CONCAT( c.user.firstName, ' ', c.user.secondName, ' ', c.user.middleName )) LIKE LOWER(CONCAT('%', :user, '%'))
+                        WHERE LOWER(CONCAT( c.user.lastName, ' ', c.user.firstName, ' ', c.user.middleName )) LIKE LOWER(CONCAT('%', :user, '%'))
                         AND cr.createDate BETWEEN :start AND :finish 
                         """;
 

@@ -47,4 +47,9 @@ public class UserController implements IUserController{
         sessionService.deleteCurrentSession( httpServletRequest );
         return new ResponseEntity<>( new BaseResponse( 200, "success"), HttpStatus.OK );
     }
+
+    @Override
+    public ResponseEntity<List<UserResponse>> getUsersForUI( String param ) {
+        return new ResponseEntity<>( userService.findUsersForUI( param ), HttpStatus.OK );
+    }
 }
