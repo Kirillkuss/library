@@ -151,6 +151,7 @@ public class UserService {
                                  .roles( checkRoles( createUserRequest.roles() ))
                                  .build() );
     }
+
     /**
      * Получение списка пользователей 
      * @param page - страница
