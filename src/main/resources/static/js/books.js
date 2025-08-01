@@ -4,8 +4,6 @@ var port = window.location.port;
 
 
 function books(){
-   
-
     $(document).ready(function(){
                 $('.nav-link').click(function(){
                     $('.nav-link').removeClass('active');
@@ -128,6 +126,7 @@ function books(){
      * @param {*} size 
      */
     function renderBooks(books, page, size) {
+        const icon = '<i class="fas fa-book" title="Книга"></i>';
         const tableBody = $('#booksTableBody');
         tableBody.empty();
                     
@@ -135,17 +134,17 @@ function books(){
             const rowNumber = (page - 1) * size + index + 1;
             const row = `
                             <tr>
-                                <td>${rowNumber}</td>
+                                <td>${icon} ${rowNumber}</td>
                                 <td>${book.luDate || 'Не указано'}</td>
                                 <td>${book.nameBook || 'Не указано'}</td>
                                 <td>${book.descriptionBook || 'Не указано'}</td>
                                 <td>${book.bookNumber || 'Не указано'}</td>
                                 <td>${book.pages || 'Не указано'}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary edit-book" data-id="${book.id}">
+                                    <button class="btn btn-sm btn-primary edit-book" data-id="${book.id}" type="button">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger delete-book" data-id="${book.id}">
+                                    <button class="btn btn-sm btn-danger delete-book" data-id="${book.id}" type="button">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>

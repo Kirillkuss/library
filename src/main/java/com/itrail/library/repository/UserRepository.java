@@ -2,6 +2,8 @@ package com.itrail.library.repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -30,6 +32,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         or CONCAT( u.email ) LIKE CONCAT('%', :param, '%')
                         """;
     @Query( requestUser )
-    List<User> findUsersForUI( String param );
+    List<User> findUsersForUI( String param, PageRequest pageRequest );
     
 }

@@ -127,6 +127,7 @@ function records(){
      * @param {*} size 
      */
     function renderRecords(records, page, size) {
+        const icon = '<i class="fas fa-exchange-alt" title="Записи"></i>';
         const tableBody = $('#recordsTableBody');
         tableBody.empty();
                     
@@ -134,7 +135,7 @@ function records(){
             const rowNumber = (page - 1) * size + index + 1;
             const row = `
                             <tr>
-                                <td>${rowNumber}</td>
+                                <td>${icon} ${rowNumber}</td>
                                 <td>${record.user || 'Не указано'}</td>
                                 <td>${record.createDate || 'Не указано'}</td>
                                 <td>${record.finishDate || 'Не указано'}</td>

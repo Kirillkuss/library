@@ -121,6 +121,7 @@ function cards() {
     }
 
     function renderCards(cards) {
+        const icon = '<i class="fas fa-address-card" title="Карта пользователя"></i>';
         const tableBody = $('#cardsTableBody');
         tableBody.empty();
         
@@ -132,8 +133,8 @@ function cards() {
 
             const row = `
                 <tr>
+                    <td>${icon} ${card.identifaication || 'Не указано'}</td>
                     <td>${statusIcon}</td>
-                    <td>${card.identifaication || 'Не указано'}</td>
                     <td>${card.user || 'Не указано'}</td>
                     <td>${card.login || 'Не указано'}</td>
                     <td>${card.phone || 'Не указано'}</td>
@@ -141,10 +142,10 @@ function cards() {
                     <td>${card.createDate || 'Не указано'}</td>
                     <td>${card.finishDate !== null ? card.finishDate : ''}</td>
                     <td>
-                        <button class="btn btn-sm btn-primary edit-card" data-id="${card.identifaication}">
+                        <button class="btn btn-sm btn-primary edit-card" data-id="${card.identifaication}" type="button">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger delete-card" data-id="${card.identifaication}">
+                        <button class="btn btn-sm btn-danger delete-card" data-id="${card.identifaication}" type="button">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>

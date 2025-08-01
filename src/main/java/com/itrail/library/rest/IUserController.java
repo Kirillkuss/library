@@ -48,7 +48,11 @@ public interface IUserController {
     @Operation( description = "Удалить текущую сессию из Redis", summary = "Удалить текущую сессию из Redis")
     public ResponseEntity<BaseResponse> deleteUserSession( HttpServletRequest httpServletRequest ) throws IllegalAccessException;
     
-    @GetMapping(value = "/{param}")
+    @GetMapping(value = "/{param}/{page}/{size}")
     @Operation( description = "Поиск пользователей", summary = "Поиск пользователей")
-    public ResponseEntity<List<UserResponse>> getUsersForUI( String param ) ;
+    public ResponseEntity<List<UserResponse>> getUsersForUI( String param, int page, int size) ;
+
+    @GetMapping(value = "/counts")
+    @Operation( description = "Количество пользователей", summary = "Количество пользователей")
+    public ResponseEntity<Long> getCountUsers() ;
 }

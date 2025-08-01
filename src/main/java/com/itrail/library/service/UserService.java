@@ -145,7 +145,7 @@ public class UserService {
                                  .login( createUserRequest.login() )
                                  .password( passwordEncoder.encode( createUserRequest.password() ))
                                  .email( createUserRequest.email() )
-                                 .isOpen( true )
+                                 .isOpen( false )
                                  .phone( createUserRequest.phone() )
                                  .secret( googleAuthenticationService.generateKey() )
                                  .roles( checkRoles( createUserRequest.roles() ))
@@ -158,7 +158,7 @@ public class UserService {
      * @param size - размер
      * @return List UserResponse
      */
-    @Cacheable
+    //@Cacheable
     @ExecuteMethodLog 
     public List<UserResponse> getUsers( int page, int size ){
         List<UserResponse> users =
@@ -181,8 +181,8 @@ public class UserService {
                       return users;
     }
 
-    public List<UserResponse> findUsersForUI( String param ){
-        return  userRepository.findUsersForUI( param )
+    public List<UserResponse> findUsersForUI( String param, int page, int size ){
+        return  userRepository.findUsersForUI( param, PageRequest.of( page - 1, size ) )
                                 .stream()
                                 .map( user -> {
                                     return new UserResponse(user.getLogin(), 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
 import com.itrail.library.config.redis.domain.Session;
 import com.itrail.library.config.redis.service.SessionService;
+import com.itrail.library.repository.UserRepository;
 import com.itrail.library.request.CreateUserRequest;
 import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.UserResponse;
@@ -23,6 +24,7 @@ public class UserController implements IUserController{
 
     private final UserService userService;
     private final SessionService sessionService;
+    private final UserRepository userRepository;
 
     @ExecuteEndpointLog
     @Override
@@ -49,7 +51,12 @@ public class UserController implements IUserController{
     }
 
     @Override
-    public ResponseEntity<List<UserResponse>> getUsersForUI( String param ) {
-        return new ResponseEntity<>( userService.findUsersForUI( param ), HttpStatus.OK );
+    public ResponseEntity<List<UserResponse>> getUsersForUI( String param, int page, int size) {
+        return new ResponseEntity<>( userService.findUsersForUI( param, page, size ), HttpStatus.OK );
+    }
+
+    @Override
+    public ResponseEntity<Long> getCountUsers() {
+       return new ResponseEntity<>( userRepository.count(), HttpStatus.OK );
     }
 }

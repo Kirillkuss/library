@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import java.awt.image.BufferedImage;
+
 @Controller
 @RequiredArgsConstructor
 public class AuthenticationController implements IAuthentication {
@@ -122,5 +123,4 @@ public class AuthenticationController implements IAuthentication {
         }
         return "redirect:/change-password"; 
     }
-
 }
