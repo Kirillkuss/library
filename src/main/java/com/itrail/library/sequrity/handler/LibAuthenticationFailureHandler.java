@@ -28,13 +28,13 @@ public class LibAuthenticationFailureHandler implements AuthenticationFailureHan
         
         HttpSession session = httpServletRequest.getSession(false);
         if (session == null) {
-            httpServletResponse.sendRedirect("/login");
+            httpServletResponse.sendRedirect("/library/login");
             return;
         }
         
         String username = (String) session.getAttribute("AUTH_USERNAME");
         if (username == null) {
-            httpServletResponse.sendRedirect("/login");
+            httpServletResponse.sendRedirect("/library/login");
             return;
         }
 
@@ -53,13 +53,13 @@ public class LibAuthenticationFailureHandler implements AuthenticationFailureHan
             blockUser(username, httpSessionId);
             sessionRepository.deleteByUsernameAndType(username, Session.SessionType.ATTEMPT);
             httpServletRequest.getSession().invalidate();
-            httpServletResponse.sendRedirect("/login?error=blocked");
+            httpServletResponse.sendRedirect("/library/login?error=blocked");
             return;
         }
 
 
         httpServletRequest.getSession().setAttribute("error", String.format("Неверный код! Осталось попыток: %d", MAX_ATTEMPTS - attempts));
-        httpServletResponse.sendRedirect("/securecode");
+        httpServletResponse.sendRedirect("/library/securecode");
         
     }
 

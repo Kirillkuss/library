@@ -4,19 +4,19 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>books</title>
-        <link rel="stylesheet" href="/css/menu/index.css">
-        <script type = "text/javascript" src="/js/records.js"></script>
+        <link rel="stylesheet" href="/library/css/menu/index.css">
+        <script type = "text/javascript" src="/library/js/books.js"></script>
         <script>
-            records();
+            books();
         </script>
 	</head>	
      <body>
         <div class="main-content">
             <div class="container-fluid">
                 <div class="page-header">
-                    <h2><i class="fas fa-users me-2"></i> Выдача книг</h2>
-                    <button class="btn btn-primary  ms-auto" id="addRecordBtn" >
-                        <i class="fas fa-plus me-2"></i> Выдать книгу
+                    <h2><i class="fas fa-users me-2"></i> Книги</h2>
+                    <button class="btn btn-primary  ms-auto" id="addUserBtn" type="button">
+                        <i class="fas fa-plus me-2"></i> Добавить книгу
                     </button>
                     <div id="modalsContainer"></div>
                 </div>
@@ -25,14 +25,14 @@
                     <div class="tab-pane fade show active" id="books">
                         <div class="card shadow">
                             <div class="card-body" style="width: 1521px; height: 800px; overflow: auto;">
-                                <h5 class="card-title">Список выдач книг</h5>
+                                <h5 class="card-title">Список книг</h5>
                                 
                                 <div class="row mb-3">
                                     <div class="col-md-4">
                                         <input type="text" id="searchInput" class="form-control" placeholder="Поиск книги...">
                                     </div>
                                     <div class="col-md-2">
-                                        <button id="searchBtn" class="btn btn-primary">Поиск</button>
+                                        <button id="searchBtn" class="btn btn-primary" type="button">Поиск</button>
                                     </div>
                                 </div>
                                 
@@ -41,14 +41,14 @@
                                         <thead>
                                             <tr>
                                                 <th>№</th>
-                                                <th>Кому выдана</th>
-                                                <th>Дата и время выдачи</th>
-                                                <th>Дата и время возврата</th>
-                                                <th>Наименование книги</th>
-                                                <th>№ книги</th>
+                                                <th>Дата и время изменения</th>
+                                                <th>Наименовение</th>
+                                                <th>Описание</th>
+                                                <th>Номер</th>
+                                                <th>Кол-во стр.</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="recordsTableBody">
+                                        <tbody id="booksTableBody">
                                         </tbody>
                                     </table>
                                 </div>
@@ -71,11 +71,11 @@
             </div>
         </div>
 
-        <div class="modal fade" id="addrecordModal" tabindex="-1" aria-labelledby="addRecordModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addRecordModalLabel">Выдача книги</h5>
+                    <h5 class="modal-title" id="addBookModalLabel">Добавление новой книги</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

@@ -26,7 +26,7 @@ function authors(){
                     $('#authorsTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
                     
                     $.ajax({
-                        url: protocol + "//"+ hostname + ':' + port + '/authors/lazy/${page}/${size}',
+                        url: protocol + "//"+ hostname + ':' + port + '/library/authors/lazy/${page}/${size}',
                         type: 'GET',
                         data: {
                             page: page,
@@ -127,21 +127,22 @@ function authors(){
      */
     function renderAuthors(authors, page, size) {
         const tableBody = $('#authorsTableBody');
+        const icon = '<i class="fas fa-user-edit" title="Автор"></i>';
         tableBody.empty();
                     
         authors.forEach((author, index) => {
             const rowNumber = (page - 1) * size + index + 1;
             const row = `
                             <tr>
-                                <td>${rowNumber}</td>
+                                <td>${icon} ${rowNumber}</td>
                                 <td>${author.luDate || 'Не указано'}</td>
                                 <td>${author.firstName + ' ' + author.secondName + ' ' + author.middleName || 'Не указано'}</td>
                                 <td>${author.country || 'Не указано'}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary edit-author" data-id="${author.id}">
+                                    <button class="btn btn-sm btn-primary edit-author" data-id="${author.id}" type="button">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-danger delete-author" data-id="${author.id}">
+                                    <button class="btn btn-sm btn-danger delete-author" data-id="${author.id}" type="button">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -151,4 +152,3 @@ function authors(){
         });
     };
 };
-

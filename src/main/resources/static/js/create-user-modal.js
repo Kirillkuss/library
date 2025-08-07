@@ -43,7 +43,7 @@ function createUser(){
                             roles: $('#roles').val()
                         };
                         $.ajax({
-                            url: protocol + '//'+ hostname + ':' + port +'/users/create',
+                            url: protocol + '//'+ hostname + ':' + port +'/library/users/create',
                             method: 'POST',
                             contentType: 'application/json',
                             data: JSON.stringify(userData),
@@ -54,7 +54,17 @@ function createUser(){
                                 }
                             },
                             error: function(xhr) {
-                                console.error('Ошибка:', xhr.responseText);
+                                const response = JSON.parse(xhr.responseText);
+                                if ( response.code === 500 ){
+                                    console.log( response )
+                                    const messageMatch = response.error.match(/'([^']+)'/);
+                                    $('#errorToast').text(messageMatch[1]).show();
+                                    $('#liveToastBtn').click();
+                                }else{
+                                    console.log( response )
+                                    $('#errorToast').text( response.error ).show();
+                                    $('#liveToastBtn').click();
+                                }
                             }
                         });
                     });

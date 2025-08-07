@@ -2,7 +2,7 @@ const baseUrl = `${window.location.protocol}//${window.location.host}`;
 
 async function removeSessionAndExit() {
     try {
-        const removeResponse = await fetch( `${baseUrl}/users/sessions/remove`, {
+        const removeResponse = await fetch( `${baseUrl}/library/users/sessions/remove`, {
             method: 'DELETE',
             credentials: 'include'
         });
@@ -18,17 +18,17 @@ async function removeSessionAndExit() {
 
 async function exit() {
     try {
-        const response = await fetch('/logout', {
+        const response = await fetch('/library/logout', {
             method: 'POST',
             credentials: 'include'
         });
         if (response.ok) {
-            window.location.href = "/login"; 
+            window.location.href = "/library/login"; 
         } else {
             throw new Error(response.statusText);
         }
     } catch (error) {
         console.error('Ошибка при выходе:', error);
-        window.location.href = "/login";
+        window.location.href = "/library/login";
     }
 }

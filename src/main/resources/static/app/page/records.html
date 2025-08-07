@@ -3,36 +3,36 @@
   <head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>authors</title>
-        <link rel="stylesheet" href="/css/menu/index.css">
-        <script type = "text/javascript" src="/js/authors.js"></script>
+		<title>books</title>
+        <link rel="stylesheet" href="/library/css/menu/index.css">
+        <script type = "text/javascript" src="/library/js/records.js"></script>
         <script>
-            authors();
+            records();
         </script>
 	</head>	
      <body>
         <div class="main-content">
             <div class="container-fluid">
                 <div class="page-header">
-                    <h2><i class="fas fa-users me-2"></i> Авторы</h2>
-                    <button class="btn btn-primary  ms-auto" id="addAuthorBtn" >
-                        <i class="fas fa-plus me-2"></i> Добавить автора
+                    <h2><i class="fas fa-users me-2"></i> Выдача книг</h2>
+                    <button class="btn btn-primary  ms-auto" id="addRecordBtn" type="button">
+                        <i class="fas fa-plus me-2"></i> Выдать книгу
                     </button>
                     <div id="modalsContainer"></div>
                 </div>
                 
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="authors">
+                    <div class="tab-pane fade show active" id="books">
                         <div class="card shadow">
                             <div class="card-body" style="width: 1521px; height: 800px; overflow: auto;">
-                                <h5 class="card-title">Список авторов</h5>
+                                <h5 class="card-title">Список выдач книг</h5>
                                 
                                 <div class="row mb-3">
                                     <div class="col-md-4">
-                                        <input type="text" id="searchInput" class="form-control" placeholder="Поиск авторов...">
+                                        <input type="text" id="searchInput" class="form-control" placeholder="Поиск книги...">
                                     </div>
                                     <div class="col-md-2">
-                                        <button id="searchBtn" class="btn btn-primary">Поиск</button>
+                                        <button id="searchBtn" class="btn btn-primary" type="button">Поиск</button>
                                     </div>
                                 </div>
                                 
@@ -41,12 +41,14 @@
                                         <thead>
                                             <tr>
                                                 <th>№</th>
-                                                <th>Дата и время изменения</th>
-                                                <th>ФИО</th>
-                                                <th>Страна</th>
+                                                <th>Кому выдана</th>
+                                                <th>Дата и время выдачи</th>
+                                                <th>Дата и время возврата</th>
+                                                <th>Наименование книги</th>
+                                                <th>№ книги</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="authorsTableBody">
+                                        <tbody id="recordsTableBody">
                                         </tbody>
                                     </table>
                                 </div>
@@ -69,31 +71,36 @@
             </div>
         </div>
 
-        <div class="modal fade" id="addAuthorModal" tabindex="-1" aria-labelledby="addAuthorModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addrecordModal" tabindex="-1" aria-labelledby="addRecordModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addAuthorModalLabel">Добавление нового автора</h5>
+                    <h5 class="modal-title" id="addRecordModalLabel">Выдача книги</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addAuthorForm">
+                    <form id="addUserForm">
                         <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="login" class="form-label">Логин</label>
-                            <input type="text" class="form-control" id="login" required 
-                                title="Логин должен содержать 3-20 символов (латинские буквы и цифры)">
+                            <label for="nameBook" class="form-label">Наименование книги</label>
+                            <input type="text" class="form-control" id="nameBook">
                         </div>
-                        <div class="col-md-6">
-                            <label for="password" class="form-label">Пароль</label>
-                            <div class="input-group">
-                            <input type="password" class="form-control" id="password" required
-                                    
-                                    title="Минимум 6 символов">
-                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            </div>
+                        <div class="col-md-4">
+                            <label for="descriptionBook" class="form-label">Описание</label>
+                            <input type="text" class="form-control" id="descriptionBook" required
+                                title="Только кириллические буквы, дефисы и пробелы">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="bookNumber" class="form-label">Номер книги</label>
+                            <input type="text" class="form-control" id="bookNumber" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="pages" class="form-label">Кол-во книг</label>
+                            <input type="text" class="form-control" id="pages">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="pages" class="form-label">Кол-во книг</label>
+                            <input type="text" class="form-control" id="pages">
                         </div>
                     </form>
                 </div>
