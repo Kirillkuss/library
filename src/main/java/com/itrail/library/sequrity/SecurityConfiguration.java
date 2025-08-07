@@ -1,7 +1,6 @@
 package com.itrail.library.sequrity;
 
 import java.util.List;
-
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
 import com.itrail.library.sequrity.filter.LibSingleSessionFilter;
 import com.itrail.library.sequrity.handler.LibAuthenticationFailureHandler;
 import com.itrail.library.sequrity.handler.LibAuthenticationSuccessHandler;
@@ -35,48 +33,39 @@ public class SecurityConfiguration {
     private final LibSingleSessionFilter          libSingleSessionFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
          return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
                     .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
-                    .authorizeHttpRequests(requests -> requests
-                            .requestMatchers( publicEndpoints()).permitAll()
-                            .requestMatchers( privateEndpoint()).hasAnyRole("ADMIN", "USER")
-                            .anyRequest().authenticated())
+                    .authorizeHttpRequests(requests -> requests.requestMatchers( publicEndpoints()).permitAll()
+                                                               .requestMatchers( privateEndpoint()).hasAnyRole("ADMIN", "USER")
+                                                               .anyRequest().authenticated())
                     .formLogin(login -> login
                             .loginPage("/login")
                             .loginProcessingUrl("/securecode") 
                             .defaultSuccessUrl("/library/securecode", true) 
-                            .failureHandler(libAuthenticationFailureHandler)
-                            .successHandler(libAuthenticationSuccessHandler) 
+                            .failureHandler( libAuthenticationFailureHandler )
+                            .successHandler( libAuthenticationSuccessHandler ) 
                             .permitAll())
-                            .sessionManagement( session -> session
-                                .sessionFixation()
-                                .changeSessionId()
-                                .maximumSessions(1))
-                    .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/library/login?logout=true")
+                            .sessionManagement( session -> session.sessionFixation()
+                                                                  .changeSessionId()
+                                                                  .maximumSessions( 1 ))
+                    .logout( logout -> logout
+                        .logoutUrl( "/logout" )
+                        .logoutSuccessUrl( "/library/login?logout=true" )
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID", "XSRF-TOKEN")) 
                     .csrf(csrf -> csrf
                             .csrfTokenRepository( CookieCsrfTokenRepository.withHttpOnlyFalse() ) 
-                            .ignoringRequestMatchers(
-                                "/login",
-                                "/securecode",
-                                "/logout",
-                                "/error",
-                                "/register",
-                                "/change-password"
-                            ))
+                            .ignoringRequestMatchers( csrfIgnoringRequestMatchers()))
                     .build();
     }
 
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
         FilterRegistrationBean<CorsFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new CorsFilter(corsConfigurationSource()));
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+                                           registration.setFilter( new CorsFilter( corsConfigurationSource() ));
+                                           registration.setOrder( Ordered.HIGHEST_PRECEDENCE );
         return registration;
     }
 
@@ -98,6 +87,14 @@ public class SecurityConfiguration {
                                         source.registerCorsConfiguration( "/library/api/**", configuration );
         return source;
     }
+
+    /**@Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest()
+            .permitAll())
+            .csrf(csrf -> csrf.disable()); 
+        return http.build();
+    }*/
 
     private String[] publicEndpoints() {
         return new String[]{
@@ -125,7 +122,14 @@ public class SecurityConfiguration {
         };
     }
 
-    
+    private String[] csrfIgnoringRequestMatchers(){
+        return new String[]{"/login",
+                            "/securecode",
+                            "/logout",
+                            "/error",
+                            "/register",
+                            "/change-password"};
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -137,12 +141,6 @@ public class SecurityConfiguration {
         return new SessionRegistryImpl();
     }
 
-    /**@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize.anyRequest()
-            .permitAll())
-            .csrf(csrf -> csrf.disable()); 
-        return http.build();
-    }*/
+
     
 }
