@@ -26,7 +26,7 @@ function authors(){
                     $('#authorsTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
                     
                     $.ajax({
-                        url: protocol + "//"+ hostname + ':' + port + '/authors/lazy/${page}/${size}',
+                        url: protocol + "//"+ hostname + ':' + port + '/library/authors/lazy/${page}/${size}',
                         type: 'GET',
                         data: {
                             page: page,

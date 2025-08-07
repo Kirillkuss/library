@@ -27,7 +27,7 @@ function records(){
                     $('#recordsTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
                     
                     $.ajax({
-                        url: protocol + "//"+ hostname + ':' + port + '/records/lazy/${page}/${size}',
+                        url: protocol + "//"+ hostname + ':' + port + '/library/records/lazy/${page}/${size}',
                         type: 'GET',
                         data: {
                             page: page,

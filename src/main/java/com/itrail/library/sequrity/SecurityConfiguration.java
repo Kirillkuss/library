@@ -1,8 +1,11 @@
 package com.itrail.library.sequrity;
 
 import java.util.List;
+
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
@@ -10,9 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 import com.itrail.library.sequrity.filter.LibSingleSessionFilter;
 import com.itrail.library.sequrity.handler.LibAuthenticationFailureHandler;
 import com.itrail.library.sequrity.handler.LibAuthenticationSuccessHandler;
@@ -39,7 +45,7 @@ public class SecurityConfiguration {
                     .formLogin(login -> login
                             .loginPage("/login")
                             .loginProcessingUrl("/securecode") 
-                            .defaultSuccessUrl("/securecode", true) 
+                            .defaultSuccessUrl("/library/securecode", true) 
                             .failureHandler(libAuthenticationFailureHandler)
                             .successHandler(libAuthenticationSuccessHandler) 
                             .permitAll())
@@ -49,41 +55,48 @@ public class SecurityConfiguration {
                                 .maximumSessions(1))
                     .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
+                        .logoutSuccessUrl("/library/login?logout=true")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"))
-                    .csrf(csrf -> csrf.disable())
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")) 
+                    .csrf(csrf -> csrf
+                            .csrfTokenRepository( CookieCsrfTokenRepository.withHttpOnlyFalse() ) 
+                            .ignoringRequestMatchers(
+                                "/login",
+                                "/securecode",
+                                "/logout",
+                                "/error",
+                                "/register",
+                                "/change-password"
+                            ))
                     .build();
     }
 
-    /**@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize.anyRequest()
-            .permitAll())
-            .csrf(csrf -> csrf.disable()); 
-        return http.build();
-    }*/
-
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+    public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
+        FilterRegistrationBean<CorsFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new CorsFilter(corsConfigurationSource()));
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-                          configuration.setAllowedOrigins(List.of("*"));
-                          configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
-                          configuration.setAllowedHeaders(List.of("*")); 
-                          configuration.setAllowCredentials(false);
+                          configuration.setAllowedOrigins(List.of("http://localhost:8094"));
+                          configuration.setAllowedMethods(List.of("GET", "POST", "DELETE"));
+                          configuration.setAllowedHeaders(List.of("Authorization",
+                                                                   "Content-Type",
+                                                                   "X-Requested-With",
+                                                                   "Accept",
+                                                                   "Origin",
+                                                                   "X-XSRF-TOKEN" ));
+                          configuration.setMaxAge(1800L); 
+                          configuration.setExposedHeaders(List.of("Content-Disposition","Content-Length","X-Custom-Header"));
+                         configuration.setAllowCredentials(false);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                                        source.registerCorsConfiguration("/**", configuration); 
+                                        source.registerCorsConfiguration( "/library/api/**", configuration );
         return source;
-    }
-
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
     }
 
     private String[] publicEndpoints() {
@@ -104,8 +117,32 @@ public class SecurityConfiguration {
             "/swagger-ui/index.html", 
             "/**",
             "/",
-            "/index"
+            "/index",
+            "/library",
+            "/library/**",
+            "/library/swagger-ui/index.html",
+            "/library/app/index.html"
         };
     }
+
+    
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    /**@Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest()
+            .permitAll())
+            .csrf(csrf -> csrf.disable()); 
+        return http.build();
+    }*/
     
 }

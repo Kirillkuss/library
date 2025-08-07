@@ -28,7 +28,7 @@ function cards() {
         $('#cardsTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
         
         $.ajax({
-            url: `${protocol}//${hostname}:${port}/cards/lazy/${page}/${size}`,
+            url: `${protocol}//${hostname}:${port}/library/cards/lazy/${page}/${size}`,
             type: 'GET',
             data: {
                 page: page,

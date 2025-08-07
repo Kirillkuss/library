@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="/css/auth/securecode.css">
+    <link rel="stylesheet" href="/library/css/auth/securecode.css">
     <link rel="icon" href="icon/padlock.png" type="image/x-icon">
     <link rel="shortcut icon" href="icon/padlock.png" type="image/x-icon"> 
 </head>
@@ -24,7 +24,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
-        <form id="codeForm" action="/securecode" method="post">
+        <form id="codeForm" action="/library/securecode" method="post">
             <div class="code-inputs">
                 <input type="text" class="code-input" name="digit1" maxlength="1" pattern="[0-9]" required autofocus>
                 <input type="text" class="code-input" name="digit2" maxlength="1" pattern="[0-9]" required>
@@ -41,7 +41,7 @@
             </button>
             
             <div class="d-flex justify-content-between align-items-center">
-                <a href="/login" class="text-decoration-none">
+                <a href="/library/login" class="text-decoration-none">
                     <i class="fas fa-arrow-left me-1"></i> Назад к входу
                 </a>
             </div>
