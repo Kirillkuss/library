@@ -26,7 +26,7 @@ function books(){
                     $('#booksTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
                     
                     $.ajax({
-                        url: protocol + "//"+ hostname + ':' + port + '/books/lazy/${page}/${size}',
+                        url: protocol + "//"+ hostname + ':' + port + '/library/books/lazy/${page}/${size}',
                         type: 'GET',
                         data: {
                             page: page,

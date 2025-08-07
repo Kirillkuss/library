@@ -43,7 +43,7 @@ function createUser(){
                             roles: $('#roles').val()
                         };
                         $.ajax({
-                            url: protocol + '//'+ hostname + ':' + port +'/users/create',
+                            url: protocol + '//'+ hostname + ':' + port +'/library/users/create',
                             method: 'POST',
                             contentType: 'application/json',
                             data: JSON.stringify(userData),

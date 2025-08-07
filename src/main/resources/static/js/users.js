@@ -26,7 +26,7 @@ function users(){
                     $('#usersTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
                     
                     $.ajax({
-                        url: protocol + "//"+ hostname + ':' + port + '/users/lazy/${page}/${size}',
+                        url: protocol + "//"+ hostname + ':' + port + '/library/users/lazy/${page}/${size}',
                         type: 'GET',
                         data: {
                             page: page,
@@ -189,7 +189,7 @@ function findUsersbyUI() {
         
         $.ajax({
             type: "GET",
-            url: protocol + "//" + hostname + ":" + port + "/users/{param}/{page}/{size}",
+            url: protocol + "//" + hostname + ":" + port + "/library/users/{param}/{page}/{size}",
             data: { 
                 param: param,
                 page: page, 

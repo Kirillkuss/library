@@ -28,7 +28,7 @@ public class SecurityConfiguration {
     private final LibAuthenticationSuccessHandler libAuthenticationSuccessHandler;
     private final LibSingleSessionFilter          libSingleSessionFilter;
 
-    @Bean
+    /**@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
          return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
                     .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                     .formLogin(login -> login
                             .loginPage("/login")
                             .loginProcessingUrl("/securecode") 
-                            .defaultSuccessUrl("/securecode", true) 
+                            .defaultSuccessUrl("/library/securecode", true) 
                             .failureHandler(libAuthenticationFailureHandler)
                             .successHandler(libAuthenticationSuccessHandler) 
                             .permitAll())
@@ -49,27 +49,27 @@ public class SecurityConfiguration {
                                 .maximumSessions(1))
                     .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
+                        .logoutSuccessUrl("/library/login?logout=true")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID"))
                     .csrf(csrf -> csrf.disable())
                     .build();
-    }
+    }*/
 
-    /**@Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize.anyRequest()
             .permitAll())
             .csrf(csrf -> csrf.disable()); 
         return http.build();
-    }*/
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
 
-    @Bean
+    /**@Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
                           configuration.setAllowedOrigins(List.of("*"));
@@ -79,7 +79,7 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                                         source.registerCorsConfiguration("/**", configuration); 
         return source;
-    }
+    }*/
 
     @Bean
     public SessionRegistry sessionRegistry() {
@@ -104,7 +104,11 @@ public class SecurityConfiguration {
             "/swagger-ui/index.html", 
             "/**",
             "/",
-            "/index"
+            "/index",
+            "/library",
+            "/library/**",
+            "/library/swagger-ui/index.html",
+            "/library/app/index.html"
         };
     }
     
