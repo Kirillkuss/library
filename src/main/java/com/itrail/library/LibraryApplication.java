@@ -15,5 +15,5 @@ public class LibraryApplication {
 		SpringApplication.run(LibraryApplication.class, args);
 		log.info( "Library start!");
 	}
-	
+
 }

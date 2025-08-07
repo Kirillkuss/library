@@ -32,7 +32,7 @@ public class SecurityConfiguration {
     private final LibAuthenticationSuccessHandler libAuthenticationSuccessHandler;
     private final LibSingleSessionFilter          libSingleSessionFilter;
 
-    @Bean
+    /**@Bean
     public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
          return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
                     .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
@@ -59,7 +59,7 @@ public class SecurityConfiguration {
                             .csrfTokenRepository( CookieCsrfTokenRepository.withHttpOnlyFalse() ) 
                             .ignoringRequestMatchers( csrfIgnoringRequestMatchers()))
                     .build();
-    }
+    }*/
 
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
@@ -88,13 +88,13 @@ public class SecurityConfiguration {
         return source;
     }
 
-    /**@Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize.anyRequest()
             .permitAll())
             .csrf(csrf -> csrf.disable()); 
         return http.build();
-    }*/
+    }
 
     private String[] publicEndpoints() {
         return new String[]{
