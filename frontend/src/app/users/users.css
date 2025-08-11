@@ -1,31 +1,4 @@
-
-          .toast {
-            border: none;
-            box-shadow: 0 0.5rem 1rem rgba(0, 123, 255, 0.15);
-            border-left: 4px solid #0d6efd;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .toast-header.bg-gradient {
-        background: linear-gradient(135deg, #0d6efd 0%, #86b7fe 100%);
-        }
-
-        .toast-body i {
-            min-width: 20px;
-            text-align: center;
-        }
-   :root {
+        :root {
             --sidebar-width: 250px;
             --header-height: 60px;
             --primary-color: #4e73df;
@@ -37,6 +10,7 @@
             background-color: #f8f9fa;
         }
         
+        /* Сайдбар */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -81,7 +55,8 @@
             width: 20px;
             text-align: center;
         }
-
+        
+        /* Основное содержимое */
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 20px;
@@ -97,6 +72,7 @@
             border-bottom: 1px solid #e3e6f0;
         }
         
+        /* Адаптивность */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);

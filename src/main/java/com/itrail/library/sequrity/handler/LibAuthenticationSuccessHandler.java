@@ -26,7 +26,8 @@ public class LibAuthenticationSuccessHandler implements AuthenticationSuccessHan
             libAuthenticationFailureHandler.convertToAuthenticated( session.getId(), (String) httpServletRequest.getSession().getAttribute("AUTH_USERNAME") );
             session.removeAttribute("error");
         }
-        httpServletResponse.sendRedirect("/library/app/index.html");
+        //httpServletResponse.sendRedirect("/library/app/index.html");
+        httpServletResponse.sendRedirect("http://localhost:4200");
         //httpServletResponse.sendRedirect("/swagger-ui/index.html");
     }
 }

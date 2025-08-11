@@ -1,12 +1,22 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { RouterModule } from '@angular/router';
+//import { AuthService } from '../auth';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  standalone: true,
+  imports: [RouterModule],
+  templateUrl: './app.html'
 })
-export class App {
-  protected readonly title = signal('frontend');
+export class App{
+    protected readonly title = signal('frontend');
+
+   /**  constructor( private authService: AuthService, @Inject(PLATFORM_ID) private platformId: Object ) {}
+
+  ngOnInit(): void {
+    if (!this.authService.isAuthenticated() && isPlatformBrowser(this.platformId)) {
+      window.location.href = 'http://localhost:8094/library/login';
+    }
+  }*/
 }
