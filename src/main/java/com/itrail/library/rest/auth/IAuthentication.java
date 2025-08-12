@@ -14,18 +14,18 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public interface IAuthentication {
 
-    @GetMapping(value = "securecode", produces = MediaType.APPLICATION_JSON)
-    public String securecode();
+    /**@GetMapping(value = "securecode", produces = MediaType.APPLICATION_JSON)
+    public String securecode();*/
 
     @GetMapping(value = "login", produces = MediaType.APPLICATION_JSON)
     public String login();
 
-    @GetMapping("/login")
-    public String login( @RequestParam(value = "error", required = false) String error, Model model);
+    /*@GetMapping("/login")
+    public String login( @RequestParam(value = "error", required = false) String error, Model model);*/
 
-    @PostMapping("/login")
+    /**@PostMapping("/login")
     public String login( @ModelAttribute AuthRequest authRequest,
-                         RedirectAttributes redirectAttributes );
+                         RedirectAttributes redirectAttributes );*/
 
     @PostMapping(value = "clear-error-message", produces = MediaType.APPLICATION_JSON)
     public String clearErrorMessage( HttpServletRequest httpServletRequest );

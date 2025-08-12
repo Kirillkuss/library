@@ -15,17 +15,11 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LibAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final LibAuthenticationFailureHandler libAuthenticationFailureHandler;
-
     @Override
     public void onAuthenticationSuccess( HttpServletRequest httpServletRequest,
                                          HttpServletResponse httpServletResponse,
                                          Authentication authentication ) throws IOException {
-        HttpSession session = httpServletRequest.getSession();
-        if (session != null) {
-            libAuthenticationFailureHandler.convertToAuthenticated( session.getId(), (String) httpServletRequest.getSession().getAttribute("AUTH_USERNAME") );
-            session.removeAttribute("error");
-        }
+
         //httpServletResponse.sendRedirect("/library/app/index.html");
         httpServletResponse.sendRedirect("http://localhost:4200");
         //httpServletResponse.sendRedirect("/swagger-ui/index.html");

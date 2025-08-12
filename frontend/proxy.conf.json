@@ -1,10 +1,9 @@
 {
-  "/": {
-    "target": "http://localhost:8094",
-    "secure": false,
-    "changeOrigin": true,
-    "pathRewrite": {
-      "^/": ""
+    "/library": {
+        "target": "http://localhost:8094",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
     }
-  }
+    
 }

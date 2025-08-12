@@ -1,50 +1,65 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8094/library/test';
-  private loggedIn = new BehaviorSubject<boolean>(false);
+  private apiUrl = 'http://localhost:8094/library';
+  private isAuth = false;
 
-  constructor( private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object ) {}
-
-  login(credentials: { username: string; password: string }): Observable<any> {
-    return this.http.post(`${this.API_URL}/login`, credentials, { withCredentials: true }).pipe(
-        
-      tap(() => {
-        this.loggedIn.next(true);
-      })
-    );
-  }
-
-  verifyCode(code: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/securecode`, { code }, { withCredentials: true }).pipe(
-      tap(() => {
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('authenticated', 'true');
-        }
-        this.loggedIn.next(true);
-      })
-    );
-  }
+  constructor(private http: HttpClient) {}
 
   isAuthenticated(): boolean {
-    return isPlatformBrowser(this.platformId) && localStorage.getItem('authenticated') === 'true';
+    console.log( "4. AuthService isAuthenticated");
+    return this.isAuth;
   }
 
-  logout(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('authenticated');
-      this.loggedIn.next(false);
-      window.location.href = `${this.API_URL}/logout`;
-    }
+  redirectToLogin(): void {
+    console.log( "5. AuthService redirectToLogin");
+    window.location.href = `${this.apiUrl}/login?redirect=${encodeURIComponent(window.location.href)}`;
   }
 
-  isLoggedIn(): Observable<boolean> {
-    return this.loggedIn.asObservable();
+  checkAuth(): Observable<boolean> {
+    console.log( "1. AuthService checkAuth");
+    return this.http.get(`${this.apiUrl}/app/index.html`, { 
+      withCredentials: true,
+      observe: 'response'
+    }).pipe(
+      map(response => {
+        this.isAuth = response.ok;
+        return response.ok;
+      }),
+      catchError(() => {
+        this.isAuth = false;
+        return of(false);
+      })
+    );
+  }
+
+  logout(): Observable<any> {
+    console.log( "2. AuthService logout");
+    return this.http.post(`${this.apiUrl}/logout`, {}, {
+      withCredentials: true,
+      responseType: 'text'
+    }).pipe(
+      tap(() => {
+        this.isAuth = false;
+        this.redirectToLogin();
+      })
+    );
+  }
+
+  // Пример запроса к вашему API
+  getUsersCount(): Observable<any> {
+    console.log( "3. AuthService getUsersCount");
+    return this.http.get(`${this.apiUrl}/users/counts`, {
+      withCredentials: true
+    });
   }
 }

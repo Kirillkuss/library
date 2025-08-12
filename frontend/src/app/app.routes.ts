@@ -16,8 +16,8 @@ export const routes: Routes = [
       { path: 'authors', component: Author },
       { path: 'cards', component: Card },
       { path: 'records', component: Record },
+      { path: '', redirectTo: 'users', pathMatch: 'full' }
     ],
-    
   },
-
+  { path: '**', redirectTo: '' }
 ];

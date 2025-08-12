@@ -17,6 +17,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+
 import com.itrail.library.sequrity.filter.LibSingleSessionFilter;
 import com.itrail.library.sequrity.handler.LibAuthenticationFailureHandler;
 import com.itrail.library.sequrity.handler.LibAuthenticationSuccessHandler;
@@ -30,19 +32,17 @@ public class SecurityConfiguration {
 
     private final LibAuthenticationFailureHandler libAuthenticationFailureHandler;
     private final LibAuthenticationSuccessHandler libAuthenticationSuccessHandler;
-    private final LibSingleSessionFilter          libSingleSessionFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
-         return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
-                    .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
+         return http.cors(cors -> cors.configurationSource( corsConfigurationSource() ))
                     .authorizeHttpRequests(requests -> requests.requestMatchers( publicEndpoints()).permitAll()
                                                                .requestMatchers( privateEndpoint()).hasAnyRole("ADMIN", "USER")
                                                                .anyRequest().authenticated())
                     .formLogin(login -> login
                             .loginPage("/login")
-                            .loginProcessingUrl("/securecode") 
-                            .defaultSuccessUrl("/library/securecode", true) 
+                            .loginProcessingUrl("/login") 
+                            .defaultSuccessUrl("/library", true) 
                             .failureHandler( libAuthenticationFailureHandler )
                             .successHandler( libAuthenticationSuccessHandler ) 
                             .permitAll())
@@ -54,11 +54,8 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl( "/library/login?logout=true" )
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")) 
-                    .csrf(csrf -> csrf
-                            .csrfTokenRepository( CookieCsrfTokenRepository.withHttpOnlyFalse() ) 
-                            .ignoringRequestMatchers( csrfIgnoringRequestMatchers()))
-                    .build();
+                        .deleteCookies("JSESSIONID")) 
+                    .csrf(csrf -> csrf.disable()).build();
     }
 
     @Bean
@@ -72,21 +69,30 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-                          configuration.setAllowedOrigins(List.of("http://localhost:8094", "http://localhost:4200", "/**"));
-                          configuration.setAllowedMethods(List.of("GET", "POST", "DELETE"));
-                          configuration.setAllowedHeaders(List.of("Authorization",
-                                                                   "Content-Type",
-                                                                   "X-Requested-With",
-                                                                   "Accept",
-                                                                   "Origin",
-                                                                   "X-XSRF-TOKEN" ));
-                          configuration.setMaxAge(1800L); 
-                          configuration.setExposedHeaders(List.of("Content-Disposition","Content-Length","X-Custom-Header"));
-                         configuration.setAllowCredentials(false);
+        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Только Angular origin
+        configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "OPTIONS")); // Добавить OPTIONS
+        configuration.setAllowedHeaders(List.of(
+            "Authorization",
+            "Content-Type",
+            "X-Requested-With",
+            "Accept",
+            "Origin",
+            "X-XSRF-TOKEN" // Для CSRF
+        ));
+        configuration.setExposedHeaders(List.of(
+            "Content-Disposition",
+            "Content-Length",
+            "X-Custom-Header",
+            "X-XSRF-TOKEN" // Для CSRF
+        ));
+        configuration.setMaxAge(1800L);
+        configuration.setAllowCredentials(true); // Важно для передачи кук
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                                        source.registerCorsConfiguration( "/library/api/**", configuration );
+        source.registerCorsConfiguration("/**", configuration); // Применять ко всем путям
         return source;
     }
+
 
     /**@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

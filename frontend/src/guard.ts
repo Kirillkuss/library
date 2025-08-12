@@ -1,7 +1,9 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthService } from './auth';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { AuthService } from './auth';
 
 @Injectable({
   providedIn: 'root'
@@ -9,19 +11,23 @@ import { isPlatformBrowser } from '@angular/common';
 export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
-    private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  canActivate(): boolean {
-    if (this.authService.isAuthenticated()) {
-      return true;
-    }
-
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | boolean {
+    console.log( " AuthGuard canActivate");
     if (isPlatformBrowser(this.platformId)) {
-      window.location.href = 'http://localhost:8094/library/login';
+      return this.authService.checkAuth().pipe(
+        tap(isAuth => {
+          if (!isAuth) {
+            this.authService.redirectToLogin();
+          }
+        })
+      );
     }
-
     return false;
   }
 }

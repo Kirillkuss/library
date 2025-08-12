@@ -1,7 +1,6 @@
-import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { Component, OnInit,signal  } from '@angular/core';
 import { RouterModule } from '@angular/router';
-//import { AuthService } from '../auth';
-import { isPlatformBrowser } from '@angular/common';
+import { AuthService } from '../auth';
 
 @Component({
   selector: 'app-root',
@@ -9,14 +8,19 @@ import { isPlatformBrowser } from '@angular/common';
   imports: [RouterModule],
   templateUrl: './app.html'
 })
-export class App{
-    protected readonly title = signal('frontend');
+export class App implements OnInit {
 
-   /**  constructor( private authService: AuthService, @Inject(PLATFORM_ID) private platformId: Object ) {}
+  protected readonly title = signal('frontend');
 
-  ngOnInit(): void {
-    if (!this.authService.isAuthenticated() && isPlatformBrowser(this.platformId)) {
-      window.location.href = 'http://localhost:8094/library/login';
-    }
-  }*/
+  constructor(public authService: AuthService) {}
+
+  ngOnInit() {
+    console.log(" App  ngOnInit");
+    this.authService.checkAuth().subscribe();
+  }
+
+  logout() {
+    console.log(" App  logout");
+    this.authService.logout().subscribe();
+  }
 }

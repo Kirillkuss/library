@@ -28,17 +28,17 @@ public class AuthenticationController implements IAuthentication {
     private final UserService userService;
     private final EmailService emailService;
     
-    @Override
+    /**@Override
     public String securecode() {
         return "securecode";
-    }
+    }*/
 
     @Override
     public String login() {
         return "login";
     }
 
-    @Override
+    /**@Override
     public String login(String error, Model model) {
 	    if (error != null) {
             switch (error) {
@@ -57,27 +57,27 @@ public class AuthenticationController implements IAuthentication {
             }
         }
         return "login";
-    }
+    }*/
 
-    @Override
+    /**@Override
     public String login( AuthRequest authRequest, RedirectAttributes redirectAttributes) {
         try{
             String login = authService.authUser( authRequest.username(), authRequest.password() );
             if ( login != null ) {
                 RequestContextHolder.currentRequestAttributes().setAttribute("AUTH_USERNAME", authRequest.username(), RequestAttributes.SCOPE_SESSION);
-                return "redirect:/securecode";
+                return "redirect:/library";
             }
         }catch( Exception ex ) {
             RequestContextHolder.currentRequestAttributes().setAttribute("AUTH_USERNAME", authRequest.username(), RequestAttributes.SCOPE_SESSION);
             redirectAttributes.addFlashAttribute("error", ex.getMessage() );
         }
         return "redirect:/login";
-    }
+    }*/
 
     @Override
     public String clearErrorMessage( HttpServletRequest httpServletRequest ) {
         httpServletRequest.getSession().removeAttribute("error");
-        return "redirect:/securecode"; 
+        return "redirect:/login"; 
     }
 
     @Override
