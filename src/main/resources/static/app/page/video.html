@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Video Player</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/library/css/menu/index.css">
+    <link rel="stylesheet" href="/library/css/video/video.css">
+    <script type = "text/javascript" src="/library/js/video/video.js"></script>
+</head>	
+<body>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="page-header mb-4">
+                <h2><i class="fas fa-video me-2"></i>Видеонаблюдение</h2>
+            </div>
+            <div class="control-panel">
+                <div class="control-section">
+                    <div class="panel-title"><i class="fas fa-camera me-1"></i> Выбор камеры</div>
+                    <div class="controls-group" >
+                        <button type="button" class="btn btn-primary btn-video-control active" onclick="changeCamera(getVideoUrl('second.mp4'), this)">
+                            <i class="fas fa-camera me-1"></i> Камера 1
+                        </button>
+                        <button type="button" class="btn btn-primary btn-video-control" onclick="changeCamera(getVideoUrl('third.mp4'), this)">
+                            <i class="fas fa-camera me-1"></i> Камера 2
+                        </button>
+                        <button type="button" class="btn btn-primary btn-video-control" onclick="changeCamera(getVideoUrl('five.mp4'), this)">
+                            <i class="fas fa-camera me-1"></i> Камера 3
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <div class="panel-title"><i class="fas fa-sliders-h me-1"></i> Управление просмотром</div>
+                    <div class="controls-group">
+                        <button class="btn btn-outline-primary btn-video-control" onclick="setVideoSize(640, this)">
+                            <i class="fas fa-mobile-alt me-1"></i> 640
+                        </button>
+                        <button class="btn btn-outline-primary btn-video-control active" onclick="setVideoSize(800, this)">
+                            <i class="fas fa-tablet-alt me-1"></i> 800
+                        </button>
+                        <button class="btn btn-outline-primary btn-video-control" onclick="setVideoSize(1000, this)">
+                            <i class="fas fa-laptop me-1"></i> 1000
+                        </button>
+                        <button class="btn btn-outline-success btn-video-control" onclick="toggleFullscreen()">
+                            <i class="fas fa-expand me-1"></i> Fullscreen
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-container" id="videoContainer" style="max-width: 800px">
+                <video id="myVideo" class="video-player" controls autoplay>
+                    <source id="videoSource" src="/library/videos/second.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает тег video.
+                </video>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
