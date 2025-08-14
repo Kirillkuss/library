@@ -1,0 +1,40 @@
+general: {
+  configs_folder = "/usr/local/etc/janus"
+  plugins_folder = "/usr/local/lib/janus/plugins"
+  transports_folder = "/usr/local/lib/janus/transports"
+  events_folder = "/usr/local/lib/janus/events"
+  loggers_folder = "/usr/local/lib/janus/loggers"
+
+  log_to_stdout = true
+  debug_level = 4
+  debug_timestamps = true
+  debug_colors = true
+
+  admin_secret = "janusoverlord"
+  api_secret = "janusrocks"
+}
+
+media: {
+  rtp_port_range = "10000-10200"
+  rtp_port = 5004
+  rtcp_port = 5005
+  audio_codecs = "opus"
+  video_codecs = "h264"
+}
+
+nat: {
+  stun_server = "stun.l.google.com"
+  stun_port = 19302
+}
+
+plugins: {
+  enabled = "rtpbroadcast,streaming,videoroom,textroom"
+}
+
+transports: {
+  enabled = "http,websockets"
+}
+
+events: {
+  enabled = "sampleevh"
+}

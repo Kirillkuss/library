@@ -24,6 +24,7 @@ import com.github.kokorin.jaffree.ffmpeg.PipeOutput;
 import com.itrail.library.request.rtsp.RtspRequest;
 import com.itrail.library.service.rtsp.StreamRtsp;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -57,10 +58,16 @@ public class StreamController {
     
     private static final Map<String, Process> activeProcesses = new ConcurrentHashMap<>();
 
+    @PreDestroy
+    public void destroy( ){
+        activeProcesses.keySet().stream().forEach(s -> stopPreviousProcess(s ) );
+    }
+
+
     @GetMapping(value = "/video/live/{filename}", produces = "video/mp4")
-    public void streamVideo(HttpServletResponse response, 
+    public void streamVideo( HttpServletResponse response, 
                           @PathVariable String filename,
-                          HttpServletRequest request) throws IOException {
+                          HttpServletRequest request ) throws IOException {
         
         String sessionId = request.getSession().getId();
         

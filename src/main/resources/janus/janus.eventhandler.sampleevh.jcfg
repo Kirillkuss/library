@@ -1,0 +1,13 @@
+general: {
+  enabled = true
+  events = "all"
+  grouping = true
+  json = "indented"
+
+  backend = "http://localhost:3000/janus-events"
+  #backend_user = "myuser"
+  #backend_pwd = "mypwd"
+
+  max_retransmissions = 5
+  retransmissions_backoff = 100
+}
