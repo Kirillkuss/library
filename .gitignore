@@ -7,8 +7,7 @@ frontend/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-/src/main/resource/video
-
+./src/main/resource/video/
 ### STS ###
 .apt_generated
 .classpath
