@@ -16,8 +16,6 @@ general: {
 
 media: {
   rtp_port_range = "10000-10200"
-  rtp_port = 5004
-  rtcp_port = 5005
   audio_codecs = "opus"
   video_codecs = "h264"
 }

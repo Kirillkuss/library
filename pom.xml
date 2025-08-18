@@ -47,11 +47,11 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <!-- DevTools -->
-        <!--dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
-        </dependency!--> 
+        </dependency> 
 
         <!-- Database -->
         <dependency>

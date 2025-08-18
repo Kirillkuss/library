@@ -58,7 +58,7 @@ public class VideoStreamConfig implements WebSocketConfigurer {
     private void handleTcpClient(Socket clientSocket) {
         new Thread(() -> {
             try (InputStream input = clientSocket.getInputStream()) {
-                byte[] buffer = new byte[1024 * 1024]; // 1MB buffer
+                byte[] buffer = new byte[1024 * 1024];
                 int bytesRead;
                 while ((bytesRead = input.read(buffer)) != -1) {
                     byte[] packet = Arrays.copyOfRange(buffer, 0, bytesRead);

@@ -1,0 +1,8 @@
+[stream1]
+id=1
+type=rtp
+description=Camera Stream
+audio=false
+videoport=10000
+videopt=96
+videortpmap=H264/90000

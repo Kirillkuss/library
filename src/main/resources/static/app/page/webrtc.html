@@ -16,7 +16,7 @@
         </div>
 
          <div class="video-container" id="videoContainer" style="max-width: 800px">
-                 <video id="video" controls autoplay></video>
+            <video id="video" controls autoplay></video>
           </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -89,6 +89,24 @@
     mediaSource.addEventListener('sourceclose', () => {
       console.log('MediaSource closed');
     });
+
+    function setVideoSize(width, height = null) {
+      const video = document.getElementById('video');
+      const videoContainer = document.getElementById('videoContainer');
+      
+      // Устанавливаем ширину
+      video.style.width = width + 'px';
+      videoContainer.style.maxWidth = width + 'px';
+      
+      // Если высота не указана, сохраняем пропорции
+      if (height) {
+        video.style.height = height + 'px';
+      } else {
+        video.style.height = 'auto';
+      }
+    };
+    setVideoSize(800);
+
   </script>
 </body>
 </html>
