@@ -1,0 +1,41 @@
+        .video-container:-webkit-full-screen {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .video-container:-moz-full-screen {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .video-container:-ms-fullscreen {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .video-container:fullscreen {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .video-container:fullscreen iframe {
+            width: 100% !important;
+            height: 100% !important;
+            max-height: none !important;
+        }

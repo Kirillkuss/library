@@ -1,8 +1,10 @@
 [stream1]
-id=1
 type=rtp
-description=Camera Stream
-audio=false
+id=1
+description=Test Stream
+audio=no
+video=yes
 videoport=10000
 videopt=96
 videortpmap=H264/90000
+videofmtp=96 packetization-mode=1

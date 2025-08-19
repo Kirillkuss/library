@@ -1,52 +1,250 @@
-        let currentVideoSize = 1000;
-        const videoElement = document.getElementById('myVideo');
-        const videoSource = document.getElementById('videoSource');
-        const videoContainer = document.getElementById('videoContainer');
-        
+var protocol = window.location.protocol
+var hostname = window.location.hostname;
+var port = window.location.port;
 
-        function getVideoUrl(videoFile) {
-            const protocol = window.location.protocol;
-            const host = window.location.hostname;
-            const port = window.location.port;
-            const basePath = '/library/video/live/';
-            return `${protocol}//${host}${port ? ':' + port : ''}${basePath}${videoFile}`;
-        }
+        let currentCamera = 'second';
+        let isRecording = false;
+        let recordingTimer = null;
 
-        function changeCamera(videoUrl, button) {
-            document.querySelectorAll('.control-section:first-child .btn').forEach(btn => {
-                btn.classList.remove('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            setStreamSize(640);
+            updateButtonStates();
+            document.addEventListener('fullscreenchange', updateFullscreenStyles);
+            document.addEventListener('webkitfullscreenchange', updateFullscreenStyles);
+            document.addEventListener('mozfullscreenchange', updateFullscreenStyles);
+            document.addEventListener('MSFullscreenChange', updateFullscreenStyles);
+        });
+
+        function updateButtonStates() {
+            const cameraButtons = document.querySelectorAll('.control-section:first-child .btn-video-control');
+            cameraButtons.forEach(btn => {
+                if(btn.textContent.includes('Камера 1')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
             });
-            button.classList.add('active');
-            videoSource.src = videoUrl;
-            videoElement.load();
-            videoElement.play().catch(e => console.log("Autoplay prevented:", e));
-        }
-        
-        function setVideoSize(width, button) {
-            currentVideoSize = width;
-            videoContainer.style.maxWidth = width + 'px';
             
-            document.querySelectorAll('.control-section:last-child .btn').forEach(btn => {
-                if (btn.textContent.includes('Fullscreen')) return;
-                btn.classList.remove('active');
+            const sizeButtons = document.querySelectorAll('.control-section:nth-child(2) .btn-video-control');
+            sizeButtons.forEach(btn => {
+                if(btn.textContent.includes('640')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
             });
-            button.classList.add('active');
+        }
+
+        function switchCamera(cameraName) {
+            currentCamera = cameraName;
+            const frame = document.getElementById('cameraFrame');
+            frame.src = `http://localhost:8889/${cameraName}`;
+            const buttons = document.querySelectorAll('.control-section:first-child .btn-video-control');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function setStreamSize(height) {
+            const frame = document.getElementById('cameraFrame');
+            const container = document.getElementById('videoContainer');
+            frame.style.height = height + 'px';
+            container.style.height = height + 'px';
+            const buttons = document.querySelectorAll('.control-section:nth-child(2) .btn-video-control');
+            buttons.forEach(btn => {
+                if(btn.textContent.includes(height)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
         }
 
         function toggleFullscreen() {
+            const container = document.getElementById('videoContainer');
             if (!document.fullscreenElement) {
-                videoElement.requestFullscreen().catch(err => {
-                    console.error(`Ошибка при переходе в полноэкранный режим: ${err.message}`);
-                });
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.mozRequestFullScreen) {
+                    container.mozRequestFullScreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
             } else {
-                document.exitFullscreen();
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
             }
         }
-         window.onload = function() {
-            const defaultVideoUrl = getVideoUrl('second.mp4');
-            document.getElementById('videoSource').src = defaultVideoUrl;
-            document.getElementById('myVideo').load();
-            document.getElementById('myVideo').play().catch(e => {
-                console.log("Autoplay prevented, пользователь должен начать воспроизведение вручную");
+
+        function updateFullscreenStyles() {
+            const container = document.getElementById('videoContainer');
+            const frame = document.getElementById('cameraFrame');
+            
+            if (document.fullscreenElement) {
+                container.style.maxWidth = 'none';
+                container.style.width = '100%';
+                container.style.height = '100%';
+                frame.style.width = '100%';
+                frame.style.height = '100%';
+            } else {
+                container.style.maxWidth = '1100px';
+                frame.style.width = '100%';
+                const activeSizeBtn = document.querySelector('.control-section:nth-child(2) .btn-video-control.active');
+                if (activeSizeBtn) {
+                    const height = parseInt(activeSizeBtn.textContent.match(/\d+/)[0]);
+                    setStreamSize(height);
+                }
+            }
+        }
+
+        function startRecording() {
+            if (isRecording) {
+                alert('Запись уже идет!');
+                return;
+            }
+
+            const duration = document.getElementById('recordDuration').value;
+            const streamPath = `rtsp://localhost:8554/${currentCamera}`;
+            isRecording = true;
+            updateRecordingUI('recording', `Запись началась (${duration} сек)`);
+            
+            const recordData = {
+                path: streamPath,
+                duration: parseInt(duration)
+            };
+
+            fetch(protocol + "//"+ hostname + ':' + port + '/library/videos/record', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(recordData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка при запуске записи');
+                }
+                return response.json();
+            })
+            .then(data => {
+                isRecording = false;
+                if (recordingTimer) {
+                    clearTimeout(recordingTimer);
+                }
+                updateRecordingUI('finished', 'Запись завершена успешно!');
+
+                setTimeout(() => {
+                    updateRecordingUI('idle', '');
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                isRecording = false;
+                if (recordingTimer) {
+                    clearTimeout(recordingTimer);
+                }
+                updateRecordingUI('error', 'Ошибка: ' + error.message);
+                setTimeout(() => {
+                    updateRecordingUI('idle', '');
+                }, 3000);
             });
-        };
+
+            let timeLeft = parseInt(duration);
+            updateCountdown(timeLeft);
+            
+            recordingTimer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(recordingTimer);
+                    if (isRecording) {
+                        updateRecordingUI('processing', 'Обработка записи...');
+                    }
+                } else {
+                    updateCountdown(timeLeft);
+                }
+            }, 1000);
+        }
+
+        function updateCountdown(secondsLeft) {
+            const statusText = document.getElementById('statusText');
+            if (statusText) {
+                statusText.textContent = `Идет запись... Осталось: ${secondsLeft} сек`;
+            }
+        }
+
+        function updateRecordingUI(status, message = '') {
+            const recordButton = document.getElementById('recordButton');
+            const recordingStatus = document.getElementById('recordingStatus');
+            const statusText = document.getElementById('statusText');
+            
+            switch(status) {
+                case 'recording':
+                    recordButton.disabled = true;
+                    recordButton.innerHTML = '<i class="fas fa-record-vinyl me-1"></i> Идет запись';
+                    recordingStatus.style.display = 'inline-block';
+                    statusText.textContent = message;
+                    recordingStatus.querySelector('i').className = 'fas fa-circle text-danger blink';
+                    break;
+                    
+                case 'processing':
+                    recordButton.disabled = true;
+                    recordButton.innerHTML = '<i class="fas fa-cog fa-spin me-1"></i> Обработка';
+                    statusText.innerHTML =  message;
+                    recordingStatus.querySelector('i').className = 'fas fa-cog fa-spin text-primary';
+                    break;
+                    
+                case 'finished':
+                    recordButton.disabled = true;
+                    recordButton.innerHTML = '<i class="fas fa-check me-1"></i> Завершено';
+                    recordingStatus.style.display = 'inline-block';
+                    statusText.innerHTML = '<i class="fas fa-check-circle text-success me-1"></i> ' + message;
+                    recordingStatus.querySelector('i').style.display = 'none';
+                    break;
+                    
+                case 'error':
+                    recordButton.disabled = false;
+                    recordButton.innerHTML = '<i class="fas fa-record-vinyl me-1"></i> Начать запись';
+                    recordingStatus.style.display = 'inline-block';
+                    statusText.innerHTML = '<i class="fas fa-exclamation-triangle text-warning me-1"></i> ' + message;
+                    recordingStatus.querySelector('i').style.display = 'none';
+                    break;
+                    
+                case 'idle':
+                default:
+                    recordButton.disabled = false;
+                    recordButton.innerHTML = '<i class="fas fa-record-vinyl me-1"></i> Начать запись';
+                    recordingStatus.style.display = 'none';
+                    statusText.textContent = '';
+                    break;
+            }
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            .blink {
+                animation: blink-animation 1s steps(2, start) infinite;
+            }
+            @keyframes blink-animation {
+                to {
+                    visibility: hidden;
+                }
+            }
+            .recording-status {
+                margin-left: 10px;
+                padding: 5px 10px;
+                background-color: #f8f9fa;
+                border-radius: 4px;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+            }
+        `;
+        document.head.appendChild(style);
