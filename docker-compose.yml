@@ -1,0 +1,38 @@
+version: '3.4'
+
+volumes:
+  pg_project:
+
+services:
+  redislib:
+    image: redis:latest
+    container_name: redislib
+    ports:
+      - "6380:6379"
+    command: redis-server --notify-keyspace-events Ex
+  pg_db:
+    image: postgres:latest
+    container_name: library_db
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=lib
+    volumes:
+      - ./src/main/resources/db/backup/library.backup:/library.backup
+      - ./src/main/resources/db/backup/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    ports:
+      - ${POSTGRES_PORT:-5436}:5432
+  library:
+    image: library
+    ports:
+      - "8094:8094"
+    links:
+     - redislib
+    build:
+      context: .
+    container_name: library
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5436/lib
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none

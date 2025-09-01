@@ -31,9 +31,10 @@ public class RecordController implements IRecordController {
         return new ResponseEntity<>( cardRecordService.createCardRecord( createCardRecordRequest ), HttpStatus.CREATED ); 
     }
 
+    @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<RecordReponse>> getLazyRecord(int page, int size) {
-        return new ResponseEntity<>( cardRecordService.getAllRecord( page, size ), HttpStatus.CREATED ); 
+        return new ResponseEntity<>( cardRecordService.getAllRecord( page, size ), HttpStatus.OK ); 
     }
     
 }

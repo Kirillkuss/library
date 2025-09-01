@@ -27,6 +27,7 @@ function createUser(){
                         $(this).find('i').toggleClass('fa-eye fa-eye-slash');
                     });
                     $('#saveUserBtn').click(function() {
+                        const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
                         const form = $('#addUserForm')[0];
                         if (!form.checkValidity()) {
                             form.reportValidity();
@@ -46,6 +47,7 @@ function createUser(){
                             url: protocol + '//'+ hostname + ':' + port +'/library/users/create',
                             method: 'POST',
                             contentType: 'application/json',
+                            headers: { 'X-XSRF-TOKEN': csrfToken },
                             data: JSON.stringify(userData),
                             success: function(response) {
                                 $('#addUserModal').modal('hide');

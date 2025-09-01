@@ -4,15 +4,14 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.itrail.library.domain.Card;
 import com.itrail.library.request.card.CardFilterRequest;
 import com.itrail.library.response.BaseError;
 import com.itrail.library.response.CardInfoResponse;
 import com.itrail.library.response.CardResponseLazy;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,6 +35,7 @@ public interface ICardController {
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка карт", summary = "Получение списка карт")
-    public ResponseEntity<List<CardResponseLazy>> getLazyCards( int page, int size ) ;
+    public ResponseEntity<List<CardResponseLazy>> getLazyCards( @PathVariable int page,
+                                                                @PathVariable int size ) ;
     
 }

@@ -25,11 +25,13 @@ public class BookController implements IBookController {
         return new ResponseEntity<> ( bookService.getBooksByAuthor( bookFilterRequest ), HttpStatus.OK );
     }
 
+    @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<BookResponse>> getFreeBooks(FreeBooksRequest freeBooksRequest) {
         return new ResponseEntity<> ( bookService.getFreeBooks( freeBooksRequest ), HttpStatus.OK );
     }
 
+    @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<BookResponse>> getLazyAuthors(int page, int size) {
         return new ResponseEntity<> ( bookService.getAllBooks( page, size ), HttpStatus.OK );

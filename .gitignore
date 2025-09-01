@@ -8,6 +8,8 @@ frontend/
 !**/src/main/**/build/
 !**/src/test/**/build/
 ./src/main/resource/video/
+allure-results
+
 ### STS ###
 .apt_generated
 .classpath

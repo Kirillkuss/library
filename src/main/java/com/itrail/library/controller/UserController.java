@@ -50,11 +50,13 @@ public class UserController implements IUserController{
         return new ResponseEntity<>( new BaseResponse( 200, "success"), HttpStatus.OK );
     }
 
+    @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<UserResponse>> getUsersForUI( String param, int page, int size) {
         return new ResponseEntity<>( userService.findUsersForUI( param, page, size ), HttpStatus.OK );
     }
 
+    @ExecuteEndpointLog
     @Override
     public ResponseEntity<Long> getCountUsers() {
        return new ResponseEntity<>( userRepository.count(), HttpStatus.OK );

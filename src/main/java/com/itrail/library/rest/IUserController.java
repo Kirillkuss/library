@@ -6,6 +6,7 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,8 @@ public interface IUserController {
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка пользователей", summary = "Получение списка пользователей")
-    public ResponseEntity<List<UserResponse>> getUsers( int page, int size ) ;
+    public ResponseEntity<List<UserResponse>> getUsers( @PathVariable int page,
+                                                        @PathVariable int size ) ;
 
     @PostMapping(value = "/create")
     @Operation( description = "Добавление пользователя", summary = "Добавление пользователя")
@@ -50,7 +52,9 @@ public interface IUserController {
     
     @GetMapping(value = "/{param}/{page}/{size}")
     @Operation( description = "Поиск пользователей", summary = "Поиск пользователей")
-    public ResponseEntity<List<UserResponse>> getUsersForUI( String param, int page, int size) ;
+    public ResponseEntity<List<UserResponse>> getUsersForUI( @PathVariable String param,
+                                                             @PathVariable int page,
+                                                             @PathVariable int size) ;
 
     @GetMapping(value = "/counts")
     @Operation( description = "Количество пользователей", summary = "Количество пользователей")

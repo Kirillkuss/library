@@ -4,15 +4,11 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.itrail.library.aspect.logger.ExecuteEndpointLog;
 import com.itrail.library.domain.Author;
 import com.itrail.library.response.BaseError;
 import com.itrail.library.response.BaseResponse;
-import com.itrail.library.response.UserResponse;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -33,10 +29,11 @@ public interface IAuthorController {
 
     @GetMapping(value = "/{fio}")
     @Operation( description = "Получение списка авторов по ФИО", summary = "Получение списка авторов по ФИО")
-    public ResponseEntity<List<Author>> getAuthors( @Parameter( description = "ФИО", example = "first" ) String fio ) ;
+    public ResponseEntity<List<Author>> getAuthors( @PathVariable @Parameter( description = "ФИО", example = "first" ) String fio ) ;
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка авторов", summary = "Получение списка авторов")
-    public ResponseEntity<List<Author>> getLazyAuthors( int page, int size ) ;
+    public ResponseEntity<List<Author>> getLazyAuthors( @PathVariable int page,
+                                                        @PathVariable int size ) ;
     
 }

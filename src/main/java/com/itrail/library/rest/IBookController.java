@@ -5,6 +5,8 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
@@ -33,16 +35,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
     })
 public interface IBookController {
 
-    @GetMapping(value = "/current/{bookFilterRequest}")
+    @GetMapping(value = "/current")
     @Operation( description = "Получение списка книг по автору", summary = "Получение списка книг по автору")
-    public ResponseEntity<BookFilterResponse> getBooksByAuthor( BookFilterRequest bookFilterRequest ) ;
+    public ResponseEntity<BookFilterResponse> getBooksByAuthor( @ModelAttribute BookFilterRequest bookFilterRequest ) ;
 
-    @GetMapping(value = "/free/{freeBooksRequest}")
+    @GetMapping(value = "/free")
     @Operation( description = "Получение свободных книг", summary = "Получение свободных книг")
-    public ResponseEntity<List<BookResponse>> getFreeBooks( FreeBooksRequest freeBooksRequest ) ;
+    public ResponseEntity<List<BookResponse>> getFreeBooks( @ModelAttribute FreeBooksRequest freeBooksRequest ) ;
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка книг", summary = "Получение списка книг")
-    public ResponseEntity<List<BookResponse>> getLazyAuthors( int page, int size ) ;
+    public ResponseEntity<List<BookResponse>> getLazyAuthors( @PathVariable int page,
+                                                              @PathVariable int size ) ;
 
 }

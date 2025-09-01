@@ -27,6 +27,7 @@ public class CardController implements ICardController {
                                                                             cardFilterRequest.size()), HttpStatus.OK );
     }
 
+    @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<CardResponseLazy>> getLazyCards(int page, int size) {
          return new ResponseEntity<> ( сardService.getLazyCard(page, size), HttpStatus.OK );
