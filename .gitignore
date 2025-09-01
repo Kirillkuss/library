@@ -7,8 +7,8 @@ frontend/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-./src/main/resource/video/
 allure-results
+/src/main/resources/video/
 
 ### STS ###
 .apt_generated
