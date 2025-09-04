@@ -5,4 +5,4 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record CardRecordResponse( List<RecordReponse> records ) implements Serializable {}
+public record CardRecordResponse( List<RecordResponse> records ) implements Serializable {}

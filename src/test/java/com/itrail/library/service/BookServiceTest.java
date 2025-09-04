@@ -27,7 +27,10 @@ import com.itrail.library.repository.AuthorRepository;
 import com.itrail.library.repository.BookRepository;
 import com.itrail.library.request.book.BookFilterRequest;
 import com.itrail.library.request.book.FreeBooksRequest;
+import com.itrail.library.response.BookFilterResponse;
 import com.itrail.library.response.BookResponse;
+
+import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
 
@@ -42,19 +45,24 @@ public class BookServiceTest {
 
     @InjectMocks private BookService bookService;
 
+    public final String TYPE     = "application/json";
+    public final String rezult   = "Результат: ";
+
 
     @Test
     @DisplayName("Поиск книг по автору")
     public void getBooksByAuthorTest(){
         BookFilterRequest bookFilterRequest = new BookFilterRequest("F", 1, 10);
+        Allure.parameter( "bookFilterRequest", bookFilterRequest );
         List<Author> authors = List.of(new Author(1L, LocalDateTime.now(), "F", "S", "M", "UK"));
         List<Book> books = List.of( new Book(1L, LocalDateTime.now(), "123", "123", 12345L, 345L, 1L),
                                     new Book(2L, LocalDateTime.now(), "234", "234", 54321L, 123L, 1L) );
         Mockito.when(authorRepository.findAuthorsByFio(bookFilterRequest.fio())).thenReturn(authors);
         Mockito.when(bookRepository.findBooksByAuthor(1L,  PageRequest.of(bookFilterRequest.page() - 1, bookFilterRequest.size()))).thenReturn(books);
-        bookService.getBooksByAuthor(bookFilterRequest);
+        BookFilterResponse bookFilterResponse = bookService.getBooksByAuthor(bookFilterRequest);
         Mockito.verify(authorRepository).findAuthorsByFio(bookFilterRequest.fio());
         Mockito.verify(bookRepository).findBooksByAuthor(1L,  PageRequest.of(bookFilterRequest.page() - 1, bookFilterRequest.size()));
+        Allure.addAttachment( rezult, TYPE, bookFilterResponse.toString() );
     }
 
     @Test
@@ -83,9 +91,13 @@ public class BookServiceTest {
     @DisplayName("Поиск книг по разным параметрам")
     public void getFreeBooksTest(){
         FreeBooksRequest request1 = new FreeBooksRequest( 0, "nameBook", "author", 12345, 1, 10 );
+        Allure.parameter( "request1", request1 );
         FreeBooksRequest request2 = new FreeBooksRequest( 1, "nameBook", "author", 12345, 1, 10 );
+        Allure.parameter( "request2", request2 );
         FreeBooksRequest request3 = new FreeBooksRequest( 2, "nameBook", "author", 12345, 1, 10 );
+        Allure.parameter( "request3", request3 );
         FreeBooksRequest request4 = new FreeBooksRequest( 3, "nameBook", "author", 12345, 1, 10 );
+        Allure.parameter( "request4", request4 );
         PageRequest page = PageRequest.of( request1.page() - 1, request1.size() );
         List<Book> books = List.of( new Book(1L, LocalDateTime.now(), "123", "123", 12345L, 345L, 1L),
                                     new Book(2L, LocalDateTime.now(), "234", "234", 54321L, 123L, 1L) );
@@ -93,14 +105,18 @@ public class BookServiceTest {
         Mockito.when( bookRepository.getFreeBooks( request2.nameBook(), null, null, page )).thenReturn( books );
         Mockito.when( bookRepository.getFreeBooks( null, request3.author(), null, page )).thenReturn( books );
         Mockito.when( bookRepository.getFreeBooks( null, null, request4.number(), page )).thenReturn( books );
-        bookService.getFreeBooks( request1 );
-        bookService.getFreeBooks( request2 );
-        bookService.getFreeBooks( request3 );
-        bookService.getFreeBooks( request4 );
+        List<BookResponse> booksResponse1 = bookService.getFreeBooks( request1 );
+        List<BookResponse> booksResponse2 = bookService.getFreeBooks( request2 );
+        List<BookResponse> booksResponse3 = bookService.getFreeBooks( request3 );
+        List<BookResponse> booksResponse4 = bookService.getFreeBooks( request4 );
         Mockito.verify(bookRepository).getFreeBooksWithoutParam(page);
         Mockito.verify(bookRepository).getFreeBooks( request2.nameBook(), null, null, page );
         Mockito.verify(bookRepository).getFreeBooks( null, request3.author(), null, page );
         Mockito.verify(bookRepository).getFreeBooks( null, null, request4.number(), page );
+        Allure.addAttachment( rezult, TYPE, booksResponse1.toString() );
+        Allure.addAttachment( rezult, TYPE, booksResponse2.toString() );
+        Allure.addAttachment( rezult, TYPE, booksResponse3.toString() );
+        Allure.addAttachment( rezult, TYPE, booksResponse4.toString() );
     }
 
     @Test
@@ -133,8 +149,8 @@ public class BookServiceTest {
         Page<Book> bookPage = new PageImpl<>( books );
         Mockito.when( bookRepository.findAll( PageRequest.of(page - 1, size))).thenReturn(bookPage);
         List<BookResponse> result = bookService.getAllBooks(page, size);
-        //System.out.println( result );
         Mockito.verify(bookRepository).findAll(PageRequest.of(page - 1, size));
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @ParameterizedTest
@@ -159,10 +175,13 @@ public class BookServiceTest {
         Long idAuthor = 1L;
         Optional<Book> book = Optional.of(new Book( 1L, LocalDateTime.now(),"", "", 12345L, 345L, 1L ));
         Optional<Author> author = Optional.of( new Author(1L, LocalDateTime.now(), "F", "S", "M", "UK"));
+        Allure.parameter( "idAuthor", idAuthor );
+        Allure.parameter( "book", book.orElseThrow() );
         Mockito.when( authorRepository.findById( idAuthor )).thenReturn( author );
         Mockito.when( bookRepository.findBookByNumber( book.orElseThrow().getBookNumber() )).thenReturn( Optional.empty() );
         Mockito.when( bookRepository.save( Mockito.any(Book.class))).thenReturn(  book.orElseThrow() );
-        bookService.saveBook( book.orElseThrow(), idAuthor );
+        Book reponse = bookService.saveBook( book.orElseThrow(), idAuthor );
+        Allure.addAttachment( rezult, TYPE, reponse.toString() );
     }
 
     @Test

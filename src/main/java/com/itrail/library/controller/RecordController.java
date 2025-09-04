@@ -8,7 +8,7 @@ import com.itrail.library.aspect.logger.ExecuteEndpointLog;
 import com.itrail.library.request.record.CardRecordRequest;
 import com.itrail.library.request.record.CreateCardRecordRequest;
 import com.itrail.library.response.CardRecordResponse;
-import com.itrail.library.response.RecordReponse;
+import com.itrail.library.response.RecordResponse;
 import com.itrail.library.rest.IRecordController;
 import com.itrail.library.service.CardRecordService;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +27,13 @@ public class RecordController implements IRecordController {
 
     @ExecuteEndpointLog
     @Override
-    public ResponseEntity<RecordReponse> createRecord(CreateCardRecordRequest createCardRecordRequest) {
+    public ResponseEntity<RecordResponse> createRecord(CreateCardRecordRequest createCardRecordRequest) {
         return new ResponseEntity<>( cardRecordService.createCardRecord( createCardRecordRequest ), HttpStatus.CREATED ); 
     }
 
     @ExecuteEndpointLog
     @Override
-    public ResponseEntity<List<RecordReponse>> getLazyRecord(int page, int size) {
+    public ResponseEntity<List<RecordResponse>> getLazyRecord(int page, int size) {
         return new ResponseEntity<>( cardRecordService.getAllRecord( page, size ), HttpStatus.OK ); 
     }
     

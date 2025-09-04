@@ -19,7 +19,7 @@ import com.itrail.library.response.BookResponse;
 import com.itrail.library.response.CardInfoResponse;
 import com.itrail.library.response.CardResponse;
 import com.itrail.library.response.CardResponseLazy;
-import com.itrail.library.response.RecordReponse;
+import com.itrail.library.response.RecordResponse;
 import com.itrail.library.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 /**
@@ -81,7 +81,7 @@ public class СardService {
                                                                                                                          .map( cr ->{
                                                                                                                             //инф о записях
                                                                                                                             Book book = bookRepository.findById( cr.getBookId() ).orElse( null );
-                                                                                                                            return new RecordReponse(null,
+                                                                                                                            return new RecordResponse(null,
                                                                                                                                                      cr.getCreateDate(),
                                                                                                                                                      cr.getFinishDate(),
                                                                                                                                                      //инф о книге

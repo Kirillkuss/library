@@ -30,6 +30,10 @@ import com.itrail.library.repository.BookRepository;
 import com.itrail.library.repository.CardRecordRepository;
 import com.itrail.library.repository.CardRepository;
 import com.itrail.library.repository.UserRepository;
+import com.itrail.library.response.CardInfoResponse;
+import com.itrail.library.response.CardResponseLazy;
+
+import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
 
@@ -46,13 +50,18 @@ public class СardServiceTest {
 
     @InjectMocks private СardService сardService;
 
+    public final String TYPE     = "application/json";
+    public final String rezult   = "Результат: ";
+
     @Test
     @DisplayName( "Сохранение карты для пользователя")
     public void saveCardTest(){
         Long idUser = 1L;
+        Allure.parameter( "idUser", idUser);
         Mockito.when( userRepository.findById( idUser )).thenReturn( Optional.of( new User() ) );
         Mockito.when( cardRepository.findByUser( idUser )).thenReturn( Optional.empty() );
-        сardService.saveCard( idUser );
+        Card result = сardService.saveCard( idUser );
+        //Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @Test
@@ -85,7 +94,8 @@ public class СardServiceTest {
         Mockito.when( cardRecordRepository.findRecordsCurrent( card.getId(), PageRequest.of(page - 1, size))).thenReturn(cardRecords);
         Mockito.when( bookRepository.findById( 1L )).thenReturn( Optional.of( new Book() ));
         Mockito.when( bookRepository.findById( 3L )).thenReturn( Optional.of( new Book() ));;
-        сardService.getFullInfoCardAndRecord( user, page, size );
+        CardInfoResponse result = сardService.getFullInfoCardAndRecord( user, page, size );
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @ParameterizedTest
@@ -121,7 +131,9 @@ public class СardServiceTest {
                                    new Card(2L, LocalDateTime.now(), LocalDateTime.now(), null, false, new User()));
         Page<Card> pageCard = new PageImpl<>( card );
         Mockito.when( cardRepository.findAll( PageRequest.of( page - 1, size ))).thenReturn( pageCard );
-        assertFalse(сardService.getLazyCard( page, size ).isEmpty());
+        List<CardResponseLazy> result = сardService.getLazyCard( page, size );
+        assertFalse( result.isEmpty() );
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @ParameterizedTest

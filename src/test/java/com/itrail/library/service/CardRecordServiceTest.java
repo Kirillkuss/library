@@ -28,7 +28,10 @@ import com.itrail.library.repository.CardRecordRepository;
 import com.itrail.library.repository.CardRepository;
 import com.itrail.library.request.record.CardRecordRequest;
 import com.itrail.library.request.record.CreateCardRecordRequest;
+import com.itrail.library.response.CardRecordResponse;
+import com.itrail.library.response.RecordResponse;
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
 
@@ -44,6 +47,9 @@ public class CardRecordServiceTest {
 
     @InjectMocks private CardRecordService cardRecordService;
 
+    public final String TYPE     = "application/json";
+    public final String rezult   = "Результат: ";
+
     @ParameterizedTest
     @CsvSource({"1,2"})
     @DisplayName("Ленивая загрузка записей")
@@ -58,7 +64,8 @@ public class CardRecordServiceTest {
         Mockito.when( cardRepository.findById( 2L )).thenReturn( Optional.of( card ));
         Mockito.when( bookRepository.findById( 1L)).thenReturn( Optional.of( book ));
         Mockito.when( bookRepository.findById( 2L)).thenReturn( Optional.of( book ));
-        cardRecordService.getAllRecord( page, size ); 
+        List<RecordResponse> result = cardRecordService.getAllRecord( page, size );
+        Allure.addAttachment( rezult, TYPE, result.toString() ); 
     }
 
     @ParameterizedTest
@@ -84,7 +91,8 @@ public class CardRecordServiceTest {
         List<CardRecord> cardRecords = List.of( new CardRecord( 1L, LocalDateTime.now(), null, 1L, 1L),
                                                 new CardRecord(2L, LocalDateTime.now(), null,  2L, 2L ));
         Card card = new Card( 1L, LocalDateTime.now(), LocalDateTime.now().minusMonths(1), null, false, new User() );
-        Book book = new Book( 1L, LocalDateTime.now(), "", "", 123L, 45L, 1L );  
+        Book book = new Book( 1L, LocalDateTime.now(), "", "", 123L, 45L, 1L ); 
+        Allure.parameter("cardRecordRequest", cardRecordRequest); 
         Mockito.when( cardRecordRepository.getRecordsByPeriodAndCard( cardRecordRequest.user(),
                                                                       cardRecordRequest.start(),
                                                                       cardRecordRequest.finish(),
@@ -93,7 +101,8 @@ public class CardRecordServiceTest {
         Mockito.when( cardRepository.findById( 2L )).thenReturn( Optional.of( card )); 
         Mockito.when( bookRepository.findById( 1L )).thenReturn( Optional.of( book ));
         Mockito.when( bookRepository.findById( 2L )).thenReturn( Optional.of( book ));                                                                   
-        cardRecordService.getRecordByCard( cardRecordRequest );
+        CardRecordResponse result = cardRecordService.getRecordByCard( cardRecordRequest );
+        Allure.addAttachment( rezult, TYPE, result.toString() ); 
     }
 
 
@@ -121,14 +130,15 @@ public class CardRecordServiceTest {
             Card card             = new Card(1L, LocalDateTime.now(), LocalDateTime.now().minusMonths(1), null, false, user);
             Book book             = new Book(1L, LocalDateTime.now(), "Test Book", "Test Author", 1245L, 45L, 1L);
             CardRecord cardRecord = new CardRecord(1L, LocalDateTime.now(), LocalDateTime.now().plusDays(2), 1L, 1L);
-
+            Allure.parameter("createCardRecordRequest", createCardRecordRequest );
             Mockito.when( bookRepository.findBookByNumber( book.getBookNumber() )).thenReturn(Optional.of(book));
             Mockito.when( cardRepository.findById( card.getId() )).thenReturn(Optional.of(card));
             Mockito.when( cardRecordRepository.findRecordByBook( book.getId() )).thenReturn(Optional.empty());
             Mockito.when( cardRepository.findById( card.getId() )).thenReturn(Optional.of(card)); 
             Mockito.when( bookRepository.findById( book.getId() )).thenReturn(Optional.of(book)); 
             Mockito.when( cardRecordRepository.save( Mockito.any( CardRecord.class ))).thenReturn( cardRecord );
-            cardRecordService.createCardRecord(createCardRecordRequest);
+            RecordResponse result = cardRecordService.createCardRecord(createCardRecordRequest);
+            Allure.addAttachment( rezult, TYPE, result.toString() ); 
     }
 
     @Test

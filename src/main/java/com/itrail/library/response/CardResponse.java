@@ -9,5 +9,5 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public record CardResponse( LocalDateTime createDate,
                             LocalDateTime finishDate,
                             Boolean isopen,
-                            List<RecordReponse> records) implements Serializable {
+                            List<RecordResponse> records) implements Serializable {
 }

@@ -23,8 +23,11 @@ import com.itrail.library.domain.User;
 import com.itrail.library.repository.RoleRepository;
 import com.itrail.library.repository.UserRepository;
 import com.itrail.library.request.CreateUserRequest;
+import com.itrail.library.response.UserResponse;
 import com.itrail.library.sequrity.generate.PasswordGenerator;
 import com.itrail.library.service.auth.GoogleAuthenticationService;
+
+import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
 
@@ -42,6 +45,9 @@ public class UserServiceTest {
 
     @InjectMocks UserService userService;
 
+    public final String TYPE     = "application/json";
+    public final String rezult   = "Результат: ";
+
     @Test
     @DisplayName("Генерация нового пароля для пользователя")
     public void generateNewPasswordForUserTest(){
@@ -49,7 +55,8 @@ public class UserServiceTest {
         Mockito.when( passwordGenerator.generateRandomPassword() ).thenReturn( "VdmiN4567!?34545#+=" );
         Mockito.when( passwordEncoder.encode( user.getPassword() )).thenReturn( "VdmiN4567!?34545#+=" );
         Mockito.when( userRepository.save( user )).thenReturn(user);
-        userService.generateNewPasswordForUser( user );
+        String result = userService.generateNewPasswordForUser( user );
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @Test
@@ -73,7 +80,7 @@ public class UserServiceTest {
                                                                      "mail1435@mail.ru", 
                                                                      "+375284346506", 
                                                                            roles );
-        
+        Allure.parameter("createUserRequest", createUserRequest);
         Role role = new Role(1L, LocalDateTime.now(), "ADMIN" );
         Mockito.when( passwordEncoder.encode( createUserRequest.password() )).thenReturn( "VdmiN4567!?34545#+=" );
         Mockito.when( googleAuthenticationService.generateKey()).thenReturn( "VdmiN4567!?34545#+=" );
@@ -224,7 +231,8 @@ public class UserServiceTest {
                                     new User( 2L, LocalDateTime.now(), "Admin3213", "VdmiN4567!?34545#+=", "last", "first", "middle", "mail1435@mail.ru", false, "+375284346506", "secret", Set.of( role )));
         Page<User> userPage = new PageImpl<>( users );
         Mockito.when(userRepository.findAll( PageRequest.of( page - 1, size ) )).thenReturn( userPage );
-        userService.getUsers( page, size );
+        List<UserResponse> result = userService.getUsers( page, size );
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @ParameterizedTest
@@ -252,7 +260,8 @@ public class UserServiceTest {
         List<User> users = List.of( new User( 1L, LocalDateTime.now(), "Admin321", "VdmiN4567!?34545#+=", "last", "first", "middle", "mail1435@mail.ru", false, "+375284346506", "secret", Set.of( role )),
                                     new User( 2L, LocalDateTime.now(), "Admin3213", "VdmiN4567!?34545#+=", "last", "first", "middle", "mail1435@mail.ru", false, "+375284346506", "secret", Set.of( role )));
         Mockito.when(userRepository.findUsersForUI( param, PageRequest.of( page - 1, size ) )).thenReturn( users );
-        userService.findUsersForUI( param, page, size );
+        List<UserResponse> result = userService.findUsersForUI( param, page, size );
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @ParameterizedTest
@@ -285,6 +294,7 @@ public class UserServiceTest {
                                                                            roles );
         Role role = new Role(1L, LocalDateTime.now(), "ADMIN" );
         User user = new User( 1L, LocalDateTime.now(), "Admin321", "VdmiN4567!?34545#+=", "last", "first", "middle", "mail1435@mail.ru", false, "+375284346506", "secret", Set.of( role ));
+        Allure.parameter( "createUserRequest", createUserRequest );
         Mockito.when( passwordEncoder.encode( createUserRequest.password() )).thenReturn( "VdmiN4567!?34545#+=" );
         Mockito.when( googleAuthenticationService.generateKey()).thenReturn( "VdmiN4567!?34545#+=" );
         Mockito.when( userRepository.findByLogin( createUserRequest.login() )).thenReturn( Optional.empty());
@@ -292,7 +302,8 @@ public class UserServiceTest {
         Mockito.when( userRepository.findUserByPhone( createUserRequest.phone() )).thenReturn( Optional.empty());
         Mockito.when( roleRepository.findByName( roles.iterator().next() )).thenReturn( Optional.of( role ));
         Mockito.when( userRepository.save( Mockito.any( User.class ))).thenReturn( user );  
-        userService.createUserRegister( createUserRequest );         
+        UserResponse result = userService.createUserRegister( createUserRequest );
+        Allure.addAttachment( rezult, TYPE, result.toString() );         
     }
 
     

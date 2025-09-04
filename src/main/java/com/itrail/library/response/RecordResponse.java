@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record RecordReponse( String user,
+public record RecordResponse( String user,
                              LocalDateTime createDate,
                              LocalDateTime finishDate,
                              BookResponse book) implements Serializable {

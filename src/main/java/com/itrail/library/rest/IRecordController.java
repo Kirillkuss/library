@@ -14,7 +14,7 @@ import com.itrail.library.request.record.CardRecordRequest;
 import com.itrail.library.request.record.CreateCardRecordRequest;
 import com.itrail.library.response.BaseError;
 import com.itrail.library.response.CardRecordResponse;
-import com.itrail.library.response.RecordReponse;
+import com.itrail.library.response.RecordResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,11 +39,11 @@ public interface IRecordController {
 
     @PostMapping(value = "/create")
     @Operation( description = "Добавление записи карты", summary = "Добавление записи карты")
-    public ResponseEntity<RecordReponse> createRecord( @RequestBody CreateCardRecordRequest createCardRecordRequest );
+    public ResponseEntity<RecordResponse> createRecord( @RequestBody CreateCardRecordRequest createCardRecordRequest );
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка записей", summary = "Получение списка записей")
-    public ResponseEntity<List<RecordReponse>> getLazyRecord( @PathVariable int page,
-                                                              @PathVariable int size ) ;
+    public ResponseEntity<List<RecordResponse>> getLazyRecord( @PathVariable int page,
+                                                               @PathVariable int size ) ;
       
 }
