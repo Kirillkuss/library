@@ -12,3 +12,4 @@
 * Redis
 * AOP (Log, Transaction, Error)
 * RTSP/WebRTC ( use mediamtx https://github.com/bluenviron/mediamtx)
+* Test( Mockito, RestAssured ) - CI/CD ( Jenkins )

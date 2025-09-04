@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -32,7 +33,7 @@ public class SecurityConfiguration {
     private final LibAuthenticationSuccessHandler libAuthenticationSuccessHandler;
     private final LibSingleSessionFilter          libSingleSessionFilter;
 
-    @Bean
+    /**@Bean
     public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
          return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
                     .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
@@ -55,11 +56,33 @@ public class SecurityConfiguration {
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID", "XSRF-TOKEN")) 
-                    .csrf(csrf -> csrf
-                            .csrfTokenRepository( CookieCsrfTokenRepository.withHttpOnlyFalse() ) 
-                            .ignoringRequestMatchers( csrfIgnoringRequestMatchers()))
+                    //.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
+                    //                  .ignoringRequestMatchers(csrfIgnoringRequestMatchers()))
+                    .csrf(csrf -> csrf.disable())
                     .build();
+    }*/
+
+    private String[] csrfIgnoringRequestMatchers(){
+        return new String[]{
+            "/login",
+            "/securecode", 
+            "/logout",
+            "/error",
+            "/register", 
+            "/change-password",
+            "/library/api/**",
+            "/users/**"             
+        };
     }
+
+    private CsrfTokenRepository csrfTokenRepository() {
+        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        repository.setCookiePath("/");
+        repository.setCookieName("XSRF-TOKEN");
+        return repository;
+    }
+
+    
 
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
@@ -72,29 +95,24 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-                          configuration.setAllowedOrigins(List.of("http://localhost:8094", "http://localhost:8889"));
-                          configuration.setAllowedMethods(List.of("GET", "POST", "DELETE"));
-                          configuration.setAllowedHeaders(List.of("Authorization",
-                                                                   "Content-Type",
-                                                                   "X-Requested-With",
-                                                                   "Accept",
-                                                                   "Origin",
-                                                                   "X-XSRF-TOKEN" ));
-                          configuration.setMaxAge(1800L); 
-                          configuration.setExposedHeaders(List.of("Content-Disposition","Content-Length","X-Custom-Header"));
-                         configuration.setAllowCredentials(false);
+        configuration.setAllowedOrigins(List.of("http://localhost:8094", "http://localhost:8889"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization",
+                                            "Content-Type",
+                                            "X-Requested-With",
+                                            "Accept",
+                                            "Origin",
+                                            "X-XSRF-TOKEN"));
+        configuration.setExposedHeaders(List.of("Content-Disposition","Content-Length","X-Custom-Header"));
+        configuration.setAllowCredentials(true); 
+        configuration.setMaxAge(1800L);
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                                        source.registerCorsConfiguration( "/library/api/**", configuration );
+        source.registerCorsConfiguration("/**", configuration); 
         return source;
     }
 
-    /**@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize.anyRequest()
-            .permitAll())
-            .csrf(csrf -> csrf.disable()); 
-        return http.build();
-    }*/
+
 
     private String[] publicEndpoints() {
         return new String[]{
@@ -122,13 +140,12 @@ public class SecurityConfiguration {
         };
     }
 
-    private String[] csrfIgnoringRequestMatchers(){
-        return new String[]{"/login",
-                            "/securecode",
-                            "/logout",
-                            "/error",
-                            "/register",
-                            "/change-password"};
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest()
+            .permitAll())
+            .csrf(csrf -> csrf.disable());
+        return http.build();
     }
 
     @Bean

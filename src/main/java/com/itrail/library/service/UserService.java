@@ -77,7 +77,7 @@ public class UserService {
     private void checkCreateUser( CreateUserRequest createUserRequest ){
         if ( createUserRequest.roles() == null || createUserRequest.roles().isEmpty() ) throw new IllegalArgumentException( "Должна быть указана роль!");
         if ( createUserRequest.login().length() <= 5 )                                  throw new IllegalArgumentException( "Длина логина должна быть не меньше 6 символов!");
-        if ( !isValidPassword( createUserRequest.password() ))                          throw new IllegalArgumentException( "Неверный формат пароля, как минимум 8 знаков, 1 большая и одна 1 буква, 1 символ!");
+        if ( !isValidPassword( createUserRequest.password() ))                          throw new IllegalArgumentException( "Неверный формат пароля, как минимум 12 знаков, 1 большая и одна 1 буква, 1 символ, 1 цифра!");
         if ( !isValidEmail( createUserRequest.email() ))                                throw new IllegalArgumentException("Неверный формат электронной почты!");
         if ( userRepository.findByLogin( createUserRequest.login() ).isPresent() )      throw new IllegalArgumentException( "Пользователь с таким логином уже существует!");
         if ( userRepository.findByEmail( createUserRequest.email() ).isPresent() )      throw new IllegalArgumentException( "Пользователь с такой почтой уже существует!");
@@ -111,7 +111,7 @@ public class UserService {
      * @return boolean
      */
     private boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[0-9])(?=.*[a-zа-яё])(?=.*[A-ZА-ЯЁ])(?=.*[@#$%^&+=])(?=\\S+$).{12,20}$");
+        return password.matches("^(?=.*[0-9])(?=.*[a-zа-яё])(?=.*[A-ZА-ЯЁ])(?=.*[@#$%^&+=])(?=\\S+$).{12,}$");
     }
 
 
@@ -161,6 +161,8 @@ public class UserService {
     //@Cacheable
     @ExecuteMethodLog 
     public List<UserResponse> getUsers( int page, int size ){
+        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
+        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         List<UserResponse> users =
          userRepository.findAll( PageRequest.of( page - 1, size ))
                       .getContent()
@@ -182,6 +184,8 @@ public class UserService {
     }
 
     public List<UserResponse> findUsersForUI( String param, int page, int size ){
+        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
+        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         return  userRepository.findUsersForUI( param, PageRequest.of( page - 1, size ) )
                                 .stream()
                                 .map( user -> {

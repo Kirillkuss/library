@@ -26,12 +26,12 @@ function users(){
                     $('#usersTableBody').html('<tr><td colspan="8" class="text-center">Загрузка данных...</td></tr>');
                     
                     $.ajax({
-                        url: protocol + "//"+ hostname + ':' + port + '/library/users/lazy/${page}/${size}',
+                        url: protocol + "//"+ hostname + ':' + port + '/library/users/lazy/' + page + '/' + size,
                         type: 'GET',
-                        data: {
+                        /**data: {
                             page: page,
                             size: size,
-                        },
+                        },*/
                         success: function(response) {
                             $('#loadingIndicator').hide();
                             let users = [];

@@ -31,6 +31,8 @@ public class CardRecordService {
     private final CardRepository       cardRepository;
 
     public List<RecordReponse> getAllRecord( int page, int size ){
+        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
+        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         return cardRecordRepository.findAll( PageRequest.of( page - 1, size ))
                               .stream()
                               .map( recordCard -> {
@@ -56,7 +58,7 @@ public class CardRecordService {
      * @return CardRecord
      */
     @Transactional
-    public CardRecord saveRecord( Long bookNumber, Long idCard ){
+    private CardRecord saveRecord( Long bookNumber, Long idCard ){
         Optional<Book> book = bookRepository.findBookByNumber( bookNumber );
         if( book.isEmpty() ) throw new IllegalArgumentException("Такой книги не существует!");
         if( cardRepository.findById( idCard ).isEmpty() ) throw new IllegalArgumentException("Такой карты не существует!");
@@ -97,7 +99,7 @@ public class CardRecordService {
     @ExecuteMethodLog
     public CardRecordResponse getRecordByCard( CardRecordRequest cardRecordRequest ){
         if( cardRecordRequest.page() <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( cardRecordRequest.page() <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
+        if( cardRecordRequest.size() <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         return new CardRecordResponse( cardRecordRepository.getRecordsByPeriodAndCard( cardRecordRequest.user(),
                                                                                        cardRecordRequest.start(),
                                                                                        cardRecordRequest.finish(),
