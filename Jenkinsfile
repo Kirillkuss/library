@@ -28,7 +28,7 @@ pipeline {
   }
     post {
         always {
-            allure includeProperties: false, jdk: '', properties: [[key: 'allure.results.directory', value: 'target/allure-results']], report: 'target/allure-report', results: [[path: 'target/allure-results']]
+            allure includeProperties: false, jdk: '', properties: [[key: 'allure.results.directory', value: '/allure-results']], report: 'target/allure-report', results: [[path: '/allure-results']]
             junit(testResults: '**/target/surefire-reports/*.xml', allowEmptyResults : true, skipPublishingChecks: true)
             }
         }
