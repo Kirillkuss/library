@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import com.itrail.library.domain.Author;
 import com.itrail.library.repository.AuthorRepository;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
 
@@ -29,6 +30,11 @@ class AuthorServiceTest {
     @Mock        private AuthorRepository authorRepository;
     @InjectMocks private AuthorService authorService;
 
+    public final String TYPE     = "application/json";
+    public final String rezult   = "Результат: ";
+    public final String error    = "Ошибка: ";
+    public final String leadTime = "Время выполнения: ";
+
     @ParameterizedTest
     @CsvSource({"First"})
     @DisplayName("Поиск автора по фио")
@@ -38,6 +44,7 @@ class AuthorServiceTest {
         List<Author> result = authorService.getAuthors(fio);
         Assertions.assertEquals(expectedAuthors, result);
         Mockito.verify(authorRepository).findAuthorsByFio(fio);
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @ParameterizedTest
@@ -51,6 +58,7 @@ class AuthorServiceTest {
         List<Author> result = authorService.getAllAuthors(page, size);
         Assertions.assertEquals(authors, result);
         Mockito.verify(authorRepository).findAll(PageRequest.of(page - 1, size));
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     @ParameterizedTest
