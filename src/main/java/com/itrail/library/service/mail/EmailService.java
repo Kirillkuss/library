@@ -46,11 +46,12 @@ public class EmailService {
      */
     private String maskEmail(String email) {
         if (email == null || email.isEmpty()) {
-            return "[empty]";
+            throw new IllegalArgumentException("Неверный формат почты!");
         }
         int atIndex = email.indexOf('@');
         if (atIndex <= 0) {
-            return "[invalid]";
+           
+            throw new IllegalArgumentException("Неверный формат почты!");
         }
         String namePart = email.substring(0, atIndex);
         String domainPart = email.substring(atIndex);

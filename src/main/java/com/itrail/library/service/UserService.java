@@ -47,7 +47,7 @@ public class UserService {
     public void init(){
         if( userRepository.findByLogin( "Admin123" ).isEmpty() ){
             createUser( new CreateUserRequest( "Admin123", 
-                                            "Admin123!", 
+                                            "AdmiN!?3957612#+=", 
                                            "ADMIN", 
                                           "ADMIN", 
                                           "ADMIN", 
@@ -58,7 +58,7 @@ public class UserService {
         }
         if( userRepository.findByLogin( "User123" ).isEmpty() ){
             createUser( new CreateUserRequest( "User123", 
-                                            "User123!", 
+                                            "AdmiN!?3957612#+=", 
                                            "USER", 
                                           "USER", 
                                           "USER", 

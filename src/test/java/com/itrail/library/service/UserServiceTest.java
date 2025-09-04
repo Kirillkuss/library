@@ -306,5 +306,34 @@ public class UserServiceTest {
         Allure.addAttachment( rezult, TYPE, result.toString() );         
     }
 
+    @Test
+    @DisplayName( "Тестирование метода на проверку пароля")
+    public void checkUserPasswordTest(){
+        String password = "12345";
+        String encodedPassword = "3afdsknjfi3245";
+        Mockito.when( passwordEncoder.matches( password, encodedPassword )).thenReturn( Boolean.valueOf( false ));
+        userService.checkUserPassword( password, encodedPassword );
+    }
+
+    @Test
+    @DisplayName( "Инициализация двух пользователей")
+    public void initTest(){
+        Role ADMIN = new Role(1L, LocalDateTime.now(), "ADMIN" );
+        Role USER = new Role(2L, LocalDateTime.now(), "USER" );
+        Mockito.when( userRepository.findByLogin( "Admin123" )).thenReturn( Optional.empty() );
+        Mockito.when( userRepository.findByLogin( "User123" )).thenReturn( Optional.empty() );
+        Mockito.when( roleRepository.findByName( "ADMIN" )).thenReturn(Optional.of( ADMIN ));
+        Mockito.when( roleRepository.findByName( "USER" )).thenReturn(Optional.of( USER ));  
+        userService.init();
+    }
+
+    @Test
+    @DisplayName( "Инициализация двух пользователей - проверка, если уже созданы") 
+    public void initSecondTest(){
+        Mockito.when( userRepository.findByLogin( "Admin123" )).thenReturn( Optional.of(new User()) );
+        Mockito.when( userRepository.findByLogin( "User123" )).thenReturn( Optional.of(new User()) );
+        userService.init();
+    }
+
     
 }

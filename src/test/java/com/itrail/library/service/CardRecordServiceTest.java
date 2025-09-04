@@ -30,7 +30,6 @@ import com.itrail.library.request.record.CardRecordRequest;
 import com.itrail.library.request.record.CreateCardRecordRequest;
 import com.itrail.library.response.CardRecordResponse;
 import com.itrail.library.response.RecordResponse;
-
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
