@@ -1,4 +1,4 @@
-package com.itrail.library.service;
+package com.itrail.library.service.auth;
 
 import java.awt.image.BufferedImage;
 import java.time.Instant;
@@ -22,8 +22,7 @@ import com.itrail.library.config.redis.domain.Session;
 import com.itrail.library.config.redis.repository.SessionRepository;
 import com.itrail.library.domain.User;
 import com.itrail.library.repository.UserRepository;
-import com.itrail.library.service.auth.AuthService;
-import com.itrail.library.service.auth.GoogleAuthenticationService;
+import com.itrail.library.service.UserService;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
 

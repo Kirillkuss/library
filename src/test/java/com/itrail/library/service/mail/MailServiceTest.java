@@ -1,4 +1,4 @@
-package com.itrail.library.service;
+package com.itrail.library.service.mail;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 import com.itrail.library.domain.User;
 import com.itrail.library.repository.UserRepository;
-import com.itrail.library.service.mail.EmailService;
+import com.itrail.library.service.UserService;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
 

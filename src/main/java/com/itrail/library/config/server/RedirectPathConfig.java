@@ -1,5 +1,5 @@
-package com.itrail.library;
-
+package com.itrail.library.config.server;
+/** */
 import java.io.IOException;
 import java.util.Collections;
 import jakarta.servlet.Servlet;

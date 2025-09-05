@@ -33,7 +33,7 @@ public class SecurityConfiguration {
     private final LibAuthenticationSuccessHandler libAuthenticationSuccessHandler;
     private final LibSingleSessionFilter          libSingleSessionFilter;
 
-    /**@Bean
+    @Bean
     public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
          return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
                     .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
@@ -60,7 +60,7 @@ public class SecurityConfiguration {
                     //                  .ignoringRequestMatchers(csrfIgnoringRequestMatchers()))
                     .csrf(csrf -> csrf.disable())
                     .build();
-    }*/
+    }
 
     private String[] csrfIgnoringRequestMatchers(){
         return new String[]{
@@ -140,13 +140,13 @@ public class SecurityConfiguration {
         };
     }
 
-    @Bean
+    /**@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize.anyRequest()
             .permitAll())
             .csrf(csrf -> csrf.disable());
         return http.build();
-    }
+    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder() {

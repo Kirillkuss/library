@@ -1,13 +1,11 @@
-package com.itrail.library.service;
+package com.itrail.library.service.auth;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.itrail.library.service.auth.GoogleAuthenticationService;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
 
