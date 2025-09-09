@@ -21,6 +21,7 @@ import com.itrail.library.domain.User;
 import com.itrail.library.repository.LogEntryRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +52,8 @@ public class LoggerAspect {
                   stopWatch.start();
         HttpServletRequest request   = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+        HttpSession session = request.getSession();
+
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
         String methodName               = methodSignature.getMethod().getName();
         String className                = proceedingJoinPoint.getTarget().getClass().getSimpleName();
@@ -94,6 +97,7 @@ public class LoggerAspect {
             
             throw ex;
         } finally {
+
             uri = URLDecoder.decode(uri, StandardCharsets.UTF_8.name());   
             logEntryRepository.save( LogEntry.builder()
                                              .serverTime (LocalDateTime.now())
@@ -106,6 +110,7 @@ public class LoggerAspect {
                                              .requestUri( uri )
                                              .responseStatus( response.getStatus() )
                                              .executeTime(stopWatch.getTotalTimeMillis())
+                                             .sessionId( session.getId() )
                                              .build() );
         }
         log.info(" [Controller Log] Method: {} | Time: {} ms | Args: {} | Status: {} ", methodName, stopWatch.getTotalTimeMillis(), Arrays.toString(args), response.getStatus() );             

@@ -39,4 +39,5 @@ public class LogEntry {
     @Column( name = "request_uri", length = 255)                                private String requestUri; 
     @Column( name = "response_status")                                          private Integer responseStatus; 
     @Column( name = "execute_time")                                             private Long executeTime;
+    @Column( name = "session_id")                                               private String sessionId;
 }

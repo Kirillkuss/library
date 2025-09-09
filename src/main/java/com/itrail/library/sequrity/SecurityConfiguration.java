@@ -55,23 +55,16 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl( "/library/login?logout=true" )
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")) 
-                    //.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
-                    //                  .ignoringRequestMatchers(csrfIgnoringRequestMatchers()))
-                    .csrf(csrf -> csrf.disable())
+                        .deleteCookies("JSESSIONID", "XSRF-TOKEN", "X-XSRF-TOKEN")) 
+                    .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
+                                      .ignoringRequestMatchers(csrfIgnoringRequestMatchers()))
+                    //.csrf(csrf -> csrf.disable())
                     .build();
     }
 
     private String[] csrfIgnoringRequestMatchers(){
-        return new String[]{
-            "/login",
-            "/securecode", 
-            "/logout",
-            "/error",
-            "/register", 
-            "/change-password",
-            "/library/api/**",
-            "/users/**"             
+        return new String[]{ "/login", "/securecode", "/logout", "/error","/register", 
+            "/change-password","/users/**","/cards/**","/videos/**" ,"/records/**"               
         };
     }
 
@@ -82,8 +75,6 @@ public class SecurityConfiguration {
         return repository;
     }
 
-    
-
     @Bean
     public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
         FilterRegistrationBean<CorsFilter> registration = new FilterRegistrationBean<>();
@@ -92,52 +83,58 @@ public class SecurityConfiguration {
         return registration;
     }
 
+
+   /**  @Bean
+    public FilterRegistrationBean<CsrfCookieFilter> csrfCookieFilter() {
+        FilterRegistrationBean<CsrfCookieFilter> registration = new FilterRegistrationBean<>();
+                                                 registration.setFilter(new CsrfCookieFilter());
+                                                 registration.addUrlPatterns("/*");
+        return registration;
+    }
+
+    public class CsrfCookieFilter extends OncePerRequestFilter {
+        @Override
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+            CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+            if (csrfToken != null) {
+                System.out.println("CSRF Token: " + csrfToken.getToken());
+            }
+            filterChain.doFilter(request, response);
+        }
+    }*/
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8094", "http://localhost:8889"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization",
-                                            "Content-Type",
-                                            "X-Requested-With",
-                                            "Accept",
-                                            "Origin",
-                                            "X-XSRF-TOKEN"));
-        configuration.setExposedHeaders(List.of("Content-Disposition","Content-Length","X-Custom-Header"));
-        configuration.setAllowCredentials(true); 
-        configuration.setMaxAge(1800L);
-        
+                          configuration.setAllowedOrigins(List.of("http://localhost:8094", "http://localhost:8889"));
+                          configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "OPTIONS"));
+                          configuration.setAllowedHeaders(List.of("Authorization",
+                                                                  "Content-Type",
+                                                                  "X-Requested-With",
+                                                                  "Accept",
+                                                                  "Origin",
+                                                                  "X-XSRF-TOKEN",
+                                                                  "X-CSRF-TOKEN" ));
+                          configuration.setExposedHeaders(List.of("Content-Disposition",
+                                                                  "Content-Length",
+                                                                  "X-Custom-Header",
+                                                                  "X-XSRF-TOKEN" ));
+                          configuration.setAllowCredentials(true);
+                          configuration.setMaxAge(1800L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); 
+                                        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
 
 
     private String[] publicEndpoints() {
-        return new String[]{
-            "/login",
-            "/logout",
-            "/change-password",
-            "/error",
-            "/register",
-            "/clear-error-message",
-            "/icon/**",
-            "/css/**"
-        };
+        return new String[]{ "/login", "/logout", "/change-password", "/error", "/register", "/clear-error-message", "/icon/**", "/css/**" };
     }
 
     private String[] privateEndpoint(){
-        return new String[]{
-            "/swagger-ui/index.html", 
-            "/**",
-            "/",
-            "/index",
-            "/library",
-            "/library/**",
-            "/library/swagger-ui/index.html",
-            "/library/app/index.html"
-        };
+        return new String[]{ "/swagger-ui/index.html",  "/**", "/", "/index", "/library", "/library/**",
+                             "/records/**", "/library/swagger-ui/index.html", "/library/app/index.html" };
     }
 
     /**@Bean
@@ -159,5 +156,4 @@ public class SecurityConfiguration {
     }
 
 
-    
 }
