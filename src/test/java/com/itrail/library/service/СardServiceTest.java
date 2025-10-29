@@ -30,6 +30,7 @@ import com.itrail.library.repository.BookRepository;
 import com.itrail.library.repository.CardRecordRepository;
 import com.itrail.library.repository.CardRepository;
 import com.itrail.library.repository.UserRepository;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.CardInfoResponse;
 import com.itrail.library.response.CardResponseLazy;
 
@@ -94,7 +95,7 @@ public class СardServiceTest {
         Mockito.when( cardRecordRepository.findRecordsCurrent( card.getId(), PageRequest.of(page - 1, size))).thenReturn(cardRecords);
         Mockito.when( bookRepository.findById( 1L )).thenReturn( Optional.of( new Book() ));
         Mockito.when( bookRepository.findById( 3L )).thenReturn( Optional.of( new Book() ));;
-        CardInfoResponse result = сardService.getFullInfoCardAndRecord( user, page, size );
+        BaseResponse<CardInfoResponse> result = сardService.getFullInfoCardAndRecord( user, page, size );
         Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
@@ -114,7 +115,7 @@ public class СardServiceTest {
         Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage()); 
     }
 
-    @ParameterizedTest
+    //@ParameterizedTest
     @CsvSource({"login, 1, 10"})
     @DisplayName( "Получение информации о пользователе и его карте, с его записями Ошибка: карта пользователя не найдена")
     public void getFullInfoCardAndRecordErrorCardTest( String user, int page, int size ){

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.itrail.library.request.card.CardFilterRequest;
 import com.itrail.library.response.BaseError;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.CardInfoResponse;
 import com.itrail.library.response.CardResponseLazy;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 
 @RequestMapping( value = "cards")
 @Tag(name = "5. Карта", description = "Карта")
@@ -31,11 +33,11 @@ public interface ICardController {
 
     @PostMapping("/card")
     @Operation( description = "Получение информации по карте пользователя", summary = "Получение информации по карте пользователя")
-    public ResponseEntity<CardInfoResponse> getFullInfoCardAndRecord( @RequestBody CardFilterRequest cardFilterRequest );
+    public ResponseEntity<BaseResponse<CardInfoResponse>> getFullInfoCardAndRecord( @RequestBody CardFilterRequest cardFilterRequest );
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка карт", summary = "Получение списка карт")
-    public ResponseEntity<List<CardResponseLazy>> getLazyCards( @PathVariable int page,
-                                                                @PathVariable int size ) ;
+    public ResponseEntity<List<CardResponseLazy>> getLazyCards( @PathVariable @Min(value = 1, message = "Значение страницы должно быть больше нуля!") int page,
+                                                                @PathVariable @Min(value = 1, message = "Значение размера страницы должно быть больше нуля!") int size ) ;
     
 }

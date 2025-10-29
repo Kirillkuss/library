@@ -36,6 +36,7 @@ public class RtspService {
      * @throws Exception
      */
     public BaseResponse makeRecord( RtspRequest rtspRequest ) throws Exception{
+        long startTime = System.currentTimeMillis();
         if ( isH264( rtspRequest.path() )){
             TimeUnit.SECONDS.sleep(10 );
             executeRecordForH264( rtspRequest );
@@ -45,6 +46,7 @@ public class RtspService {
                 recordRtspStreamForHevc(  rtspRequest.path(), rtspRequest.duration(), saveDirectory );
             }
         }
+        log.info( "Method execution time - makeRecord: " + (System.currentTimeMillis() - startTime) + " ms" ); 
         return new BaseResponse( 200, "success");
     }
     /**
@@ -263,14 +265,14 @@ public class RtspService {
                 throw new IOException("Не удалось создать временный HEVC файл");
             }
             
-            executeFfmpegProcess(60, 
+            executeFfmpegProcess(450, 
                                 "ffmpeg", "-y", "-loglevel", "warning",
                                 "-i", tempFile.toString(),
                                 "-c", "copy", "-f", "matroska",
                                 mkvFile.toString());
             
             if (Files.exists(mkvFile)) {
-                executeFfmpegProcess( 120, 
+                executeFfmpegProcess( 650, 
                                     "ffmpeg", "-y",
                                         "-i", mkvFile.toString(),
                                         "-vf", "scale=1920:1080",

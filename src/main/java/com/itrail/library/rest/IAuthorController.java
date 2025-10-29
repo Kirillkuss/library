@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 
 @RequestMapping( value = "authors")
 @Tag(name = "2. Авторы", description = "авторы")
@@ -33,7 +34,7 @@ public interface IAuthorController {
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка авторов", summary = "Получение списка авторов")
-    public ResponseEntity<List<Author>> getLazyAuthors( @PathVariable int page,
-                                                        @PathVariable int size ) ;
+    public ResponseEntity<List<Author>> getLazyAuthors( @PathVariable @Min(value = 1, message = "Значение страницы должно быть больше нуля!") int page,
+                                                        @PathVariable @Min(value = 1, message = "Значение размера страницы должно быть больше нуля!") int size ) ;
     
 }

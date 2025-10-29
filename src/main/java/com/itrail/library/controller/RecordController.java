@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
 import com.itrail.library.request.record.CardRecordRequest;
 import com.itrail.library.request.record.CreateCardRecordRequest;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.CardRecordResponse;
 import com.itrail.library.response.RecordResponse;
 import com.itrail.library.rest.IRecordController;
@@ -27,7 +28,7 @@ public class RecordController implements IRecordController {
 
     @ExecuteEndpointLog
     @Override
-    public ResponseEntity<RecordResponse> createRecord(CreateCardRecordRequest createCardRecordRequest) {
+    public ResponseEntity<BaseResponse<RecordResponse>> createRecord(CreateCardRecordRequest createCardRecordRequest) {
         return new ResponseEntity<>( cardRecordService.createCardRecord( createCardRecordRequest ), HttpStatus.CREATED ); 
     }
 

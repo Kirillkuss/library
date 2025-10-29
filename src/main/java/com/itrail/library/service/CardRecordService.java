@@ -15,6 +15,7 @@ import com.itrail.library.repository.CardRecordRepository;
 import com.itrail.library.repository.CardRepository;
 import com.itrail.library.request.record.CardRecordRequest;
 import com.itrail.library.request.record.CreateCardRecordRequest;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.BookResponse;
 import com.itrail.library.response.CardRecordResponse;
 import com.itrail.library.response.RecordResponse;
@@ -31,8 +32,6 @@ public class CardRecordService {
     private final CardRepository       cardRepository;
 
     public List<RecordResponse> getAllRecord( int page, int size ){
-        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         return cardRecordRepository.findAll( PageRequest.of( page - 1, size ))
                               .stream()
                               .map( recordCard -> {
@@ -58,36 +57,63 @@ public class CardRecordService {
      * @return CardRecord
      */
     @Transactional
-    private CardRecord saveRecord( Long bookNumber, Long idCard ){
+    private BaseResponse<CardRecord> saveRecord( Long bookNumber, Long idCard ){
         Optional<Book> book = bookRepository.findBookByNumber( bookNumber );
-        if( book.isEmpty() ) throw new IllegalArgumentException("Такой книги не существует!");
-        if( cardRepository.findById( idCard ).isEmpty() ) throw new IllegalArgumentException("Такой карты не существует!");
-        if( cardRecordRepository.findRecordByBook( book.orElseThrow().getId() ).isPresent() ) throw new IllegalArgumentException("Данная книга уже выдана!" );
-        CardRecord cardRecord = new CardRecord();
-                   cardRecord.setCreateDate( LocalDateTime.now() );
-                   cardRecord.setFinishDate( LocalDateTime.now().plusDays( 2 ));
-                   cardRecord.setBookId( book.orElseThrow().getId() );
-                   cardRecord.setCardId( idCard );
-        return cardRecordRepository.save( cardRecord );
+        BaseResponse response = validateSaveRecord( book, idCard );
+        if( response.getStatus() != 200 ){
+            return BaseResponse.error( response.getStatus(), response.getError() );
+        }else{
+            CardRecord cardRecord = new CardRecord();
+                       cardRecord.setCreateDate( LocalDateTime.now() );
+                       cardRecord.setFinishDate( LocalDateTime.now().plusDays( 2 ));
+                       cardRecord.setBookId( book.orElseThrow().getId() );
+                       cardRecord.setCardId( idCard );
+            return BaseResponse.success( cardRecordRepository.save( cardRecord ));
+        }
     }
+    /**
+     * Проверка на добавление записи
+     * @param book - Книга
+     * @param idCard - Ид карта пользователя
+     * @return BaseResponse
+     */
+    private BaseResponse<?> validateSaveRecord( Optional<Book> book, Long idCard ) {
+        if (book.isEmpty()) {
+            return BaseResponse.error(400, "Такой книги не существует!");
+        }
+        if (cardRepository.findById(idCard).isEmpty()) {
+            return BaseResponse.error(400, "Такой карты не существует!");
+        }
+        if (cardRecordRepository.findRecordByBook(book.get().getId()).isPresent()) {
+            return BaseResponse.error(400, "Данная книга уже выдана!");
+        }
+        return BaseResponse.success();
+    }
+
+
     /**
      * Добавление записи
      * @param createCardRecordRequest - входной запрос
      * @return RecordReponse
      */
     @Transactional
-    public RecordResponse createCardRecord( CreateCardRecordRequest createCardRecordRequest ){
-        CardRecord cardRecord = saveRecord( createCardRecordRequest.bookNumber(), createCardRecordRequest.idCard() );
-        User user = cardRepository.findById( cardRecord.getCardId() ).orElseThrow().getUser();
-        Book book = bookRepository.findById( cardRecord.getBookId() ).orElseThrow();
-        return new RecordResponse(  user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName() ,
-                                  cardRecord.getCreateDate(),
-                                  cardRecord.getFinishDate(),
-                                  new BookResponse( null, 
-                                                    book.getNameBook(),
-                                                    book.getDescriptionBook(),
-                                                    book.getBookNumber(),
-                                                    book.getPageBook() )); 
+    public BaseResponse<RecordResponse> createCardRecord( CreateCardRecordRequest createCardRecordRequest ){
+        BaseResponse<CardRecord> cardRecord = saveRecord( createCardRecordRequest.bookNumber(), createCardRecordRequest.idCard() );
+        if( cardRecord.getData() != null ){
+            User user = cardRepository.findById( cardRecord.getData().getCardId() ).orElseThrow().getUser();
+            Book book = bookRepository.findById( cardRecord.getData().getBookId() ).orElseThrow();
+            return BaseResponse.success( new RecordResponse(  user.getLastName() + " " + user.getFirstName()+ " " + user.getMiddleName() ,
+                                    cardRecord.getData().getCreateDate(),
+                                    cardRecord.getData().getFinishDate(),
+                                    new BookResponse( null, 
+                                                        book.getNameBook(),
+                                                        book.getDescriptionBook(),
+                                                        book.getBookNumber(),
+                                                        book.getPageBook() ))); 
+        }else{
+           return BaseResponse.error( cardRecord.getStatus(), cardRecord.getError() );
+        }
+
     }
 
 
@@ -98,8 +124,6 @@ public class CardRecordService {
      */
     @ExecuteMethodLog
     public CardRecordResponse getRecordByCard( CardRecordRequest cardRecordRequest ){
-        if( cardRecordRequest.page() <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( cardRecordRequest.size() <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         return new CardRecordResponse( cardRecordRepository.getRecordsByPeriodAndCard( cardRecordRequest.user(),
                                                                                        cardRecordRequest.start(),
                                                                                        cardRecordRequest.finish(),

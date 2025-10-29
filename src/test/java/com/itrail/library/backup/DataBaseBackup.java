@@ -24,6 +24,10 @@ public class DataBaseBackup {
         processBuilder( dump );
     }
 
+    //pg_dump -U username -h host -p port dbname > backup_file.sql
+
+    //pg_dump --host=localhost --port=5436 --username postgres --file=" + "library24.backup --no-password --format=c --encoding=UTF8 --verbose lib
+
     @Test
     @DisplayName("Загрузка в бд library.backup - для локальной бд")
     public void restorePostgresLocal() throws Exception{

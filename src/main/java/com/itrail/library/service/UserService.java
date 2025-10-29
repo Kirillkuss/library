@@ -161,8 +161,6 @@ public class UserService {
     //@Cacheable
     @ExecuteMethodLog 
     public List<UserResponse> getUsers( int page, int size ){
-        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         List<UserResponse> users =
          userRepository.findAll( PageRequest.of( page - 1, size ))
                       .getContent()
@@ -184,8 +182,6 @@ public class UserService {
     }
 
     public List<UserResponse> findUsersForUI( String param, int page, int size ){
-        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         return  userRepository.findUsersForUI( param, PageRequest.of( page - 1, size ) )
                                 .stream()
                                 .map( user -> {

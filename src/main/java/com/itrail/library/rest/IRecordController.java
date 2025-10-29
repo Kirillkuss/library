@@ -13,6 +13,7 @@ import com.itrail.library.domain.CardRecord;
 import com.itrail.library.request.record.CardRecordRequest;
 import com.itrail.library.request.record.CreateCardRecordRequest;
 import com.itrail.library.response.BaseError;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.CardRecordResponse;
 import com.itrail.library.response.RecordResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 
 @RequestMapping( value = "records")
 @Tag(name = "Записи", description = "Записи")
@@ -39,11 +41,11 @@ public interface IRecordController {
 
     @PostMapping(value = "/create")
     @Operation( description = "Добавление записи карты", summary = "Добавление записи карты")
-    public ResponseEntity<RecordResponse> createRecord( @RequestBody CreateCardRecordRequest createCardRecordRequest );
+    public ResponseEntity<BaseResponse<RecordResponse>> createRecord( @RequestBody CreateCardRecordRequest createCardRecordRequest );
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка записей", summary = "Получение списка записей")
-    public ResponseEntity<List<RecordResponse>> getLazyRecord( @PathVariable int page,
-                                                               @PathVariable int size ) ;
+    public ResponseEntity<List<RecordResponse>> getLazyRecord( @PathVariable @Min(value = 1, message = "Значение страницы должно быть больше нуля!") int page,
+                                                               @PathVariable @Min(value = 1, message = "Значение размера страницы должно быть больше нуля!") int size ) ;
       
 }

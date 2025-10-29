@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
 import com.itrail.library.request.card.CardFilterRequest;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.CardInfoResponse;
 import com.itrail.library.response.CardResponseLazy;
 import com.itrail.library.rest.ICardController;
@@ -21,7 +22,7 @@ public class CardController implements ICardController {
 
     @ExecuteEndpointLog
     @Override
-    public ResponseEntity<CardInfoResponse> getFullInfoCardAndRecord( CardFilterRequest cardFilterRequest) {
+    public ResponseEntity<BaseResponse<CardInfoResponse>> getFullInfoCardAndRecord( CardFilterRequest cardFilterRequest) {
         return new ResponseEntity<> ( сardService.getFullInfoCardAndRecord( cardFilterRequest.user(), 
                                                                             cardFilterRequest.page(), 
                                                                             cardFilterRequest.size()), HttpStatus.OK );

@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Min;
 
 @RequestMapping( value = "users")
 @Tag(name = "1. Пользователи", description = "Пользователи")
@@ -35,8 +36,8 @@ public interface IUserController {
 
     @GetMapping(value = "/lazy/{page}/{size}")
     @Operation( description = "Получение списка пользователей", summary = "Получение списка пользователей")
-    public ResponseEntity<List<UserResponse>> getUsers( @PathVariable int page,
-                                                        @PathVariable int size ) ;
+    public ResponseEntity<List<UserResponse>> getUsers( @PathVariable @Min(value = 1, message = "Значение страницы должно быть больше нуля!") int page,
+                                                        @PathVariable @Min(value = 1, message = "Значение размера страницы должно быть больше нуля!") int size ) ;
 
     @PostMapping(value = "/create")
     @Operation( description = "Добавление пользователя", summary = "Добавление пользователя")
@@ -53,8 +54,8 @@ public interface IUserController {
     @GetMapping(value = "/{param}/{page}/{size}")
     @Operation( description = "Поиск пользователей", summary = "Поиск пользователей")
     public ResponseEntity<List<UserResponse>> getUsersForUI( @PathVariable String param,
-                                                             @PathVariable int page,
-                                                             @PathVariable int size) ;
+                                                             @PathVariable @Min(value = 1, message = "Значение страницы должно быть больше нуля!") int page,
+                                                             @PathVariable @Min(value = 1, message = "Значение размера страницы должно быть больше нуля!") int size) ;
 
     @GetMapping(value = "/counts")
     @Operation( description = "Количество пользователей", summary = "Количество пользователей")

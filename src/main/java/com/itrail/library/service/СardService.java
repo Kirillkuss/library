@@ -15,6 +15,7 @@ import com.itrail.library.repository.BookRepository;
 import com.itrail.library.repository.CardRecordRepository;
 import com.itrail.library.repository.CardRepository;
 import com.itrail.library.repository.UserRepository;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.BookResponse;
 import com.itrail.library.response.CardInfoResponse;
 import com.itrail.library.response.CardResponse;
@@ -56,12 +57,12 @@ public class СardService {
      * @return CardInfoResponse
      */
     @CachePut
-    public CardInfoResponse getFullInfoCardAndRecord( String user, int page, int size ){
-        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
+    public BaseResponse<CardInfoResponse> getFullInfoCardAndRecord( String user, int page, int size ){
         Optional<Card> card = cardRepository.findCardByUser( user );
-        if( card.isEmpty() ) throw new NoSuchElementException( "По даному запросу ничего не найдено!");
-        return new CardInfoResponse( card.stream()
+        if( card.isEmpty() ){
+            return BaseResponse.error( 400, "По даному запросу ничего не найдено!" );
+        }else{
+            return BaseResponse.success( new CardInfoResponse( card.stream()
                                          .map( cardUser -> {
                                             //инф. о пользователе 
                                             return new UserResponse( cardUser.getUser().getLogin(),
@@ -91,13 +92,13 @@ public class СardService {
                                                                                                                                                                        book.getBookNumber(), 
                                                                                                                                                                        null ));}).toList());
                                                                                 }).findFirst().orElseThrow() );
-                                            }).findFirst().orElseThrow() );
+                                            }).findFirst().orElseThrow() ));
+        }
+
 
     }
 
     public List<CardResponseLazy> getLazyCard( int page, int size ){
-        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         return cardRepository.findAll( PageRequest.of( page - 1, size ))
                              .stream().map( card -> {
                                 return new CardResponseLazy( card.getId(),

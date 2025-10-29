@@ -17,6 +17,7 @@ import com.itrail.library.repository.BookRepository;
 import com.itrail.library.request.book.BookFilterRequest;
 import com.itrail.library.request.book.FreeBooksRequest;
 import com.itrail.library.response.AuthResponse;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.BookFilterResponse;
 import com.itrail.library.response.BookResponse;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +41,7 @@ public class BookService {
      */
     @Cacheable
     @ExecuteMethodLog 
-    public BookFilterResponse getBooksByAuthor( BookFilterRequest bookFilterRequest ){
-        if( bookFilterRequest.page() <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( bookFilterRequest.size() <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
+    public BaseResponse<BookFilterResponse> getBooksByAuthor( BookFilterRequest bookFilterRequest ){
         List<Author> authors = authorRepository.findAuthorsByFio( bookFilterRequest.fio() );
         if( authors.stream().count() == 1L ){
             List<Book> books = bookRepository.findBooksByAuthor( authors.stream()
@@ -51,16 +50,16 @@ public class BookService {
                                                                         .getId(), PageRequest.of( bookFilterRequest.page() - 1, bookFilterRequest.size() ));
 
             Author author = authors.stream().findFirst().orElseThrow();                                            
-            return new BookFilterResponse( new AuthResponse( author.getLuDate(),
-                                                             author.getFirstName(),
-                                                             author.getSecondName(),
-                                                             author.getMiddleName(),
-                                                             author.getCountry() ),
-                                                             books.stream()
-                                                                  .map( book -> {return getBookResponse(book);})
-                                                                  .toList() );                                              
+            return BaseResponse.success( new BookFilterResponse( new AuthResponse( author.getLuDate(),
+                                                                                   author.getFirstName(),
+                                                                                   author.getSecondName(),
+                                                                                   author.getMiddleName(),
+                                                                                   author.getCountry() ),
+                                                                                   books.stream()
+                                                                                        .map( book -> { return getBookResponse( book );})
+                                                                                        .toList() ));                                                                                                 
         }else{
-            throw new NoSuchElementException( "По данному запросу ничего не найдено" );
+            return BaseResponse.error( 400, "По данному запросу ничего не найдено" );
         }
     }
 
@@ -79,9 +78,7 @@ public class BookService {
         return bookRepository.save( book );
     }
 
-    public List<BookResponse> getFreeBooks( FreeBooksRequest freeBooksRequest ){
-        if( freeBooksRequest.page() <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( freeBooksRequest.size() <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
+    public BaseResponse<List<BookResponse>> getFreeBooks( FreeBooksRequest freeBooksRequest ){
         PageRequest page = PageRequest.of( freeBooksRequest.page() - 1, freeBooksRequest.size() );
         List<BookResponse> responses = new ArrayList<>();
         switch( freeBooksRequest.code() ){
@@ -93,18 +90,26 @@ public class BookService {
                                           .toList() ;
             }
             case 1 ->  {
-                //Название 
-                responses = bookRepository.getFreeBooks( freeBooksRequest.nameBook(),null,null, page )
-                                          .stream()
-                                          .map( book -> {return getBookResponse(book);})
-                                          .toList() ;
+                //Название
+                if( freeBooksRequest.nameBook() == null  || freeBooksRequest.nameBook().isEmpty() ){
+                    return BaseResponse.error( 400, "Неверное название книги!");
+                }else{
+                    responses = bookRepository.getFreeBooks( freeBooksRequest.nameBook(),null,null, page )
+                                            .stream()
+                                            .map( book -> {return getBookResponse(book);})
+                                            .toList() ;
+                }
             }
-            case 2 ->{ 
-                //автор
-                responses = bookRepository.getFreeBooks( null, freeBooksRequest.author(),null, page  )
-                                           .stream()
-                                           .map( book -> {return getBookResponse(book);})
-                                           .toList() ;
+            case 2 ->{
+                //автор 
+                if( freeBooksRequest.author() == null  || freeBooksRequest.author().isEmpty() ){
+                    return BaseResponse.error( 400, "Неверное название книги!");
+                }else{
+                    responses = bookRepository.getFreeBooks( null, freeBooksRequest.author(),null, page  )
+                                            .stream()
+                                            .map( book -> {return getBookResponse(book);})
+                                            .toList() ;
+                }
             }
             case 3 ->{
                 //номер книги
@@ -113,9 +118,11 @@ public class BookService {
                                            .map( book -> {return getBookResponse(book);})
                                            .toList() ; 
             }
-            default -> throw new IllegalArgumentException( "Неверный код задачи!");
+            default -> {
+               return BaseResponse.error( 400, "Неверный код задачи!");
+            }
         }
-        return responses;
+        return BaseResponse.success( responses );
     }
 
     private BookResponse getBookResponse( Book book ){
@@ -128,8 +135,6 @@ public class BookService {
 
 
     public List<BookResponse> getAllBooks( int page, int size ){
-        if( page <= 0 ) throw new IllegalArgumentException("Значение страницы должно быть больше нуля!");
-        if( size <= 0 ) throw new IllegalArgumentException("Значение размера страницы должно быть больше нуля!");
         return bookRepository.findAll(PageRequest.of( page - 1, size ))
                              .stream()
                              .map( book -> { return getBookResponse( book );})

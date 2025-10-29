@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 
 @RequestMapping( value = "logs")
 @Tag(name = "8. Логи", description = "Логи")
@@ -27,7 +28,7 @@ public interface ILogEntryController {
 
     @GetMapping(value = "/lazy")
     @Operation( description = "Получение списка логов", summary = "Получение списка логов")
-    public ResponseEntity<List<LogEntry>> getLazyLogs( @RequestParam(required = true) int page,
-                                                       @RequestParam(required = true) int size) ;
+    public ResponseEntity<List<LogEntry>> getLazyLogs( @RequestParam(required = true)  @Min(value = 1, message = "Значение страницы должно быть больше нуля!") int page,
+                                                       @RequestParam(required = true)  @Min(value = 1, message = "Значение размера страницы должно быть больше нуля!") int size) ;
     
 }
