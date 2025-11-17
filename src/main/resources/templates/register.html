@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/library/css/auth/register.css">
     <link rel="icon" href="icon/id-card.png" type="image/x-icon">
     <link rel="shortcut icon" href="icon/id-card.png" type="image/x-icon"> 
+    <html xmlns:th="http://www.thymeleaf.org"></html>
 </head>
 <body>
     <div class="container">
@@ -45,21 +46,21 @@
                                 <label for="firstName" class="form-label">Фамилия</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Иванов" required>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Иванов" th:value="${firstName}" required>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="secondName" class="form-label">Имя</label>
+                                <label for="lastName" class="form-label">Имя</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Иван" required>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Иван" th:value="${lastName}" required>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="middleName" class="form-label">Отчество</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
-                                    <input type="text" class="form-control" id="middleName" name="middleName" placeholder="Иванович">
+                                    <input type="text" class="form-control" id="middleName" name="middleName" placeholder="Иванович" th:value="${middleName}" required>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +69,7 @@
                             <label for="email" class="form-label">Электронная почта</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="example@domain.com" required>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="example@domain.com" th:value="${email}" required>
                             </div>
                         </div>
                         
@@ -76,7 +77,7 @@
                             <label for="phone" class="form-label">Номер телефона</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                <input type="tel" class="form-control" id="phone" name="phone" placeholder="+375 (29) 123-45-67" required>
+                                <input type="tel" class="form-control" id="phone" name="phone" placeholder="+375 (29) 123-45-67" th:value="${phone}" required>
                             </div>
                         </div>
                         
@@ -85,14 +86,14 @@
                                 <label for="login" class="form-label">Логин</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user-alt"></i></span>
-                                    <input type="text" class="form-control" id="login" name="login" placeholder="Придумайте логин" required>
+                                    <input type="text" class="form-control" id="login" name="login" placeholder="Придумайте логин" th:value="${login}" required>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="password" class="form-label">Пароль</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Придумайте пароль" required>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Придумайте пароль" th:value="${password}" required>
                                 </div>
                             </div>
                         </div>

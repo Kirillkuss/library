@@ -1,4 +1,4 @@
-package com.itrail.library.sequrity.provider;
+package com.itrail.library.security.provider;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

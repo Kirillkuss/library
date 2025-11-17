@@ -1,4 +1,4 @@
-package com.itrail.library.sequrity;
+package com.itrail.library.security;
 
 import java.util.List;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -18,9 +18,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import com.itrail.library.sequrity.filter.LibSingleSessionFilter;
-import com.itrail.library.sequrity.handler.LibAuthenticationFailureHandler;
-import com.itrail.library.sequrity.handler.LibAuthenticationSuccessHandler;
+
+import com.itrail.library.security.filter.LibSingleSessionFilter;
+import com.itrail.library.security.handler.LibAuthenticationFailureHandler;
+import com.itrail.library.security.handler.LibAuthenticationSuccessHandler;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +35,7 @@ public class SecurityConfiguration {
     private final LibAuthenticationSuccessHandler libAuthenticationSuccessHandler;
     private final LibSingleSessionFilter          libSingleSessionFilter;
 
-    /**@Bean
+    @Bean
     public SecurityFilterChain securityFilterChain( HttpSecurity http ) throws Exception {
          return http.addFilterBefore( libSingleSessionFilter, UsernamePasswordAuthenticationFilter.class )
                     .cors(cors -> cors.configurationSource( corsConfigurationSource() ))
@@ -60,7 +62,7 @@ public class SecurityConfiguration {
                                       .ignoringRequestMatchers(csrfIgnoringRequestMatchers()))
                     //.csrf(csrf -> csrf.disable())
                     .build();
-    }*/
+    }
 
     private String[] csrfIgnoringRequestMatchers(){
         return new String[]{ "/login", "/securecode", "/logout", "/error","/register", 
@@ -137,13 +139,13 @@ public class SecurityConfiguration {
                              "/records/**", "/library/swagger-ui/index.html", "/library/app/index.html" };
     }
 
-    @Bean
+    /**@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize.anyRequest()
             .permitAll())
             .csrf(csrf -> csrf.disable());
         return http.build();
-    }
+    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder() {

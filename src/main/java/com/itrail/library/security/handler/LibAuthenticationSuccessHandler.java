@@ -1,4 +1,4 @@
-package com.itrail.library.sequrity.handler;
+package com.itrail.library.security.handler;
  
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

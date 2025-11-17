@@ -41,7 +41,7 @@ public interface IUserController {
 
     @PostMapping(value = "/create")
     @Operation( description = "Добавление пользователя", summary = "Добавление пользователя")
-    public ResponseEntity<BaseResponse> createUser( @RequestBody CreateUserRequest createUserRequest ) ;
+    public ResponseEntity<BaseResponse<UserResponse>> createUser( @RequestBody CreateUserRequest createUserRequest ) ;
 
     @GetMapping(value = "/sessions")
     @Operation( description = "Сессии", summary = "Сессии")

@@ -34,9 +34,8 @@ public class UserController implements IUserController{
 
     @ExecuteEndpointLog
     @Override
-    public ResponseEntity<BaseResponse> createUser(CreateUserRequest createUserRequest) {
-        userService.createUser( createUserRequest );
-        return new ResponseEntity<>( new BaseResponse( 201, "success"), HttpStatus.CREATED );
+    public ResponseEntity<BaseResponse<UserResponse>> createUser( CreateUserRequest createUserRequest ) {
+        return new ResponseEntity<>( userService.createUserRegister(createUserRequest, 2), HttpStatus.CREATED );
     }
 
     @Override

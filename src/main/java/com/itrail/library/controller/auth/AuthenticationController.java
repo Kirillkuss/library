@@ -10,6 +10,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.itrail.library.request.AuthRequest;
 import com.itrail.library.request.CreateUserRequest;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.UserResponse;
 import com.itrail.library.rest.auth.IAuthentication;
 import com.itrail.library.service.UserService;
@@ -91,10 +92,19 @@ public class AuthenticationController implements IAuthentication {
                                  RedirectAttributes redirectAttributes,
                                  HttpServletResponse httpServletResponse) {
         try {
-            UserResponse userResponse = userService.createUserRegister( createUserRequest );
-            if (userResponse != null) {
+            BaseResponse<UserResponse> userResponse = userService.createUserRegister( createUserRequest, 1 );
+            if( userResponse.getStatus() != 200 ){
+                redirectAttributes.addFlashAttribute( "error", userResponse.getError() );
+                redirectAttributes.addFlashAttribute( "firstName", createUserRequest.firstName() );
+                redirectAttributes.addFlashAttribute( "lastName", createUserRequest.lastName() );
+                redirectAttributes.addFlashAttribute( "middleName", createUserRequest.middleName() );
+                redirectAttributes.addFlashAttribute( "email", createUserRequest.email() );
+                redirectAttributes.addFlashAttribute( "phone", createUserRequest.phone() );
+                redirectAttributes.addFlashAttribute( "login", createUserRequest.login() );
+                redirectAttributes.addFlashAttribute( "password", createUserRequest.password() );
+            }else{
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                BufferedImage qrImage = authService.generateQR(userResponse.login());
+                BufferedImage qrImage = authService.generateQR(userResponse.getData().login());
                 if (qrImage != null) {
                     ImageIO.write(qrImage, "png", baos);
                     String qrBase64 = Base64.getEncoder().encodeToString( baos.toByteArray() );
@@ -104,6 +114,13 @@ public class AuthenticationController implements IAuthentication {
             }
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
+            redirectAttributes.addFlashAttribute( "firstName", createUserRequest.firstName() );
+            redirectAttributes.addFlashAttribute( "lastName", createUserRequest.lastName() );
+            redirectAttributes.addFlashAttribute( "middleName", createUserRequest.middleName() );
+            redirectAttributes.addFlashAttribute( "email", createUserRequest.email() );
+            redirectAttributes.addFlashAttribute( "phone", createUserRequest.phone() );
+            redirectAttributes.addFlashAttribute( "login", createUserRequest.login() );
+            redirectAttributes.addFlashAttribute( "password", createUserRequest.password() );
         }
         return "redirect:/register";
     }

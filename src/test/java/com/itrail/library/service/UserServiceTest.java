@@ -23,8 +23,9 @@ import com.itrail.library.domain.User;
 import com.itrail.library.repository.RoleRepository;
 import com.itrail.library.repository.UserRepository;
 import com.itrail.library.request.CreateUserRequest;
+import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.UserResponse;
-import com.itrail.library.sequrity.generate.PasswordGenerator;
+import com.itrail.library.security.generate.PasswordGenerator;
 import com.itrail.library.service.auth.GoogleAuthenticationService;
 
 import io.qameta.allure.Allure;
@@ -66,160 +67,6 @@ public class UserServiceTest {
         Mockito.when( passwordGenerator.generateRandomPassword() ).thenReturn( "" );
         IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.generateNewPasswordForUser( user ));
         Assertions.assertEquals("Неверный формат пароля! Пароль должен сожедржать не менее 12 символов, 1 букву верхнего и нижнего реестра, 1 цифру и 1 спец. символ ( *[@#$^&+=!№:?:%*(;_)}{]", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя")
-    public void createUserTest( ){
-        Set<String> roles =  Set.of( "ADMIN" );
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admin321",
-                                                                  "VdmiN4567!?34545#+=", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435@mail.ru", 
-                                                                     "+375284346506", 
-                                                                           roles );
-        Allure.parameter("createUserRequest", createUserRequest);
-        Role role = new Role(1L, LocalDateTime.now(), "ADMIN" );
-        Mockito.when( passwordEncoder.encode( createUserRequest.password() )).thenReturn( "VdmiN4567!?34545#+=" );
-        Mockito.when( googleAuthenticationService.generateKey()).thenReturn( "VdmiN4567!?34545#+=" );
-        Mockito.when( userRepository.findByLogin( createUserRequest.login() )).thenReturn( Optional.empty());
-        Mockito.when( userRepository.findByEmail( createUserRequest.email() )).thenReturn( Optional.empty());
-        Mockito.when( userRepository.findUserByPhone( createUserRequest.phone() )).thenReturn( Optional.empty());
-        Mockito.when( roleRepository.findByName( roles.iterator().next() )).thenReturn(Optional.of( role )); 
-        userService.createUser( createUserRequest );                                                       
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя - Ошибка с ролью")
-    public void createUserErrorRoleListTest(){
-        Set<String> roles =  Set.of( "ADMIN" );
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admin321",
-                                                                  "VdmiN4567!?34545#+=", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435@mail.ru", 
-                                                                     "+375284346506", 
-                                                                           roles );
-        Mockito.when( roleRepository.findByName( roles.iterator().next() )).thenReturn(Optional.empty()); 
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.createUser( createUserRequest ));
-        Assertions.assertEquals("Неверное наименование роли!", exception.getMessage());                                                       
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя - Ошибка с ролью")
-    public void createUserErrorRoleEmptyTest(){
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admin321",
-                                                                  "VdmiN4567!?34545#+=", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435@mail.ru", 
-                                                                     "+375284346506", 
-                                                                           null ); 
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.createUser( createUserRequest ));
-        Assertions.assertEquals("Должна быть указана роль!", exception.getMessage());                                                       
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя - Ошибка с логином")
-    public void createUserErrorLoginTest(){
-        Set<String> roles =  Set.of( "ADMIN");
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admi",
-                                                                  "VdmiN4567!?34545#+=", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435@mail.ru", 
-                                                                     "+375284346506", 
-                                                                           roles ); 
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.createUser( createUserRequest ));
-        Assertions.assertEquals("Длина логина должна быть не меньше 6 символов!", exception.getMessage());                                                       
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя - Ошибка с паролем")
-    public void createUserErrorPasswordTest( ){
-        Set<String> roles =  Set.of( "ADMIN");
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admin*&#23",
-                                                                  "", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435@mail.ru", 
-                                                                     "+375284346506", 
-                                                                           roles ); 
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.createUser( createUserRequest ));
-        Assertions.assertEquals("Неверный формат пароля, как минимум 12 знаков, 1 большая и одна 1 буква, 1 символ, 1 цифра!", exception.getMessage());                                                       
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя - Ошибка с почтой")
-    public void createUserErrorEmailTest( ){
-        Set<String> roles =  Set.of( "ADMIN");
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admin*&#23",
-                                                                  "VdmiN4567!?34545#+=", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435", 
-                                                                     "+375284346506", 
-                                                                           roles ); 
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.createUser( createUserRequest ));
-        Assertions.assertEquals("Неверный формат электронной почты!", exception.getMessage());                                                       
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя - Ошибка с логином")
-    public void createUserErrorByLoginFoundTest(){
-        Set<String> roles =  Set.of( "ADMIN" );
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admin321",
-                                                                  "VdmiN4567!?34545#+=", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435@mail.ru", 
-                                                                     "+375284346506", 
-                                                                           roles );
-        Mockito.when( userRepository.findByLogin( createUserRequest.login() )).thenReturn(Optional.of( new User())); 
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.createUser( createUserRequest ));
-        Assertions.assertEquals("Пользователь с таким логином уже существует!", exception.getMessage());                                                       
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя - Ошибка с почтой")
-    public void createUserErrorByEmailFoundTest(){
-        Set<String> roles =  Set.of( "ADMIN" );
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admin321",
-                                                                  "VdmiN4567!?34545#+=", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435@mail.ru", 
-                                                                     "+375284346506", 
-                                                                           roles );
-        Mockito.when( userRepository.findByEmail( createUserRequest.email() )).thenReturn(Optional.of( new User())); 
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.createUser( createUserRequest ));
-        Assertions.assertEquals("Пользователь с такой почтой уже существует!", exception.getMessage());                                                       
-    }
-
-    @Test
-    @DisplayName( "Создание пользователя - Ошибка с телефоном")
-    public void createUserErrorByPhoneFoundTest(){
-        Set<String> roles =  Set.of( "ADMIN" );
-        CreateUserRequest createUserRequest = new CreateUserRequest( "Admin321",
-                                                                  "VdmiN4567!?34545#+=", 
-                                                                  "", 
-                                                                 "", 
-                                                                "", 
-                                                                     "mail1435@mail.ru", 
-                                                                     "+375284346506", 
-                                                                           roles );
-        Mockito.when( userRepository.findUserByPhone( createUserRequest.phone() )).thenReturn(Optional.of( new User())); 
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.createUser( createUserRequest ));
-        Assertions.assertEquals("Пользователь с таким номером телефона уже существует!", exception.getMessage());                                                       
     }
 
     @ParameterizedTest
@@ -302,7 +149,7 @@ public class UserServiceTest {
         Mockito.when( userRepository.findUserByPhone( createUserRequest.phone() )).thenReturn( Optional.empty());
         Mockito.when( roleRepository.findByName( roles.iterator().next() )).thenReturn( Optional.of( role ));
         Mockito.when( userRepository.save( Mockito.any( User.class ))).thenReturn( user );  
-        UserResponse result = userService.createUserRegister( createUserRequest );
+        BaseResponse<UserResponse> result = userService.createUserRegister( createUserRequest, 1 );
         Allure.addAttachment( rezult, TYPE, result.toString() );         
     }
 

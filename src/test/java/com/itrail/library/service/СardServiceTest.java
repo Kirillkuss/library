@@ -61,7 +61,7 @@ public class СardServiceTest {
         Allure.parameter( "idUser", idUser);
         Mockito.when( userRepository.findById( idUser )).thenReturn( Optional.of( new User() ) );
         Mockito.when( cardRepository.findByUser( idUser )).thenReturn( Optional.empty() );
-        Card result = сardService.saveCard( idUser );
+        BaseResponse<Card> result = сardService.saveCard( idUser );
         //Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 

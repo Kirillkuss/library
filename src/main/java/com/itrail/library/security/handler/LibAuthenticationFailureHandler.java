@@ -1,4 +1,4 @@
-package com.itrail.library.sequrity.handler;
+package com.itrail.library.security.handler;
 
 import java.io.IOException;
 import java.util.Optional;

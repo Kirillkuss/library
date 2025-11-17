@@ -2,7 +2,6 @@ package com.itrail.library.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.itrail.library.domain.Book;
 import com.itrail.library.domain.Card;
+import com.itrail.library.domain.User;
 import com.itrail.library.repository.BookRepository;
 import com.itrail.library.repository.CardRecordRepository;
 import com.itrail.library.repository.CardRepository;
@@ -41,13 +41,20 @@ public class СardService {
      * @return Card
      */
     @Transactional
-    public Card saveCard( Long idUser){
-        if( userRepository.findById( idUser ).isEmpty() ) throw new IllegalArgumentException("Нет такого пользователя!");
-        if( cardRepository.findByUser( idUser ).isPresent() ) throw  new IllegalArgumentException("У пользователя есть уже карта!");
+    public BaseResponse<Card> saveCard( Long idUser){
+        Optional<User> user = userRepository.findById( idUser );
+        if( user.isEmpty() ){
+            return BaseResponse.error( 400, "Нет такого пользователя!" );
+        } 
+        if( cardRepository.findByUser( idUser ).isPresent() ){
+            return BaseResponse.error( 400, "У пользователя есть уже карта!" );
+        }
         Card card = new Card();
              card.setCreateDate( LocalDateTime.now() );
              card.setLuDate( LocalDateTime.now() );
-        return cardRepository.save( card );
+             card.setUser( user.get() );
+             card.setIsopen( true );
+        return BaseResponse.success( cardRepository.save( card ));
     }
     /**
      * Получение информции о пользователе и его карте, с его записями

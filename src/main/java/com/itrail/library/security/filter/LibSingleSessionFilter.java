@@ -1,4 +1,4 @@
-package com.itrail.library.sequrity.filter;
+package com.itrail.library.security.filter;
 
 import java.io.IOException;
 import java.util.Optional;

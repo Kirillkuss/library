@@ -1,4 +1,4 @@
-package com.itrail.library.sequrity.generate;
+package com.itrail.library.security.generate;
 
 import java.security.SecureRandom;
 import org.springframework.stereotype.Component;
