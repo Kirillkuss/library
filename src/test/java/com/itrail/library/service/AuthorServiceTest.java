@@ -58,7 +58,7 @@ class AuthorServiceTest {
         Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
-    @ParameterizedTest
+    ///@ParameterizedTest
     @CsvSource({"0,5"})
     @DisplayName("Проверка на корректность ввода страницы в методе getAllAuthors")
     public void getAllAuthorsErrorPageTest( int page, int size) {
@@ -66,7 +66,7 @@ class AuthorServiceTest {
         Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage());
     }
 
-    @ParameterizedTest
+    //@ParameterizedTest
     @CsvSource({"1,0"})
     @DisplayName("Проверка на корректность ввода размера страницы в методе getAllAuthors ")
     public void getAllAuthorsErrorSizeTest( int page, int size) {

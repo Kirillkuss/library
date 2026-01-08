@@ -47,7 +47,7 @@ public class LibSingleSessionFilter extends OncePerRequestFilter {
                         log.warn("Multiple sessions detected for user {}. Current: {}, Active: {}",  username, currentSessionId, authSession.getSessionId());
                         // 1. Инвалидируем текущую сессию (новую)
                         currentSession.invalidate();
-                        httpServletResponse.sendRedirect("/login?error=multiple_session");
+                        httpServletResponse.sendRedirect("/library/login?error=multiple_session");
                         return;
                         // 2. Инвалидируем старую сессию и разрешаем новую
                         // sessionRepository.delete(authSession);

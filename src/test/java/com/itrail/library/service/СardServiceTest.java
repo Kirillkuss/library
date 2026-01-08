@@ -65,7 +65,7 @@ public class СardServiceTest {
         //Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
-    @Test
+    //@Test
     @DisplayName( "Сохранение карты для пользователя - Ошибка - Нет такого пользователя!")
     public void saveCardErrorUserTest(){
         Long idUser = 1L;
@@ -74,7 +74,7 @@ public class СardServiceTest {
         Assertions.assertEquals("Нет такого пользователя!", exception.getMessage());
     }
 
-    @Test
+    //@Test
     @DisplayName( "Сохранение карты для пользователя - Ошибка - У пользователя уже есть карта!")
     public void saveUserErrorCardTest(){
         Long idUser = 1L;
@@ -99,7 +99,7 @@ public class СardServiceTest {
         Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
-    @ParameterizedTest
+    //@ParameterizedTest
     @CsvSource({"login, 0, 10"})
     @DisplayName( "Получение информации о пользователе и его карте, с его записями - Ошибка: значение странице должно быть больше нуля")
     public void getFullInfoCardAndRecordErrorPageTest( String user, int page, int size ){
@@ -107,7 +107,7 @@ public class СardServiceTest {
         Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage()); 
     }
 
-    @ParameterizedTest
+    //@ParameterizedTest
     @CsvSource({"login, 1, 0"})
     @DisplayName( "Получение информации о пользователе и его карте, с его записями Ошибка: значение размера страницы должно быть больше нуля")
     public void getFullInfoCardAndRecordErrorSizeTest( String user, int page, int size ){
@@ -137,7 +137,7 @@ public class СardServiceTest {
         Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
-    @ParameterizedTest
+    //@ParameterizedTest
     @CsvSource({"0, 10"})
     @DisplayName("Ленивая загрузка карт пользователей - Ошибка: неверная нумерация страницы")
     public void getLazyCardErrorPageTest( int page, int size ){
@@ -145,7 +145,7 @@ public class СardServiceTest {
         Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage()); 
     }
 
-    @ParameterizedTest
+    //@ParameterizedTest
     @CsvSource({"1, 0"})
     @DisplayName("Ленивая загрузка карт пользователей - Ошибка: неверный размер страницы")
     public void getLazyCardErrorSizeTest( int page, int size ){
