@@ -29,7 +29,7 @@
         <appender-ref ref="Console" />
     </root>
 
-    <logger name="klinik" level="trace" additivity="false">
+    <logger name="library" level="trace" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>

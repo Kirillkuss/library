@@ -18,11 +18,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
 import com.itrail.library.security.filter.LibSingleSessionFilter;
 import com.itrail.library.security.handler.LibAuthenticationFailureHandler;
 import com.itrail.library.security.handler.LibAuthenticationSuccessHandler;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -108,7 +106,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-                          configuration.setAllowedOrigins(List.of("http://localhost:8094", "http://localhost:8889"));
+                          configuration.setAllowedOrigins(List.of("*"));
                           configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "OPTIONS"));
                           configuration.setAllowedHeaders(List.of("Authorization",
                                                                   "Content-Type",

@@ -38,7 +38,7 @@ public class RtspService {
     public BaseResponse makeRecord( RtspRequest rtspRequest ) throws Exception{
         long startTime = System.currentTimeMillis();
         if ( isH264( rtspRequest.path() )){
-            TimeUnit.SECONDS.sleep(10 );
+            //TimeUnit.SECONDS.sleep(10 );
             executeRecordForH264( rtspRequest );
         }else{
             if(isHEVC( rtspRequest.path() )){
@@ -74,8 +74,13 @@ public class RtspService {
             if (rtspRequest.duration() <= 5) {
                 throw new Exception("Invalid duration!");
             }
-            
-            String outputFilePath = saveDirectory + "/" + rtspRequest.path().substring(rtspRequest.path().lastIndexOf('/') + 1) + ".mp4";
+
+            String[] parts = rtspRequest.path().split("/");
+            String endpointName = parts[parts.length - 3];
+
+           // String outputFilePath = saveDirectory + "/" + rtspRequest.path().substring(rtspRequest.path().lastIndexOf('/') + 1) + ".mp4";
+            String outputFilePath = saveDirectory + "/" + endpointName + ".mp4";
+
             String[] ffmpegCommand = {
                 "ffmpeg",
                 "-y",
@@ -88,11 +93,12 @@ public class RtspService {
                 "-crf", "23",
                 "-c:a", "aac",
                 "-b:a", "128k",
-                "-t", String.valueOf(rtspRequest.duration()),
+                "-t", String.valueOf( rtspRequest.duration() ),
                 "-f", "mp4",
-                "-max_muxing_queue_size", "1024", 
+                "-max_muxing_queue_size", "600", 
                 outputFilePath
             };
+
 
             ProcessBuilder processBuilder = new ProcessBuilder(ffmpegCommand);
                            processBuilder.redirectErrorStream(true);
@@ -183,6 +189,8 @@ public class RtspService {
      * @throws InterruptedException
      */
     private Map<String, String> checkRtspStreamFormat(String rtspUrl) throws IOException, InterruptedException {
+        long startTime = System.currentTimeMillis();
+        
         Map<String, String> result = new HashMap<>();
         String[] command = { "ffprobe",
                              "-v", "error",
@@ -205,6 +213,7 @@ public class RtspService {
             if (exitCode != 0) {
                 throw new IOException("Ошибка выполнения ffprobe (код: " + exitCode + ")");
             }
+            log.info( "Method execution time - checkRtspStreamFormat: " + (System.currentTimeMillis() - startTime) + " ms" ); 
             return result;
         }
     }
@@ -242,7 +251,7 @@ public class RtspService {
      */
     public void recordRtspStreamForHevc( String rtspUrl, int duration, String outputDir ) throws IOException, InterruptedException, TimeoutException {
         String[] parts = rtspUrl.split("/");
-        String endpointName = parts[parts.length - 1];
+        String endpointName = parts[parts.length - 3];
         Path tempFile = Paths.get( outputDir, "temp_" + endpointName + ".hevc" );
         Path mkvFile = Paths.get( outputDir, endpointName + ".mkv" );
         Path mp4File = Paths.get( outputDir, endpointName + ".mp4" );
@@ -252,8 +261,10 @@ public class RtspService {
         deleteIfExists(mkvFile);
         deleteIfExists(mp4File);
             
-            executeFfmpegProcess( duration + 10,
+            executeFfmpegProcess( duration + 20,
                        "ffmpeg", "-y", "-loglevel", "warning",
+                                  "-rtsp_transport", "tcp",
+                                  "-max_delay", "500000",
                                   "-fflags", "+genpts+igndts",
                                   "-use_wallclock_as_timestamps", "1",
                                   "-i", rtspUrl,
@@ -264,7 +275,7 @@ public class RtspService {
             if (!Files.exists(tempFile)) {
                 throw new IOException("Не удалось создать временный HEVC файл");
             }
-            
+            //450 250
             executeFfmpegProcess(450, 
                                 "ffmpeg", "-y", "-loglevel", "warning",
                                 "-i", tempFile.toString(),
@@ -272,6 +283,7 @@ public class RtspService {
                                 mkvFile.toString());
             
             if (Files.exists(mkvFile)) {
+                //650 300
                 executeFfmpegProcess( 650, 
                                     "ffmpeg", "-y",
                                         "-i", mkvFile.toString(),
