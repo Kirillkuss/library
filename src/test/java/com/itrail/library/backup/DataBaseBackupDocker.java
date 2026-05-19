@@ -1,28 +1,59 @@
 package com.itrail.library.backup;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@Disabled
+//@Disabled
 @DisplayName("Тестирование backup и restore from Docker")
 public class DataBaseBackupDocker {
 
     @Test
     @DisplayName("Создание library.backup - через Docker -- library.backup в папку обязательно нужно самому создать")
-    public void dumpPostgresDocker() throws Exception{
-
-        List<String> dumpDocker = List.of("docker", "exec", "library_db", 
-                                            "pg_dump", "-U", "postgres", 
-                                            "-Fc", "-f", "/tmp/backup.dump", "lib"); 
-
-        List<String> copyDocker = List.of("docker", "cp", "library_db:/tmp/backup.dump", 
-                                        "./src/main/resources/db/backup/library.backup" );
-        processBuilder( dumpDocker);
-        processBuilder( copyDocker );
+    public void dumpPostgresDockerAlternative() throws Exception {
+        Path backupPath = Paths.get(".", "src", "main", "resources", "db", "backup").toAbsolutePath().normalize();
+        File backupDir = backupPath.toFile();
+        if (!backupDir.exists()) {
+            backupDir.mkdirs();
+        }
+        
+        String backupFile = backupPath.toString() + File.separator + "library.backup";
+        
+        // Используем shell для перенаправления вывода
+        String command = String.format(
+            "docker exec -e PGPASSWORD=admin library_db pg_dump -U postgres -Fc lib > \"%s\"",
+            backupFile
+        );
+        
+        ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", command);
+        processBuilder.redirectErrorStream(true);
+        
+        System.out.println("Executing: " + command);
+        Process process = processBuilder.start();
+        
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
+        
+        int exitCode = process.waitFor();
+        if (exitCode == 0) {
+            System.out.println("✓ Backup created: " + backupFile);
+            // Проверяем размер файла
+            File file = new File(backupFile);
+            System.out.println("File size: " + file.length() + " bytes");
+        } else {
+            System.out.println("✗ Error code: " + exitCode);
+        }
     }
 
     @Test

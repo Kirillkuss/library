@@ -74,7 +74,8 @@ CREATE TABLE lib_logs (
     request_method VARCHAR(10),  -- GET, POST, PUT, DELETE
     request_uri VARCHAR(255),    -- URL запроса
     response_status INT,         -- HTTP-статус (200, 404, 500)
-    execute_time INT             -- Время выполнения
+    execute_time INT,             -- Время выполнения
+    session_id VARCHAR(255)       -- ИД пользователя
 );
 
 
