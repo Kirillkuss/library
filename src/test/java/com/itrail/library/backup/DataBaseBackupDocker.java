@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-//@Disabled
+@Disabled
 @DisplayName("Тестирование backup и restore from Docker")
 public class DataBaseBackupDocker {
 
@@ -22,17 +22,11 @@ public class DataBaseBackupDocker {
         if (!backupDir.exists()) {
             backupDir.mkdirs();
         }
-        
         String backupFile = backupPath.toString() + File.separator + "library.backup";
-        
-        // Используем shell для перенаправления вывода
-        String command = String.format(
-            "docker exec -e PGPASSWORD=admin library_db pg_dump -U postgres -Fc lib > \"%s\"",
-            backupFile
-        );
+        String command = String.format("docker exec -e PGPASSWORD=admin library_db pg_dump -U postgres -Fc lib > \"%s\"", backupFile);
         
         ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", command);
-        processBuilder.redirectErrorStream(true);
+                        processBuilder.redirectErrorStream(true);
         
         System.out.println("Executing: " + command);
         Process process = processBuilder.start();
