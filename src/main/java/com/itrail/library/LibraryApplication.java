@@ -3,6 +3,7 @@ package com.itrail.library;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import lombok.extern.slf4j.Slf4j;
 /**
  * http://localhost:8094/library/swagger-ui/index.html
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @SpringBootApplication
+@EnableAspectJAutoProxy
 public class LibraryApplication  {
 
 	public static void main(String[] args) {

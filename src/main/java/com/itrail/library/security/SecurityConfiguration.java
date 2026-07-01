@@ -64,7 +64,9 @@ public class SecurityConfiguration {
 
     private String[] csrfIgnoringRequestMatchers(){
         return new String[]{ "/login", "/securecode", "/logout", "/error","/register", 
-            "/change-password","/users/**","/cards/**","/videos/**" ,"/records/**"               
+            "/change-password","/users/**","/cards/**","/videos/**" ,"/records/**",
+            "/library/actuator/prometheus", "/actuator/prometheus", "/library/actuator/health",       
+            "/actuator/health" 
         };
     }
 
@@ -82,26 +84,6 @@ public class SecurityConfiguration {
                                            registration.setOrder( Ordered.HIGHEST_PRECEDENCE );
         return registration;
     }
-
-
-   /**  @Bean
-    public FilterRegistrationBean<CsrfCookieFilter> csrfCookieFilter() {
-        FilterRegistrationBean<CsrfCookieFilter> registration = new FilterRegistrationBean<>();
-                                                 registration.setFilter(new CsrfCookieFilter());
-                                                 registration.addUrlPatterns("/*");
-        return registration;
-    }
-
-    public class CsrfCookieFilter extends OncePerRequestFilter {
-        @Override
-        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-            CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
-            if (csrfToken != null) {
-                System.out.println("CSRF Token: " + csrfToken.getToken());
-            }
-            filterChain.doFilter(request, response);
-        }
-    }*/
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -127,9 +109,10 @@ public class SecurityConfiguration {
     }
 
 
-
+                       
     private String[] publicEndpoints() {
-        return new String[]{ "/login", "/logout", "/change-password", "/error", "/register", "/clear-error-message", "/icon/**", "/css/**" };
+        return new String[]{ "/login", "/logout", "/change-password", "/error", "/register", "/clear-error-message", "/icon/**", "/css/**",
+                             "/library/actuator/prometheus", "/actuator/prometheus", "/library/actuator/health","/actuator/health"};
     }
 
     private String[] privateEndpoint(){
@@ -137,13 +120,6 @@ public class SecurityConfiguration {
                              "/records/**", "/library/swagger-ui/index.html", "/library/app/index.html" };
     }
 
-    /**@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize.anyRequest()
-            .permitAll())
-            .csrf(csrf -> csrf.disable());
-        return http.build();
-    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -155,5 +131,34 @@ public class SecurityConfiguration {
         return new SessionRegistryImpl();
     }
 
+
+   /**  @Bean
+    public FilterRegistrationBean<CsrfCookieFilter> csrfCookieFilter() {
+        FilterRegistrationBean<CsrfCookieFilter> registration = new FilterRegistrationBean<>();
+                                                 registration.setFilter(new CsrfCookieFilter());
+                                                 registration.addUrlPatterns("/*");
+        return registration;
+    }
+
+    public class CsrfCookieFilter extends OncePerRequestFilter {
+        @Override
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+            CsrfToken csrfToken = (CsrfToken) request.getAttribute("_csrf");
+            if (csrfToken != null) {
+                System.out.println("CSRF Token: " + csrfToken.getToken());
+            }
+            filterChain.doFilter(request, response);
+        }
+    }*/
+
+
+
+    /**@Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest()
+            .permitAll())
+            .csrf(csrf -> csrf.disable());
+        return http.build();
+    }*/
 
 }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
+import com.itrail.library.aspect.metrics.TrackMetrics;
 import com.itrail.library.request.card.CardFilterRequest;
 import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.CardInfoResponse;
@@ -20,6 +21,7 @@ public class CardController implements ICardController {
     
     private final СardService сardService;
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=getFullInfoCardAndRecord")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<BaseResponse<CardInfoResponse>> getFullInfoCardAndRecord( CardFilterRequest cardFilterRequest) {
@@ -28,6 +30,7 @@ public class CardController implements ICardController {
                                                                             cardFilterRequest.size()), HttpStatus.OK );
     }
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=getLazyCards")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<CardResponseLazy>> getLazyCards(int page, int size) {

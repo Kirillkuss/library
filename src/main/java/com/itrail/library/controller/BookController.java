@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
+import com.itrail.library.aspect.metrics.TrackMetrics;
 import com.itrail.library.request.book.BookFilterRequest;
 import com.itrail.library.request.book.FreeBooksRequest;
 import com.itrail.library.response.BaseResponse;
@@ -20,22 +21,24 @@ public class BookController implements IBookController {
 
     private final BookService bookService;
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=getBooksByAuthor")
     @ExecuteEndpointLog
     @Override
-    public ResponseEntity<BaseResponse<BookFilterResponse>> getBooksByAuthor( BookFilterRequest bookFilterRequest ) {
-        return new ResponseEntity<> ( bookService.getBooksByAuthor( bookFilterRequest ), HttpStatus.OK );
+    public ResponseEntity<BaseResponse<BookFilterResponse>> getBooksByAuthor(BookFilterRequest bookFilterRequest) {
+        return new ResponseEntity<>(bookService.getBooksByAuthor(bookFilterRequest), HttpStatus.OK);
     }
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=getFreeBooks")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<BaseResponse<List<BookResponse>>> getFreeBooks(FreeBooksRequest freeBooksRequest) {
-        return new ResponseEntity<> ( bookService.getFreeBooks( freeBooksRequest ), HttpStatus.OK );
+        return new ResponseEntity<>(bookService.getFreeBooks(freeBooksRequest), HttpStatus.OK);
     }
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=getLazyAuthors")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<BookResponse>> getLazyAuthors(int page, int size) {
-        return new ResponseEntity<> ( bookService.getAllBooks( page, size ), HttpStatus.OK );
+        return new ResponseEntity<>(bookService.getAllBooks(page, size), HttpStatus.OK);
     }
-    
 }

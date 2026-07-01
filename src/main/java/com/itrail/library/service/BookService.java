@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.itrail.library.aspect.logger.ExecuteMethodLog;
+import com.itrail.library.aspect.metrics.TrackMetrics;
 import com.itrail.library.domain.Author;
 import com.itrail.library.domain.Book;
 import com.itrail.library.repository.AuthorRepository;
@@ -31,7 +32,6 @@ public class BookService {
     
     private final BookRepository   bookRepository;
     private final AuthorRepository authorRepository;
-
     /**
      * Получение списка книг по ФИО автора
      * @param fio - ФИО автора
@@ -39,6 +39,7 @@ public class BookService {
      * @param size - размер
      * @return List Book
      */
+    @TrackMetrics(layer = "service", tags = "operation=getBooksByAuthor")
     @Cacheable
     @ExecuteMethodLog 
     public BaseResponse<BookFilterResponse> getBooksByAuthor( BookFilterRequest bookFilterRequest ){
@@ -69,6 +70,7 @@ public class BookService {
      * @param idAuthor - Ид автора
      * @return Book
      */
+    @TrackMetrics(layer = "service", tags = "operation=saveBook")
     @Transactional
     public Book saveBook( Book book, Long idAuthor ){ 
         if ( authorRepository.findById( idAuthor ).isEmpty())                     throw new IllegalArgumentException("Нет такого автора!");
@@ -78,6 +80,7 @@ public class BookService {
         return bookRepository.save( book );
     }
 
+    @TrackMetrics(layer = "service", tags = "operation=getFreeBooks")
     public BaseResponse<List<BookResponse>> getFreeBooks( FreeBooksRequest freeBooksRequest ){
         PageRequest page = PageRequest.of( freeBooksRequest.page() - 1, freeBooksRequest.size() );
         List<BookResponse> responses = new ArrayList<>();
@@ -134,6 +137,7 @@ public class BookService {
     }
 
 
+    @TrackMetrics(layer = "service", tags = "operation=getAllBooks")
     public List<BookResponse> getAllBooks( int page, int size ){
         return bookRepository.findAll(PageRequest.of( page - 1, size ))
                              .stream()

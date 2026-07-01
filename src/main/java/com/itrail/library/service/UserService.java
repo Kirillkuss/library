@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.itrail.library.aspect.logger.ExecuteMethodLog;
+import com.itrail.library.aspect.metrics.TrackMetrics;
 import com.itrail.library.domain.Role;
 import com.itrail.library.domain.User;
 import com.itrail.library.repository.RoleRepository;
@@ -112,6 +113,7 @@ public class UserService {
      * @return List UserResponse
      */
     //@Cacheable
+    @TrackMetrics(layer = "service", tags = "operation=getUsers")
     @ExecuteMethodLog 
     public List<UserResponse> getUsers( int page, int size ){
         List<UserResponse> users =
@@ -274,6 +276,7 @@ public class UserService {
      * @param createUser - входной запрос при регистрации 
      * @return UserResponse
      */
+    @TrackMetrics(layer = "service", tags = "operation=createUser")
     @Transactional
     public BaseResponse<UserResponse> createUserRegister( CreateUserRequest createUser, int type ){
         CreateUserRequest createUserRequest = getUserAuthRequest( createUser, type );

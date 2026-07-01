@@ -2,7 +2,7 @@ var protocol = window.location.protocol
 var hostname = window.location.hostname;
 var port = window.location.port;
 
-        let currentCamera = 'second';
+        let currentCamera = 'one';
         let isRecording = false;
         let recordingTimer = null;
 
@@ -38,7 +38,7 @@ var port = window.location.port;
         function switchCamera(cameraName) {
             currentCamera = cameraName;
             const frame = document.getElementById('cameraFrame');
-            frame.src = `http://localhost:8889/${cameraName}`;
+            frame.src = `http://izoo.itrail.by:380/${cameraName}`;
             const buttons = document.querySelectorAll('.control-section:first-child .btn-video-control');
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
@@ -106,13 +106,26 @@ var port = window.location.port;
         }
 
         function startRecording() {
+
+            let path = 'unicast/c1-0/s0/live';
             if (isRecording) {
                 alert('Запись уже идет!');
                 return;
             }
+            if(  currentCamera === 'one' ){
+                path = 'unicast/c1-0/s0/live';
+            }else{
+                if( currentCamera === 'two' ){
+                    path = 'unicast/c2-0/s0/live';
+                }else{
+                    path = 'unicast/c3-0/s0/live';
+                }
+            }
+
+
 
             const duration = document.getElementById('recordDuration').value;
-            const streamPath = `rtsp://localhost:8554/${currentCamera}`;
+            const streamPath = `rtsp://itrail:12345Itrail@10.0.50.20:554/${path}`;
             isRecording = true;
             updateRecordingUI('recording', `Запись началась (${duration} сек)`);
             

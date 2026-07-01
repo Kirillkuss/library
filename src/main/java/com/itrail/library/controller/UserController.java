@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import com.itrail.library.aspect.logger.ExecuteEndpointLog;
+import com.itrail.library.aspect.metrics.TrackMetrics;
 import com.itrail.library.config.redis.domain.Session;
 import com.itrail.library.config.redis.service.SessionService;
 import com.itrail.library.repository.UserRepository;
@@ -26,35 +27,42 @@ public class UserController implements IUserController{
     private final SessionService sessionService;
     private final UserRepository userRepository;
 
+
+    @TrackMetrics(layer = "controller", tags = "endpoint=getUsers")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<UserResponse>> getUsers( int page, int size) {
         return new ResponseEntity<>( userService.getUsers( page, size ), HttpStatus.OK );
     }
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=createUser")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<BaseResponse<UserResponse>> createUser( CreateUserRequest createUserRequest ) {
         return new ResponseEntity<>( userService.createUserRegister(createUserRequest, 2), HttpStatus.CREATED );
     }
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=getSessions")
     @Override
     public ResponseEntity<Iterator<Session>> getSessions() {
         return new ResponseEntity<>( sessionService.getSessions(), HttpStatus.OK );
     }
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=deleteUserSession")
     @Override
     public ResponseEntity<BaseResponse> deleteUserSession( HttpServletRequest httpServletRequest) throws IllegalAccessException {
         sessionService.deleteCurrentSession( httpServletRequest );
         return new ResponseEntity<>( new BaseResponse( 200, "success"), HttpStatus.OK );
     }
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=getUsersForUI")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<UserResponse>> getUsersForUI( String param, int page, int size) {
         return new ResponseEntity<>( userService.findUsersForUI( param, page, size ), HttpStatus.OK );
     }
 
+    @TrackMetrics(layer = "controller", tags = "endpoint=getCountUsers")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<Long> getCountUsers() {

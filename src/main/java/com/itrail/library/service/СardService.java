@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.itrail.library.aspect.metrics.TrackMetrics;
 import com.itrail.library.domain.Book;
 import com.itrail.library.domain.Card;
 import com.itrail.library.domain.User;
@@ -40,6 +41,7 @@ public class СardService {
      * @param idUser - Ид пользователя
      * @return Card
      */
+    @TrackMetrics(layer = "service", tags = "operation=saveCard")
     @Transactional
     public BaseResponse<Card> saveCard( Long idUser){
         Optional<User> user = userRepository.findById( idUser );
@@ -63,6 +65,7 @@ public class СardService {
      * @param size - размер
      * @return CardInfoResponse
      */
+    @TrackMetrics(layer = "service", tags = "operation=getFullInfoCardAndRecord")
     @CachePut
     public BaseResponse<CardInfoResponse> getFullInfoCardAndRecord( String user, int page, int size ){
         Optional<Card> card = cardRepository.findCardByUser( user );
@@ -105,6 +108,7 @@ public class СardService {
 
     }
 
+    @TrackMetrics(layer = "service", tags = "operation=getLazyCard")
     public List<CardResponseLazy> getLazyCard( int page, int size ){
         return cardRepository.findAll( PageRequest.of( page - 1, size ))
                              .stream().map( card -> {

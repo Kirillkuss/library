@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.itrail.library.aspect.logger.ExecuteMethodLog;
+import com.itrail.library.aspect.metrics.TrackMetrics;
 import com.itrail.library.domain.Book;
 import com.itrail.library.domain.CardRecord;
 import com.itrail.library.domain.User;
@@ -31,6 +32,7 @@ public class CardRecordService {
     private final BookRepository       bookRepository;
     private final CardRepository       cardRepository;
 
+    @TrackMetrics(layer = "service", tags = "operation=getAllRecord")
     public List<RecordResponse> getAllRecord( int page, int size ){
         return cardRecordRepository.findAll( PageRequest.of( page - 1, size ))
                               .stream()
@@ -56,6 +58,7 @@ public class CardRecordService {
      * @param idCard - Ид карты
      * @return CardRecord
      */
+    @TrackMetrics(layer = "service", tags = "operation=saveRecord")
     @Transactional
     private BaseResponse<CardRecord> saveRecord( Long bookNumber, Long idCard ){
         Optional<Book> book = bookRepository.findBookByNumber( bookNumber );
@@ -96,6 +99,7 @@ public class CardRecordService {
      * @param createCardRecordRequest - входной запрос
      * @return RecordReponse
      */
+    @TrackMetrics(layer = "service", tags = "operation=createCardRecord")
     @Transactional
     public BaseResponse<RecordResponse> createCardRecord( CreateCardRecordRequest createCardRecordRequest ){
         BaseResponse<CardRecord> cardRecord = saveRecord( createCardRecordRequest.bookNumber(), createCardRecordRequest.idCard() );
@@ -122,6 +126,7 @@ public class CardRecordService {
      * @param cardRecordRequest - входной запрос
      * @return CardRecordResponse
      */
+    @TrackMetrics(layer = "service", tags = "operation=getRecordByCard")
     @ExecuteMethodLog
     public CardRecordResponse getRecordByCard( CardRecordRequest cardRecordRequest ){
         return new CardRecordResponse( cardRecordRepository.getRecordsByPeriodAndCard( cardRecordRequest.user(),
