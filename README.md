@@ -4,14 +4,10 @@
 - [Technology Stack](#-technology-stack)
 - [System Architecture](#-system-architecture)
 - [Monitoring & Observability](#-monitoring--observability)
-- [Quick Start](#-quick-start)
 - [API Documentation](#-api-documentation)
 - [Testing](#-testing)
 - [CI/CD Pipeline](#-cicd-pipeline)
 - [Project Structure](#-project-structure)
-- [Contributing](#-contributing)
-- [License](#-license)
-
 ---
 
 ## ✨ Key Features
@@ -123,35 +119,9 @@
 │ Prometheus & Grafana │
 │ Metrics Collection & Visualization │
 └───────────────────────────────────────┘
-
 ---
 
-### AOP Cross-Cutting Concerns
-- **`@ExecuteEndpointLog`** - Log all API endpoint calls
-- **`@ExecuteMethodLog`** - Detailed service method logging
-- **`@TrackMetrics`** - Automatic performance metrics collection
-- **`@HandleException`** - Centralized exception handling
-- **`@Transactional`** - Database transaction management
-
----
-
-## 📊 Monitoring & Observability
-
-### 🔍 Metrics Collected
-
-#### API Metrics (`library.api.*`)
-```promql
-# Request counters by endpoint and status
-library_api_requests_total{method="BookController.getBooksByAuthor", status="success"}
-
-# Execution time histogram with percentiles
-library_api_duration_seconds{method="BookController.getBooksByAuthor", quantile="0.95"}
-
-# Error tracking by type
-library_api_errors_total{method="BookService.saveBook", error_type="IllegalArgumentException"}
-
-
-### 📁 Project Structure
+## 📁 Project Structure
 
 library-system/
 ├── src/
@@ -196,3 +166,30 @@ library-system/
 ├── Jenkinsfile
 ├── pom.xml
 └── README.md
+---
+
+### AOP Cross-Cutting Concerns
+- **`@ExecuteEndpointLog`** - Log all API endpoint calls
+- **`@ExecuteMethodLog`** - Detailed service method logging
+- **`@TrackMetrics`** - Automatic performance metrics collection
+- **`@HandleException`** - Centralized exception handling
+- **`@Transactional`** - Database transaction management
+
+---
+
+## 📊 Monitoring & Observability
+
+### 🔍 Metrics Collected
+
+#### API Metrics (`library.api.*`)
+
+```promql
+# Request counters by endpoint and status
+library_api_requests_total{method="BookController.getBooksByAuthor", status="success"}
+
+# Execution time histogram with percentiles
+library_api_duration_seconds{method="BookController.getBooksByAuthor", quantile="0.95"}
+
+# Error tracking by type
+library_api_errors_total{method="BookService.saveBook", error_type="IllegalArgumentException"}
+
