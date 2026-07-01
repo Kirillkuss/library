@@ -80,6 +80,50 @@
 | **Logging** | SLF4J, Logback | Latest |
 | **Code Quality** | Lombok | 1.18+ |
 
+## 🏗 System Architecture
+┌─────────────────────────────────────────────────────────────────────┐
+│ Client Applications │
+│ (Web, Mobile, API Clients) │
+└─────────────────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────────────┐
+│ API Gateway │
+│ (Authentication & Routing) │
+└─────────────────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────────────┐
+│ Security Layer │
+│ JWT Auth + 2FA + RBAC │
+└─────────────────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────────────┐
+│ REST Controllers │
+│ BookController, UserController, AuthController │
+└─────────────────────────────────────────────────────────────────────┘
+│
+▼
+┌─────────────────────────────────────────────────────────────────────┐
+│ Service Layer │
+│ Business Logic & Transaction Management │
+└─────────────────────────────────────────────────────────────────────┘
+│
+┌───────────────┼───────────────┐
+▼ ▼ ▼
+┌───────────────┐ ┌───────────────┐ ┌───────────────┐
+│ PostgreSQL │ │ Redis │ │ Mediamtx │
+│ Database │ │ Cache │ │ (RTSP/WebRTC)│
+└───────────────┘ └───────────────┘ └───────────────┘
+│ │ │
+└───────────────┼───────────────┘
+▼
+┌───────────────────────────────────────┐
+│ Prometheus & Grafana │
+│ Metrics Collection & Visualization │
+└───────────────────────────────────────┘
+
 ---
 
 ### AOP Cross-Cutting Concerns
@@ -105,3 +149,50 @@ library_api_duration_seconds{method="BookController.getBooksByAuthor", quantile=
 
 # Error tracking by type
 library_api_errors_total{method="BookService.saveBook", error_type="IllegalArgumentException"}
+
+
+### 📁 Project Structure
+
+library-system/
+├── src/
+│   ├── main/
+│   │   ├── java/com/itrail/library/
+│   │   │   ├── aspect/              # AOP aspects
+│   │   │   │   ├── error/           # Exception aspects
+│   │   │   │   ├── logger/          # Logging aspects
+│   │   │   │   ├── metrics/         # Metrics collection
+│   │   │   │   └── transaction/     # Transaction management
+│   │   │   ├── config/              # Configuration classes
+│   │   │   │   ├── mail/            # Mail configuration
+│   │   │   │   ├── server/          # Server configuration
+│   │   │   │   ├── redis/           # Redis configuration
+│   │   │   │   ├── postgres/        # Postgres configuration
+│   │   │   ├── controller/          # REST controllers
+│   │   │   ├── service/             # Business logic
+│   │   │   ├── repository/          # JPA repositories
+│   │   │   ├── domain/              # Entities and DTOs
+│   │   │   │   ├── entity/          # JPA entities
+│   │   │   ├── security/            # Security implementation
+│   │   │   │   ├── generate/        # Generate password
+│   │   │   │   ├── nandler/         # Authentication handlers
+│   │   │   │   └── filter/          # Security filters
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       └── db/migration/        # Flyway migrations
+│   └── test/
+│       ├── java/
+│       └── resources/
+├── docker/
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── monitoring/
+│   ├── prometheus/
+│   │   └── prometheus.yml
+│   └── grafana/
+│       └── dashboards/
+├── scripts/
+│   ├── build.sh
+│   └── deploy.sh
+├── Jenkinsfile
+├── pom.xml
+└── README.md
