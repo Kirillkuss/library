@@ -2,6 +2,7 @@
 
 - [Key Features](#-key-features)
 - [Technology Stack](#-technology-stack)
+- [Deployment](#-deployment)
 - [System Architecture](#-system-architecture)
 - [Monitoring & Observability](#-monitoring--observability)
 - [API Documentation](#-api-documentation)
@@ -68,7 +69,7 @@
 | **Monitoring** | Micrometer, Prometheus, Grafana | Latest |
 | **Video Streaming** | Mediamtx (RTSP/WebRTC) | Latest |
 | **API Documentation** | Swagger/OpenAPI | 3.x |
-| **Containerization** | Docker, Docker Compose | Latest |
+| **Containerization** | Docker, Docker Compose, Kubernetes | Latest |
 | **Build Tool** | Maven | 3.9+ |
 | **Testing** | JUnit 5, Mockito, RestAssured | Latest |
 | **CI/CD** | Jenkins | 2.x |
