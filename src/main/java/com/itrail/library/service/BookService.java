@@ -39,7 +39,7 @@ public class BookService {
      * @param size - размер
      * @return List Book
      */
-    @TrackMetrics(layer = "service", tags = "operation=getBooksByAuthor")
+    @TrackMetrics(layer = "service")
     @Cacheable
     @ExecuteMethodLog 
     public BaseResponse<BookFilterResponse> getBooksByAuthor( BookFilterRequest bookFilterRequest ){
@@ -70,7 +70,7 @@ public class BookService {
      * @param idAuthor - Ид автора
      * @return Book
      */
-    @TrackMetrics(layer = "service", tags = "operation=saveBook")
+    @TrackMetrics(layer = "service")
     @Transactional
     public Book saveBook( Book book, Long idAuthor ){ 
         if ( authorRepository.findById( idAuthor ).isEmpty())                     throw new IllegalArgumentException("Нет такого автора!");
@@ -80,7 +80,7 @@ public class BookService {
         return bookRepository.save( book );
     }
 
-    @TrackMetrics(layer = "service", tags = "operation=getFreeBooks")
+    @TrackMetrics(layer = "service")
     public BaseResponse<List<BookResponse>> getFreeBooks( FreeBooksRequest freeBooksRequest ){
         PageRequest page = PageRequest.of( freeBooksRequest.page() - 1, freeBooksRequest.size() );
         List<BookResponse> responses = new ArrayList<>();
@@ -137,7 +137,7 @@ public class BookService {
     }
 
 
-    @TrackMetrics(layer = "service", tags = "operation=getAllBooks")
+    @TrackMetrics(layer = "service")
     public List<BookResponse> getAllBooks( int page, int size ){
         return bookRepository.findAll(PageRequest.of( page - 1, size ))
                              .stream()

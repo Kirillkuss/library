@@ -113,7 +113,8 @@ public class UserService {
      * @return List UserResponse
      */
     //@Cacheable
-    @TrackMetrics(layer = "service", tags = "operation=getUsers")
+    //@TrackMetrics(layer = "service", tags = "operation=getUsers")
+    @TrackMetrics(layer = "service")
     @ExecuteMethodLog 
     public List<UserResponse> getUsers( int page, int size ){
         List<UserResponse> users =
@@ -276,7 +277,7 @@ public class UserService {
      * @param createUser - входной запрос при регистрации 
      * @return UserResponse
      */
-    @TrackMetrics(layer = "service", tags = "operation=createUser")
+    @TrackMetrics(layer = "service")
     @Transactional
     public BaseResponse<UserResponse> createUserRegister( CreateUserRequest createUser, int type ){
         CreateUserRequest createUserRequest = getUserAuthRequest( createUser, type );

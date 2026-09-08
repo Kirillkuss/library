@@ -16,7 +16,7 @@ public class LogEntryController implements ILogEntryController {
 
     private final LogService logService;
     
-    @TrackMetrics(layer = "controller", tags = "endpoint=getLazyLogs")
+    @TrackMetrics(layer = "controller")
     @Override
     public ResponseEntity<List<LogEntry>> getLazyLogs(int page, int size) {
         return ResponseEntity.ok().body( logService.getLogsJpa( page, size));

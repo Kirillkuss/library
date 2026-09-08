@@ -17,14 +17,14 @@ public class AuthorController implements IAuthorController{
 
     private final AuthorService authorService;
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getAuthors")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<Author>> getAuthors( String fio ) {
         return new ResponseEntity<> ( authorService.getAuthors(fio ), HttpStatus.OK );
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getLazyAuthors")
+    @TrackMetrics(layer = "controller")
     @Override
     public ResponseEntity<List<Author>> getLazyAuthors(int page, int size) {
         return new ResponseEntity<> ( authorService.getAllAuthors( page, size ), HttpStatus.OK );

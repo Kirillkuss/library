@@ -21,7 +21,7 @@ public class CardController implements ICardController {
     
     private final СardService сardService;
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getFullInfoCardAndRecord")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<BaseResponse<CardInfoResponse>> getFullInfoCardAndRecord( CardFilterRequest cardFilterRequest) {
@@ -30,7 +30,7 @@ public class CardController implements ICardController {
                                                                             cardFilterRequest.size()), HttpStatus.OK );
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getLazyCards")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<CardResponseLazy>> getLazyCards(int page, int size) {

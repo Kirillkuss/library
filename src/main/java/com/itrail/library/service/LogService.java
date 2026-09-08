@@ -17,7 +17,7 @@ public class LogService {
 
     private final LogEntryRepository logEntryRepository;
 
-    @TrackMetrics(layer = "service", tags = "operation=getLogsJpa")
+    @TrackMetrics(layer = "service")
     public List<LogEntry> getLogsJpa(int page, int size) {
         return logEntryRepository.findByOrderByIdDesc( PageRequest.of( page - 1, size ) );
     }

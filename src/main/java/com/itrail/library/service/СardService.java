@@ -41,7 +41,7 @@ public class СardService {
      * @param idUser - Ид пользователя
      * @return Card
      */
-    @TrackMetrics(layer = "service", tags = "operation=saveCard")
+    @TrackMetrics(layer = "service")
     @Transactional
     public BaseResponse<Card> saveCard( Long idUser){
         Optional<User> user = userRepository.findById( idUser );
@@ -65,7 +65,7 @@ public class СardService {
      * @param size - размер
      * @return CardInfoResponse
      */
-    @TrackMetrics(layer = "service", tags = "operation=getFullInfoCardAndRecord")
+    @TrackMetrics(layer = "service")
     @CachePut
     public BaseResponse<CardInfoResponse> getFullInfoCardAndRecord( String user, int page, int size ){
         Optional<Card> card = cardRepository.findCardByUser( user );
@@ -108,7 +108,7 @@ public class СardService {
 
     }
 
-    @TrackMetrics(layer = "service", tags = "operation=getLazyCard")
+    @TrackMetrics(layer = "service")
     public List<CardResponseLazy> getLazyCard( int page, int size ){
         return cardRepository.findAll( PageRequest.of( page - 1, size ))
                              .stream().map( card -> {

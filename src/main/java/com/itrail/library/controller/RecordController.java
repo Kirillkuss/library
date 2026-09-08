@@ -21,21 +21,21 @@ public class RecordController implements IRecordController {
 
     private final CardRecordService cardRecordService;
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getRecordByCard")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<CardRecordResponse> getRecordByCard( CardRecordRequest cardRecordRequest ) {
         return new ResponseEntity<>(  cardRecordService.getRecordByCard( cardRecordRequest) , HttpStatus.OK );
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=createRecord")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<BaseResponse<RecordResponse>> createRecord(CreateCardRecordRequest createCardRecordRequest) {
         return new ResponseEntity<>( cardRecordService.createCardRecord( createCardRecordRequest ), HttpStatus.CREATED ); 
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getLazyRecord")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<RecordResponse>> getLazyRecord(int page, int size) {

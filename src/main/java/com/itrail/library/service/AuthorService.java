@@ -20,12 +20,12 @@ public class AuthorService {
      * @param fio - ФИО автора
      * @return List Author
      */
-    @TrackMetrics(layer = "service", tags = "operation=getAuthors")
+    @TrackMetrics(layer = "service")
     public List<Author> getAuthors( String fio ){
         return authorRepository.findAuthorsByFio(fio); 
     }
 
-    @TrackMetrics(layer = "service", tags = "operation=getAllAuthors")
+    @TrackMetrics(layer = "service")
     public List<Author> getAllAuthors( int page, int size ){
         return authorRepository.findAll(PageRequest.of( page - 1, size ))
                                .stream()

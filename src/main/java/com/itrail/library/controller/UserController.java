@@ -28,41 +28,41 @@ public class UserController implements IUserController{
     private final UserRepository userRepository;
 
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getUsers")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<UserResponse>> getUsers( int page, int size) {
         return new ResponseEntity<>( userService.getUsers( page, size ), HttpStatus.OK );
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=createUser")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<BaseResponse<UserResponse>> createUser( CreateUserRequest createUserRequest ) {
         return new ResponseEntity<>( userService.createUserRegister(createUserRequest, 2), HttpStatus.CREATED );
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getSessions")
+    @TrackMetrics(layer = "controller")
     @Override
     public ResponseEntity<Iterator<Session>> getSessions() {
         return new ResponseEntity<>( sessionService.getSessions(), HttpStatus.OK );
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=deleteUserSession")
+    @TrackMetrics(layer = "controller")
     @Override
     public ResponseEntity<BaseResponse> deleteUserSession( HttpServletRequest httpServletRequest) throws IllegalAccessException {
         sessionService.deleteCurrentSession( httpServletRequest );
         return new ResponseEntity<>( new BaseResponse( 200, "success"), HttpStatus.OK );
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getUsersForUI")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<UserResponse>> getUsersForUI( String param, int page, int size) {
         return new ResponseEntity<>( userService.findUsersForUI( param, page, size ), HttpStatus.OK );
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getCountUsers")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<Long> getCountUsers() {

@@ -21,21 +21,21 @@ public class BookController implements IBookController {
 
     private final BookService bookService;
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getBooksByAuthor")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<BaseResponse<BookFilterResponse>> getBooksByAuthor(BookFilterRequest bookFilterRequest) {
         return new ResponseEntity<>(bookService.getBooksByAuthor(bookFilterRequest), HttpStatus.OK);
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getFreeBooks")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<BaseResponse<List<BookResponse>>> getFreeBooks(FreeBooksRequest freeBooksRequest) {
         return new ResponseEntity<>(bookService.getFreeBooks(freeBooksRequest), HttpStatus.OK);
     }
 
-    @TrackMetrics(layer = "controller", tags = "endpoint=getLazyAuthors")
+    @TrackMetrics(layer = "controller")
     @ExecuteEndpointLog
     @Override
     public ResponseEntity<List<BookResponse>> getLazyAuthors(int page, int size) {

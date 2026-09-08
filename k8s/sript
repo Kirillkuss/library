@@ -20,6 +20,7 @@ kubectl logs -n library-app library-f8d68478c-b5mwz
 
 6. Get pods
 kubectl get pods -n library-app
+kubectl get pods -n library-app --show-labels
 
 7. Ger service in to browser ( link )
 minikube service library-service -n library-app
@@ -49,5 +50,9 @@ kubectl apply -f k8s/services.yaml
 minikube service library-service -n library-app
 
 ---------------------------------------------------------------------
+
+
+ kubectl get endpoints -n library-app    
+kubectl get svc -n library-app
 
 
