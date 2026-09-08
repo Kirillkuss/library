@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: library
+  namespace: library-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: library
+  template:
+    metadata:
+      labels:
+        app: library
+    spec:
+      containers:
+      - name: library
+        image: kirillkus/library
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://pg-db-service:5432/lib"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "postgres"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "admin"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "none"
+        - name: SPRING_REDIS_HOST
+          value: "redislib-service" 
+        - name: SPRING_REDIS_PORT
+          value: "6379"              
+        ports:
+        - containerPort: 8094

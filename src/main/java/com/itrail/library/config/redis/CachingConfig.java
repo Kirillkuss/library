@@ -1,7 +1,7 @@
 package com.itrail.library.config.redis;
 
 import java.time.Duration;
-import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
+//import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
@@ -30,13 +30,13 @@ public class CachingConfig {
         return new LibSimpleKeyGenerator();
     }
 
-    @Bean
+    /**@Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return (builder) -> builder.withCacheConfiguration( "records", getTimeOut( 8 ) )
                                    .withCacheConfiguration( "books",getTimeOut( 8 ))
                                    .withCacheConfiguration( "cards",getTimeOut( 8 ))
                                    .withCacheConfiguration( "users", getTimeOut( 5 ));
-    }
+    }*/
 
     
 }

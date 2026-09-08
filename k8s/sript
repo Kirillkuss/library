@@ -1,0 +1,53 @@
+1. start minikube
+minikube start
+
+2. add/update config
+kubectl apply -f k8s/library-deployment.yaml
+
+3. restart
+kubectl rollout restart deployment library -n library-app	
+
+4. delete
+kubectl delete pod library-5cc7f5664c-f4jtw -n library-app
+kubectl delete namespace library-app
+kubectl get namespaces
+
+5. Get discribe
+kubectl describe pod pg-db-8597bf94f8-nl5z7 -n library-app
+
+5. Get logs
+kubectl logs -n library-app library-f8d68478c-b5mwz 
+
+6. Get pods
+kubectl get pods -n library-app
+
+7. Ger service in to browser ( link )
+minikube service library-service -n library-app
+-------------------------------------------------------------------
+
+# 1. Apply all script (include PVC)
+    # 1.1 Creat ConfigMap from init-db.sh
+    kubectl create configmap init-db-script -n library-app --from-file=./src/main/resources/db/backup/init-db.sh
+    # 1.2 Creat ConfigMap from library.backup
+    kubectl create configmap postgres-backup -n library-app --from-file=./src/main/resources/db/backup/library.backup
+    # 1.3 Check, that ConfigMap's created
+    kubectl get configmap -n library-app
+
+kubectl apply -f k8s/postgres-deployment.yaml
+kubectl apply -f k8s/redis-deployment.yaml
+kubectl apply -f k8s/redis-service-alias.yaml
+kubectl apply -f k8s/prometheus-deployment.yaml
+kubectl apply -f k8s/grafana-deployment.yaml
+kubectl apply -f k8s/node-exporter-deployment.yaml
+kubectl apply -f k8s/library-deployment.yaml
+
+# 2. Apply all Service's
+kubectl apply -f k8s/services.yaml
+
+#3. Apply service to get link into web
+
+minikube service library-service -n library-app
+
+---------------------------------------------------------------------
+
+

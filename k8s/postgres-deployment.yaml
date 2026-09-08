@@ -1,0 +1,54 @@
+# 1. Создать ConfigMap из init-db.sh
+#kubectl create configmap init-db-script -n library-app --from-file=./src/main/resources/db/backup/init-db.sh
+# 2. Создать ConfigMap из library.backup
+#kubectl create configmap postgres-backup -n library-app --from-file=./src/main/resources/db/backup/library.backup
+# 3. Проверить, что ConfigMap'ы создались
+#kubectl get configmap -n library-app
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg-db
+  namespace: library-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pg-db
+  template:
+    metadata:
+      labels:
+        app: pg-db
+    spec:
+      containers:
+      - name: pg-db
+        image: postgres:latest
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "admin"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_DB
+          value: "lib"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d/init-db.sh
+          subPath: init-db.sh
+        - name: backup-file
+          mountPath: /library.backup
+          subPath: library.backup
+        - name: backup-dir
+          mountPath: /backup
+      
+      volumes:
+      - name: init-script
+        configMap:
+          name: init-db-script
+          defaultMode: 0755
+      - name: backup-file
+        configMap:
+          name: postgres-backup
+      - name: backup-dir
+        emptyDir: {}

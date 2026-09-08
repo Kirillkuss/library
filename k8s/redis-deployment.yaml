@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redislib
+  namespace: library-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redislib
+  template:
+    metadata:
+      labels:
+        app: redislib
+    spec:
+      containers:
+      - name: redislib
+        image: redis:latest
+        command: ["redis-server"]
+        args: ["--notify-keyspace-events", "Ex"]
+        ports:
+        - containerPort: 6379
