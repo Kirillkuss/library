@@ -2,7 +2,7 @@ HELP.md
 .gradle
 logs/
 build/
-
+target/
 frontend/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -10,8 +10,6 @@ frontend/
 allure-results
 /src/main/resources/video/
 
-!target/*.jar
-!target/**/*.jar
 ### STS ###
 .apt_generated
 .classpath
