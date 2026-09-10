@@ -52,7 +52,7 @@ minikube service library-service -n library-app
 ---------------------------------------------------------------------
 
 
- kubectl get endpoints -n library-app    
+kubectl get endpoints -n library-app    
 kubectl get svc -n library-app
 
 
