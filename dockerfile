@@ -1,5 +1,13 @@
-FROM openjdk:27-ea-trixie
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} library.jar
-ENTRYPOINT ["java","-jar","/library.jar"]
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# --- Этап запуска ---
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8094
+ENTRYPOINT ["java","-jar","app.jar"]
