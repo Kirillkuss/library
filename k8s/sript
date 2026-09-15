@@ -25,6 +25,7 @@ kubectl get pods -n library-app --show-labels
 7. Ger service in to browser ( link )
 minikube service library-service -n library-app
 -------------------------------------------------------------------
+kubectl apply -f k8s/namespace.yaml
 
 # 1. Apply all script (include PVC)
     # 1.1 Creat ConfigMap from init-db.sh
