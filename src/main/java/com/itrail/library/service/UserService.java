@@ -100,8 +100,8 @@ public class UserService {
         return password;
     }
 
-    private void validatePassword(String password) {
-        if (!isValidPassword(password)) {
+    private void validatePassword( String password ) {
+        if ( !isValidPassword( password )) {
             throw new IllegalArgumentException("Неверный формат пароля! Пароль должен сожедржать не менее 12 символов, 1 букву верхнего и нижнего реестра, 1 цифру и 1 спец. символ ( *[@#$^&+=!№:?:%*(;_)}{]" );
         }
     }

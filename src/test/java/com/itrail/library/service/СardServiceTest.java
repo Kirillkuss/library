@@ -62,7 +62,35 @@ public class СardServiceTest {
         Mockito.when( userRepository.findById( idUser )).thenReturn( Optional.of( new User() ) );
         Mockito.when( cardRepository.findByUser( idUser )).thenReturn( Optional.empty() );
         BaseResponse<Card> result = сardService.saveCard( idUser );
-        //Allure.addAttachment( rezult, TYPE, result.toString() );
+        Allure.addAttachment( rezult, TYPE, result.toString() );
+    }
+
+    @ParameterizedTest
+    @CsvSource({"login, 1, 10"})
+    @DisplayName( "Получение информации о пользователе и его карте, с его записями")
+    public void getFullInfoCardAndRecordTest(String user, int page, int size ){
+        Card card = new Card( 1L, null, null, null, false, new User());
+        List<CardRecord> cardRecords = List.of( new CardRecord(1L, LocalDateTime.now(), LocalDateTime.now().plusDays(2), 1L, 1L),
+                                                new CardRecord(2L, LocalDateTime.now(), LocalDateTime.now().plusDays(2), 3L, 1L));
+        Mockito.when( cardRepository.findCardByUser( user )).thenReturn( Optional.of( card ));
+        Mockito.when( cardRecordRepository.findRecordsCurrent( card.getId(), PageRequest.of(page - 1, size))).thenReturn(cardRecords);
+        Mockito.when( bookRepository.findById( 1L )).thenReturn( Optional.of( new Book() ));
+        Mockito.when( bookRepository.findById( 3L )).thenReturn( Optional.of( new Book() ));;
+        BaseResponse<CardInfoResponse> result = сardService.getFullInfoCardAndRecord( user, page, size );
+        Allure.addAttachment( rezult, TYPE, result.toString() );
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1, 10"})
+    @DisplayName("Ленивая загрузка карт пользователей")
+    public void getLazyCardTest( int page, int size ){
+        List<Card> card = List.of( new Card( 1L, LocalDateTime.now(), LocalDateTime.now(), null, false, new User()),
+                                   new Card(2L, LocalDateTime.now(), LocalDateTime.now(), null, false, new User()));
+        Page<Card> pageCard = new PageImpl<>( card );
+        Mockito.when( cardRepository.findAll( PageRequest.of( page - 1, size ))).thenReturn( pageCard );
+        List<CardResponseLazy> result = сardService.getLazyCard( page, size );
+        assertFalse( result.isEmpty() );
+        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     //@Test
@@ -82,21 +110,6 @@ public class СardServiceTest {
         Mockito.when( cardRepository.findByUser( idUser )).thenReturn( Optional.of( new Card() ));
         IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> сardService.saveCard( idUser ));
         Assertions.assertEquals("У пользователя есть уже карта!", exception.getMessage());   
-    }
-
-    @ParameterizedTest
-    @CsvSource({"login, 1, 10"})
-    @DisplayName( "Получение информации о пользователе и его карте, с его записями")
-    public void getFullInfoCardAndRecordTest(String user, int page, int size ){
-        Card card = new Card( 1L, null, null, null, false, new User());
-        List<CardRecord> cardRecords = List.of( new CardRecord(1L, LocalDateTime.now(), LocalDateTime.now().plusDays(2), 1L, 1L),
-                                                new CardRecord(2L, LocalDateTime.now(), LocalDateTime.now().plusDays(2), 3L, 1L));
-        Mockito.when( cardRepository.findCardByUser( user )).thenReturn( Optional.of( card ));
-        Mockito.when( cardRecordRepository.findRecordsCurrent( card.getId(), PageRequest.of(page - 1, size))).thenReturn(cardRecords);
-        Mockito.when( bookRepository.findById( 1L )).thenReturn( Optional.of( new Book() ));
-        Mockito.when( bookRepository.findById( 3L )).thenReturn( Optional.of( new Book() ));;
-        BaseResponse<CardInfoResponse> result = сardService.getFullInfoCardAndRecord( user, page, size );
-        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     //@ParameterizedTest
@@ -122,19 +135,6 @@ public class СardServiceTest {
         Mockito.when( cardRepository.findCardByUser( user )).thenReturn( Optional.empty() );
         NoSuchElementException exception = Assertions.assertThrows( NoSuchElementException.class, () -> сardService.getFullInfoCardAndRecord( user, page, size ));
         Assertions.assertEquals("По даному запросу ничего не найдено!", exception.getMessage()); 
-    }
-
-    @ParameterizedTest
-    @CsvSource({"1, 10"})
-    @DisplayName("Ленивая загрузка карт пользователей")
-    public void getLazyCardTest( int page, int size ){
-        List<Card> card = List.of( new Card( 1L, LocalDateTime.now(), LocalDateTime.now(), null, false, new User()),
-                                   new Card(2L, LocalDateTime.now(), LocalDateTime.now(), null, false, new User()));
-        Page<Card> pageCard = new PageImpl<>( card );
-        Mockito.when( cardRepository.findAll( PageRequest.of( page - 1, size ))).thenReturn( pageCard );
-        List<CardResponseLazy> result = сardService.getLazyCard( page, size );
-        assertFalse( result.isEmpty() );
-        Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
     //@ParameterizedTest

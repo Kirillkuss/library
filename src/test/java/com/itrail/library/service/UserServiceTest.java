@@ -27,7 +27,6 @@ import com.itrail.library.response.BaseResponse;
 import com.itrail.library.response.UserResponse;
 import com.itrail.library.security.generate.PasswordGenerator;
 import com.itrail.library.service.auth.GoogleAuthenticationService;
-
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Owner;
@@ -81,23 +80,6 @@ public class UserServiceTest {
         Allure.addAttachment( rezult, TYPE, result.toString() );
     }
 
-    //@ParameterizedTest
-    @CsvSource({"0,5"})
-    @DisplayName("Проверка на корректность ввода страницы в методе getUsers")
-    public void getUsersErrorPageTest( int page, int size) {
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.getUsers( page, size ));
-        Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage());
-    }
-
-    //@ParameterizedTest
-    @CsvSource({"1,0"})
-    @DisplayName("Проверка на корректность ввода размера страницы в методе getUsers ")
-    public void getUsersErrorSizeTest( int page, int size) {
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.getUsers( page, size ));
-        Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage());
-    }
-
-
     @ParameterizedTest
     @CsvSource({"Admi, 1,10"})
     @DisplayName( "Ленивая загрузка пользователей с поиск по ФИО или логин, почта, телефон")
@@ -108,22 +90,6 @@ public class UserServiceTest {
         Mockito.when(userRepository.findUsersForUI( param, PageRequest.of( page - 1, size ) )).thenReturn( users );
         List<UserResponse> result = userService.findUsersForUI( param, page, size );
         Allure.addAttachment( rezult, TYPE, result.toString() );
-    }
-
-    //@ParameterizedTest
-    @CsvSource({"Admi,0,5"})
-    @DisplayName("Проверка на корректность ввода страницы в методе getUsers")
-    public void findUsersForUIErrorPageTest( String param, int page, int size) {
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.findUsersForUI( param, page, size ));
-        Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage());
-    }
-
-    //@ParameterizedTest
-    @CsvSource({"Admi,1,0"})
-    @DisplayName("Проверка на корректность ввода размера страницы в методе getUsers ")
-    public void findUsersForUIErrorSizeTest( String param, int page, int size) {
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.findUsersForUI( param, page, size ));
-        Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage());
     }
 
     @Test
@@ -160,6 +126,47 @@ public class UserServiceTest {
         Mockito.when( passwordEncoder.matches( password, encodedPassword )).thenReturn( Boolean.valueOf( false ));
         userService.checkUserPassword( password, encodedPassword );
     }
+    
+    @Test
+    @DisplayName( "Инициализация двух пользователей - проверка, если уже созданы") 
+    public void initSecondTest(){
+        Mockito.when( userRepository.findByLogin( "Admin123" )).thenReturn( Optional.of(new User()) );
+        Mockito.when( userRepository.findByLogin( "User123" )).thenReturn( Optional.of(new User()) );
+        userService.init();
+    }
+    
+
+    //@ParameterizedTest
+    @CsvSource({"0,5"})
+    @DisplayName("Проверка на корректность ввода страницы в методе getUsers")
+    public void getUsersErrorPageTest( int page, int size) {
+        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.getUsers( page, size ));
+        Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage());
+    }
+
+    //@ParameterizedTest
+    @CsvSource({"1,0"})
+    @DisplayName("Проверка на корректность ввода размера страницы в методе getUsers ")
+    public void getUsersErrorSizeTest( int page, int size) {
+        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.getUsers( page, size ));
+        Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage());
+    }
+
+    //@ParameterizedTest
+    @CsvSource({"Admi,0,5"})
+    @DisplayName("Проверка на корректность ввода страницы в методе getUsers")
+    public void findUsersForUIErrorPageTest( String param, int page, int size) {
+        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.findUsersForUI( param, page, size ));
+        Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage());
+    }
+
+    //@ParameterizedTest
+    @CsvSource({"Admi,1,0"})
+    @DisplayName("Проверка на корректность ввода размера страницы в методе getUsers ")
+    public void findUsersForUIErrorSizeTest( String param, int page, int size) {
+        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> userService.findUsersForUI( param, page, size ));
+        Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage());
+    }
 
     //@Test
     @DisplayName( "Инициализация двух пользователей")
@@ -170,14 +177,6 @@ public class UserServiceTest {
         Mockito.when( userRepository.findByLogin( "User123" )).thenReturn( Optional.empty() );
         Mockito.when( roleRepository.findByName( "ADMIN" )).thenReturn(Optional.of( ADMIN ));
         Mockito.when( roleRepository.findByName( "USER" )).thenReturn(Optional.of( USER ));  
-        userService.init();
-    }
-
-    @Test
-    @DisplayName( "Инициализация двух пользователей - проверка, если уже созданы") 
-    public void initSecondTest(){
-        Mockito.when( userRepository.findByLogin( "Admin123" )).thenReturn( Optional.of(new User()) );
-        Mockito.when( userRepository.findByLogin( "User123" )).thenReturn( Optional.of(new User()) );
         userService.init();
     }
 

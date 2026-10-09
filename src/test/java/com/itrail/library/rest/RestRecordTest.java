@@ -19,7 +19,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-@Disabled
+//@Disabled
 @Owner(value = "Barysevich K. A.")
 @Epic(value = "Тестирование АПИ - RecordController")
 @DisplayName("Тестирование АПИ - RecordController")

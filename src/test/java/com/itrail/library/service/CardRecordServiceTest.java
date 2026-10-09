@@ -68,22 +68,6 @@ public class CardRecordServiceTest {
         Allure.addAttachment( rezult, TYPE, result.toString() ); 
     }
 
-    //@ParameterizedTest
-    @CsvSource({"0,2"})
-    @DisplayName("Ленивая загрузка записей - Ошибка страницы")
-    public void getAllRecordErrorPageTest( int page, int size ){
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> cardRecordService.getAllRecord( page, size ));
-        Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage()); 
-    }
-
-    //@ParameterizedTest
-    @CsvSource({"1,0"})
-    @DisplayName("Ленивая загрузка записей - Ошибка размера страницы")
-    public void getAllRecordErrorSizeTest( int page, int size ){
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> cardRecordService.getAllRecord( page, size ));
-        Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage()); 
-    }
-
     @Test
     @DisplayName("Получение списка записей за промежуток времени и по пользователю( логин, почта или тел) с пагинацией")
     public void getRecordByCardTest(){
@@ -105,23 +89,6 @@ public class CardRecordServiceTest {
         Allure.addAttachment( rezult, TYPE, result.toString() ); 
     }
 
-
-    //@Test
-    @DisplayName("Ленивая загрузка записей - Ошибка нумерации страницы")
-    public void getRecordByCardErrorPageTest(){
-        CardRecordRequest cardRecordRequest = new CardRecordRequest( "Login", LocalDateTime.now().minusDays(10 ),  LocalDateTime.now(), 0, 10 );
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> cardRecordService.getRecordByCard( cardRecordRequest ));
-        Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage()); 
-    }
-
-    //@Test
-    @DisplayName("Ленивая загрузка записей - Ошибка размера страницы")
-    public void getRecordByCardErrorSizeTest(){
-        CardRecordRequest cardRecordRequest = new CardRecordRequest( "Login", LocalDateTime.now().minusDays(10 ),  LocalDateTime.now(), 1, 0 );
-        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> cardRecordService.getRecordByCard( cardRecordRequest ));
-        Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage()); 
-    }
-
     @Test
     @DisplayName("Создание новой выдачи")
     public void createCardRecord(){
@@ -139,6 +106,39 @@ public class CardRecordServiceTest {
             Mockito.when( cardRecordRepository.save( Mockito.any( CardRecord.class ))).thenReturn( cardRecord );
             BaseResponse<RecordResponse> result = cardRecordService.createCardRecord(createCardRecordRequest);
             Allure.addAttachment( rezult, TYPE, result.toString() ); 
+    }
+
+    //@ParameterizedTest
+    @CsvSource({"0,2"})
+    @DisplayName("Ленивая загрузка записей - Ошибка страницы")
+    public void getAllRecordErrorPageTest( int page, int size ){
+        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> cardRecordService.getAllRecord( page, size ));
+        Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage()); 
+    }
+
+    //@ParameterizedTest
+    @CsvSource({"1,0"})
+    @DisplayName("Ленивая загрузка записей - Ошибка размера страницы")
+    public void getAllRecordErrorSizeTest( int page, int size ){
+        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> cardRecordService.getAllRecord( page, size ));
+        Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage()); 
+    }
+
+
+    //@Test
+    @DisplayName("Ленивая загрузка записей - Ошибка нумерации страницы")
+    public void getRecordByCardErrorPageTest(){
+        CardRecordRequest cardRecordRequest = new CardRecordRequest( "Login", LocalDateTime.now().minusDays(10 ),  LocalDateTime.now(), 0, 10 );
+        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> cardRecordService.getRecordByCard( cardRecordRequest ));
+        Assertions.assertEquals("Значение страницы должно быть больше нуля!", exception.getMessage()); 
+    }
+
+    //@Test
+    @DisplayName("Ленивая загрузка записей - Ошибка размера страницы")
+    public void getRecordByCardErrorSizeTest(){
+        CardRecordRequest cardRecordRequest = new CardRecordRequest( "Login", LocalDateTime.now().minusDays(10 ),  LocalDateTime.now(), 1, 0 );
+        IllegalArgumentException exception = Assertions.assertThrows( IllegalArgumentException.class, () -> cardRecordService.getRecordByCard( cardRecordRequest ));
+        Assertions.assertEquals("Значение размера страницы должно быть больше нуля!", exception.getMessage()); 
     }
 
     //@Test
