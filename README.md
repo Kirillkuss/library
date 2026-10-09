@@ -1,5 +1,36 @@
-<img src="image.png" alt="Jenkins" width="600">
-<img src="image2.png" alt="Jenkins" width="600">
+## 🔧 Jenkins
+
+<p align="center">
+  <img src="image.png" width="600" alt="Jenkins — сборка">
+  <br>
+  <sub><em>Рис. 1. Allure result</em></sub>
+</p>
+
+<p align="center">
+  <img src="image2.png" width="600" alt="Jenkins — результат">
+  <br>
+  <sub><em>Picture. 2. Test API - Record Controller</em></sub>
+</p>
+
+## 📊 JaCoCo
+
+<p align="center">
+  <img src="image3.png" width="600" alt="JaCoCo — сводка">
+  <br>
+  <sub><em>Picture 3. JaCoCo – general project view</em></sub>
+</p>
+
+<p align="center">
+  <img src="image4.png" width="600" alt="JaCoCo — пакеты">
+  <br>
+  <sub><em>Picture 4. Composition of the CardRecordService service </em></sub>
+</p>
+
+<p align="center">
+  <img src="image5.png" width="600" alt="JaCoCo — классы">
+  <br>
+  <sub><em>Picture 5. Part of the code</em></sub>
+</p>  
 ## 📋 Table of Contents
 
 - [Key Features](#-key-features)
