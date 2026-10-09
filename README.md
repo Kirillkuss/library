@@ -1,13 +1,13 @@
 ## 🔧 Jenkins ( Allure Report )
 
 <p align="center">
-  <img src="image.png" width="600" alt="Jenkins — сборка">
+  <img src="docs/image.png" width="600" alt="Jenkins — сборка">
   <br>
   <sub><em>Рис. 1. Allure result</em></sub>
 </p>
 
 <p align="center">
-  <img src="image2.png" width="600" alt="Jenkins — результат">
+  <img src="docs/image2.png" width="600" alt="Jenkins — результат">
   <br>
   <sub><em>Picture. 2. Test API - Record Controller</em></sub>
 </p>
@@ -15,19 +15,19 @@
 ## ✅ JaCoCo
 
 <p align="center">
-  <img src="image3.png" width="600" alt="JaCoCo — сводка">
+  <img src="docs/image3.png" width="600" alt="JaCoCo — сводка">
   <br>
   <sub><em>Picture 3. JaCoCo – general project view</em></sub>
 </p>
 
 <p align="center">
-  <img src="image4.png" width="600" alt="JaCoCo — пакеты">
+  <img src="docs/image4.png" width="600" alt="JaCoCo — пакеты">
   <br>
   <sub><em>Picture 4. Composition of the CardRecordService service </em></sub>
 </p>
 
 <p align="center">
-  <img src="image5.png" width="600" alt="JaCoCo — классы">
+  <img src="docs/image5.png" width="600" alt="JaCoCo — классы">
   <br>
   <sub><em>Picture 5. Part of the code</em></sub>
 </p>  
@@ -35,13 +35,13 @@
 ## 📊 Grafana
 
 <p align="center">
-  <img src="image6.png" width="600" alt="metrics 1">
+  <img src="docs/image6.png" width="600" alt="metrics 1">
   <br>
   <sub><em>Picture 6. default metrics </em></sub>
 </p>
 
 <p align="center">
-  <img src="image7.png" width="600" alt="metrics 2">
+  <img src="docs/image7.png" width="600" alt="metrics 2">
   <br>
   <sub><em>Picture 7. custom-written metrics </em></sub>
 </p>
