@@ -1,3 +1,5 @@
+<img src="image.png" alt="Jenkins" width="600">
+
 ## 📋 Table of Contents
 
 - [Key Features](#-key-features)
