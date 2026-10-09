@@ -7,7 +7,7 @@ pipeline {
     stage('Checkout') {
       steps {
         script {
-            checkout([$class: 'GitSCM', branches: [[name: '*/maven']], userRemoteConfigs: [[url: 'https://github.com/Kirillkuss/library']]])
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/Kirillkuss/library']]])
         }
       }
     }
