@@ -12,7 +12,7 @@
   <sub><em>Picture. 2. Test API - Record Controller</em></sub>
 </p>
 
-## 📊 JaCoCo
+## ✅ JaCoCo
 
 <p align="center">
   <img src="image3.png" width="600" alt="JaCoCo — сводка">
@@ -31,6 +31,23 @@
   <br>
   <sub><em>Picture 5. Part of the code</em></sub>
 </p>  
+
+## 📊 Grafana
+
+<p align="center">
+  <img src="image6.png" width="600" alt="metrics 1">
+  <br>
+  <sub><em>Picture 6. default metrics </em></sub>
+</p>
+
+<p align="center">
+  <img src="image7.png" width="600" alt="metrics 2">
+  <br>
+  <sub><em>Picture 7. custom-written metrics </em></sub>
+</p>
+
+
+
 ## 📋 Table of Contents
 
 - [Key Features](#-key-features)
