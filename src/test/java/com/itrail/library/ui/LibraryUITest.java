@@ -12,11 +12,12 @@ import org.junit.jupiter.api.*;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.*;
 import java.io.ByteArrayInputStream;
 
+//@Disabled 
 @UsePlaywright 
 @Owner(value = "Barysevich K. A.")
 @Epic(value = "Тестирование UI")
 @DisplayName("Тестирование UI")
-public class LibraryUI {
+public class LibraryUITest {
     
     @Test
     @Story("Навигация по каталогу")
@@ -34,8 +35,6 @@ public class LibraryUI {
         });
 
         Allure.step("Вернуться назад и открыть вкладку Авторы", () -> {
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("")).click();
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("")).click();
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Авторы")).click();
         });
 
