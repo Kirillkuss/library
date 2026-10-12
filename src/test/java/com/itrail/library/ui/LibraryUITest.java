@@ -33,27 +33,27 @@ public class LibraryUITest {
         AllurePlaywright.attachScreenshot( page, "Вкладка: Авторы");
 
         Allure.step("Открыть вкладку: Книги", () -> {
-            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Книги")).click();
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Книги")).click();
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Книги");
 
         Allure.step("Открыть вкладку: Выдача Книг", () -> {
-            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Выдача Книг")).click();
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Выдача книг")).click();
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Выдача Книг");
 
         Allure.step("Открыть вкладку: Карты пользователей", () -> {
-            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Карты пользователей")).click();
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Карты пользователей")).click();
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Карты пользователей");
 
         Allure.step("Открыть вкладку: Трансляции", () -> {
-            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Трансляции")).click();
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Трансляция")).click();
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Трансляции");
 
         Allure.step("Открыть вкладку: Записи", () -> {
-            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Записи")).click();
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Запись")).click();
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Записи");
     }
