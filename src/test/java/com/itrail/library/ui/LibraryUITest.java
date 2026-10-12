@@ -24,19 +24,22 @@ public class LibraryUITest {
     @DisplayName("Проверка навигации по страницам и вкладкам")
     public void libraryWebTest(Page page) {
 
-        Allure.step("Открыть главную страницу", () -> {
+        Allure.step("Открыть главную страницу - Вкладка: Пользователи", () -> {
             page.navigate("http://localhost:8094/library/app/index.html");
         });
+        AllurePlaywright.attachScreenshot(page, "Вкладка: Пользователи");
 
-        Allure.step("Перейти по страницам каталога 2 → 3 → 4", () -> {
+        Allure.step("Вкладка: Пользователи - Перейти по страницам каталога 2 → 3 → 4", () -> {
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("2")).click();
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("3")).click();
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("4")).click();
         });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Пользователи - страницы 2 → 3 → 4");
 
         Allure.step("Вернуться назад и открыть вкладку Авторы", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Авторы")).click();
         });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Авторы ");
 
         Allure.step("Открыть вкладку Карты пользователей и выполнить поиск", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Карты пользователей")).click();
@@ -45,11 +48,17 @@ public class LibraryUITest {
                 page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Поиск карт")).fill("Test1234!");
             });
         });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Карты пользователей");
 
-        Allure.step("Выйти из системы и запросить восстановление пароля", () -> {
+        Allure.step("Выйти из системы", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Выход")).click();
+        });
+        AllurePlaywright.attachScreenshot( page, "Страница: Авторизация");
+        
+        Allure.step("Запросить восстановление пароля", () -> {
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(" Забыли пароль?")).click();
         });
+        AllurePlaywright.attachScreenshot( page, "Страница: Восстановление пароля");
 
         Allure.step("Отправить запрос на новый пароль для логина '2'", () -> {
             page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Логин, email или телефон")).click();
@@ -62,11 +71,9 @@ public class LibraryUITest {
   @Test
   @DisplayName("Скриншот главной страницы")
   public void testWebPage(Page page) {
-        Allure.step("Открыть страницу логина", () ->
-            page.navigate("http://localhost:8094/library/app/index.html"));
-
-        Allure.parameter("Пользователь", "admin");
-        AllurePlaywright.attachScreenshot(page, "Главная страница");
-        AllurePlaywright.attachUrl(page);
+        Allure.step( "Открыть страницу логина", () -> page.navigate( "http://localhost:8094/library/app/index.html" ));
+        Allure.parameter( "Пользователь", "admin" );
+        AllurePlaywright.attachScreenshot( page, "Главная страница" );
+        AllurePlaywright.attachUrl( page );
   }
 }

@@ -9,7 +9,7 @@ public final class AllurePlaywright {
     private AllurePlaywright() {}
 
     public static void attachScreenshot(Page page, String name) {
-        byte[] png = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
+        byte[] png = page.screenshot( new Page.ScreenshotOptions().setFullPage(true) );
         Allure.addAttachment(name, "image/png", new ByteArrayInputStream(png), "png");
     }
 
