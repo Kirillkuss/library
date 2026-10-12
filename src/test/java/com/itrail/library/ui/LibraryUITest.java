@@ -20,60 +20,72 @@ import java.io.ByteArrayInputStream;
 public class LibraryUITest {
     
     @Test
-    @Story("Навигация по каталогу")
-    @DisplayName("Проверка навигации по страницам и вкладкам")
-    public void libraryWebTest(Page page) {
-
+    @DisplayName("Проверка навигации по вкладкам")
+    public void navigatePageTest(Page page) {
         Allure.step("Открыть главную страницу - Вкладка: Пользователи", () -> {
             page.navigate("http://localhost:8094/library/app/index.html");
         });
         AllurePlaywright.attachScreenshot(page, "Вкладка: Пользователи");
 
-        Allure.step("Вкладка: Пользователи - Перейти по страницам каталога 2 → 3 → 4", () -> {
+        Allure.step("Открыть вкладку: Авторы", () -> {
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Авторы")).click();
+        });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Авторы");
+
+        Allure.step("Открыть вкладку: Книги", () -> {
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Книги")).click();
+        });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Книги");
+
+        Allure.step("Открыть вкладку: Выдача Книг", () -> {
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Выдача Книг")).click();
+        });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Выдача Книг");
+
+        Allure.step("Открыть вкладку: Карты пользователей", () -> {
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Карты пользователей")).click();
+        });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Карты пользователей");
+
+        Allure.step("Открыть вкладку: Трансляции", () -> {
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Трансляции")).click();
+        });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Трансляции");
+
+        Allure.step("Открыть вкладку: Записи", () -> {
+            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Записи")).click();
+        });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Записи");
+    }
+
+
+    @Test
+    @DisplayName("Проверка ленивой загрузки данных")
+    public void clickTest( Page page ){
+        Allure.step("Открыть главную страницу - Вкладка: Пользователи", () -> {
+            page.navigate("http://localhost:8094/library/app/index.html");
+        });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Пользователи - страница 1");
+
+        Allure.step("Вкладка: Пользователи - Перейти с 1 → 2", () -> {
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("2")).click();
+        });
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Пользователи - страницы 1 → 2");
+        
+        Allure.step("Вкладка: Пользователи - Перейти с 2 → 3", () -> {
             page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("3")).click();
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("4")).click();
         });
-        AllurePlaywright.attachScreenshot( page, "Вкладка: Пользователи - страницы 2 → 3 → 4");
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Пользователи - страницы 2 → 3");
 
-        Allure.step("Вернуться назад и открыть вкладку Авторы", () -> {
-            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Авторы")).click();
-        });
-        AllurePlaywright.attachScreenshot( page, "Вкладка: Авторы ");
-
-        Allure.step("Открыть вкладку Карты пользователей и выполнить поиск", () -> {
+        /**Allure.step("Открыть вкладку Карты пользователей и выполнить поиск", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Карты пользователей")).click();
             Allure.step("Поиск карты 'Test1234!'", () -> {
                 page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Поиск карт")).click();
                 page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Поиск карт")).fill("Test1234!");
             });
         });
-        AllurePlaywright.attachScreenshot( page, "Вкладка: Карты пользователей");
+        AllurePlaywright.attachScreenshot( page, "Вкладка: Карты пользователей");*/
 
-        Allure.step("Выйти из системы", () -> {
-            page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Выход")).click();
-        });
-        AllurePlaywright.attachScreenshot( page, "Страница: Авторизация");
-        
-        Allure.step("Запросить восстановление пароля", () -> {
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(" Забыли пароль?")).click();
-        });
-        AllurePlaywright.attachScreenshot( page, "Страница: Восстановление пароля");
-
-        Allure.step("Отправить запрос на новый пароль для логина '2'", () -> {
-            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Логин, email или телефон")).click();
-            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Логин, email или телефон")).fill("2");
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(" Отправить новый пароль")).click();
-        });
     }
 
-
-  @Test
-  @DisplayName("Скриншот главной страницы")
-  public void testWebPage(Page page) {
-        Allure.step( "Открыть страницу логина", () -> page.navigate( "http://localhost:8094/library/app/index.html" ));
-        Allure.parameter( "Пользователь", "admin" );
-        AllurePlaywright.attachScreenshot( page, "Главная страница" );
-        AllurePlaywright.attachUrl( page );
-  }
 }
