@@ -24,36 +24,43 @@ public class LibraryUITest {
     public void navigatePageTest(Page page) {
         Allure.step("Открыть главную страницу - Вкладка: Пользователи", () -> {
             page.navigate("http://localhost:8094/library/app/index.html");
+            page.waitForTimeout(1000);
         });
         AllurePlaywright.attachScreenshot(page, "Вкладка: Пользователи");
 
         Allure.step("Открыть вкладку: Авторы", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Авторы")).click();
+            page.waitForTimeout(1000);
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Авторы");
 
         Allure.step("Открыть вкладку: Книги", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Книги")).click();
+            page.waitForTimeout(1000);
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Книги");
 
         Allure.step("Открыть вкладку: Выдача Книг", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Выдача книг")).click();
+            page.waitForTimeout(1000);
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Выдача Книг");
 
         Allure.step("Открыть вкладку: Карты пользователей", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Карты пользователей")).click();
+            page.waitForTimeout(1000);
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Карты пользователей");
 
         Allure.step("Открыть вкладку: Трансляции", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Трансляция")).click();
+            page.waitForTimeout(1000);
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Трансляции");
 
         Allure.step("Открыть вкладку: Записи", () -> {
             page.getByRole(AriaRole.TAB, new Page.GetByRoleOptions().setName(" Запись")).click();
+            page.waitForTimeout(1000);
         });
         AllurePlaywright.attachScreenshot( page, "Вкладка: Записи");
     }

@@ -51,7 +51,10 @@ public class PageUITest {
     @Test
     @DisplayName("Скриншот страницы - Страница не найдена")
     public void testWebPageNotFound( Page page ) {
-        Allure.step( "Открыть страницу - страница не найдена", () -> page.navigate( "http://localhost:8094/library/loginasd" ));
+        Allure.step( "Открыть страницу - страница не найдена", () -> {
+            page.navigate( "http://localhost:8094/library/loginasd" );
+            page.waitForTimeout(2000);
+        });
         AllurePlaywright.attachScreenshot( page, "Страница не найдена" );
         AllurePlaywright.attachUrl( page );
     }
