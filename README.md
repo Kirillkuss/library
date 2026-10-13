@@ -116,14 +116,14 @@
 | **Framework** | Spring Boot, Spring MVC, Spring Data, Spring Security | 3.x |
 | **Database** | PostgreSQL | 15+ |
 | **Cache** | Redis | 7+ |
-| **Monitoring** | Micrometer, Prometheus, Grafana | Latest |
-| **Video Streaming** | Mediamtx (RTSP/WebRTC) | Latest |
+| **Monitoring** | Micrometer, Prometheus, Grafana 
+| **Video Streaming** | Mediamtx (RTSP/WebRTC) 
 | **API Documentation** | Swagger/OpenAPI | 3.x |
-| **Containerization** | Docker, Docker Compose, Kubernetes | Latest |
-| **Build Tool** | Maven | 3.9+ |
-| **Testing** | JUnit 5, Mockito, RestAssured | Latest |
+| **Containerization** | Docker, Docker Compose, Kubernetes 
+| **Build Tool** | Maven | 3.8+ |
+| **Testing** | JUnit 5, Mockito, RestAssured, Playwright
 | **CI/CD** | Jenkins | 2.x |
-| **Logging** | SLF4J, Logback | Latest |
+| **Logging** | SLF4J, Logback
 | **Code Quality** | Lombok | 1.18+ |
 
 ---
