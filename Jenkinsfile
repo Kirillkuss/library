@@ -26,10 +26,12 @@ pipeline {
 
     
   }
-    post {
-        always {
-            allure includeProperties: false, jdk: '', properties: [[key: 'allure.results.directory', value: 'target/allure-results']], report: 'target/allure-report', results: [[path: 'target/allure-results']], commandline: '2.24.0'
-            junit(testResults: '**/target/surefire-reports/*.xml', allowEmptyResults : true, skipPublishingChecks: true)
-            }
-        }
+  post {
+      always {
+          allure includeProperties: false, jdk: '', properties: [[key: 'allure.results.directory', value: 'target/allure-results']], report: 'target/allure-report', results: [[path: 'target/allure-results']], commandline: '2.24.0'
+          junit(testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true, skipPublishingChecks: true)
+          
+          publishCoverage adapters: [jacocoAdapter('target/site/jacoco/jacoco.xml')], sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
+      }
+  }
 }
