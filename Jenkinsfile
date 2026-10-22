@@ -31,7 +31,14 @@ pipeline {
           allure includeProperties: false, jdk: '', properties: [[key: 'allure.results.directory', value: 'target/allure-results']], report: 'target/allure-report', results: [[path: 'target/allure-results']], commandline: '2.24.0'
           junit(testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true, skipPublishingChecks: true)
           
-          recordCoverage( tools: [[parser: 'JACOCO', pattern: 'target/site/jacoco/jacoco.xml']], sourceDirectories: [[path: 'src/main/java']], sourceCodeRetention: 'EVERY_BUILD')
+          publishHTML(target: [
+            reportDir: 'target/site/jacoco',
+            reportFiles: 'index.html',
+            reportName: 'JaCoCo Coverage Report',
+            keepAll: true,
+            alwaysLinkToLastBuild: true,
+            allowMissing: true
+          ])
       }
   }
 }
